@@ -138,6 +138,48 @@ class CrosswordFormatter extends FileFormatterBase {
       $grid['#content'][] = $row;
     }
 
+    $across_clues_start_index = array_search("<ACROSS>", $lines) + 1;
+    $down_clues_start_index = array_search("<DOWN>", $lines) + 1;
+    $across_clues_number = $down_clues_start_index - $across_clues_start_index - 1;
+
+    $across_clues = array_slice($lines, $across_clues_start_index, $across_clues_number);
+    $down_clues = array_slice($lines, $down_clues_start_index); // It's ok there may be notes below...
+
+    $down = [
+      '#theme' => 'crossword_clues',
+      '#content' => [],
+    ];
+    $across = [
+      '#theme' => 'crossword_clues',
+      '#content' => [],
+    ];
+    $down_index = 0;
+    $across_index = 0;
+    foreach ($clue_order as $numeral => $direction) {
+      if ($direction == 'across') {
+        $across['#content'][] = [
+          '#theme' => 'crossword_clue',
+          '#numeral' => $numeral + 1,
+          '#text' => $across_clues[$across_index],
+          '#attributes' => [
+            'data-clue-index-across' => [$across_index],
+          ],
+        ];
+        $across_index++;
+      }
+      else {
+        $down['#content'][] = [
+          '#theme' => 'crossword_clue',
+          '#numeral' => $numeral + 1,
+          '#text' => $down_clues[$down_index],
+          '#attributes' => [
+            'data-clue-index-down' => [$down_index],
+          ],
+        ];
+        $down_index++;
+      }
+    }
+
     return [
       'title' => [
         '#type' => 'html_tag',
@@ -150,6 +192,8 @@ class CrosswordFormatter extends FileFormatterBase {
         '#value' => $author,
       ],
       'grid' => $grid,
+      'down' => $down,
+      'across' => $across,
     ];
   }
 

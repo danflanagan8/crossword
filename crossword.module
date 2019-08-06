@@ -23,5 +23,17 @@ function crossword_theme($existing, $type, $theme, $path) {
         'attributes' => [],
       ),
     ),
+    'crossword_clue' => array(
+      'variables' => array(
+        'text' => NULL,
+        'numeral' => NULL,
+        'attributes' => [],
+      ),
+    ),
+    'crossword_clues' => array(
+      'variables' => array(
+        'content' => NULL,
+      ),
+    ),
   );
 }
