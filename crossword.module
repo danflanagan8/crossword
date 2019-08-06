@@ -1,0 +1,27 @@
+<?php
+
+function crossword_theme($existing, $type, $theme, $path) {
+  return array (
+    'crossword' => array(
+      'variables' => array(
+        'content' => NULL,
+      ),
+    ),
+    'crossword_grid' => array(
+      'variables' => array(
+        'content' => NULL,
+      ),
+    ),
+    'crossword_grid_row' => array(
+      'variables' => array(
+        'content' => NULL,
+      ),
+    ),
+    'crossword_square' => array(
+      'variables' => array(
+        'fill' => NULL,
+        'attributes' => [],
+      ),
+    ),
+  );
+}
