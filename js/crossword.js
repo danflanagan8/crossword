@@ -45,35 +45,40 @@
     }
 
     this.setActiveClue = function(index) {
-      this.activeClue = index;
       if (this.dir == 'across') {
-        var numeral = this.data.puzzle.clues.across[index].numeral;
-        var grid = this.data.puzzle.grid;
-        console.log(grid);
-        for (var row_index = 0; row_index < grid.length; row_index++) {
-          for (var col_index = 0; col_index < grid[row_index].length; col_index++) {
-            console.log(grid[row_index][col_index].numeral);
-            if (grid[row_index][col_index].numeral == numeral) {
-              this.activeSquare = {
-                'row' : row_index,
-                'col' : col_index,
-              };
-              return this;
+        if (index >= 0 && index < this.data.puzzle.clues.across.length) {
+          this.activeClue = index;
+          var numeral = this.data.puzzle.clues.across[index].numeral;
+          var grid = this.data.puzzle.grid;
+          console.log(grid);
+          for (var row_index = 0; row_index < grid.length; row_index++) {
+            for (var col_index = 0; col_index < grid[row_index].length; col_index++) {
+              console.log(grid[row_index][col_index].numeral);
+              if (grid[row_index][col_index].numeral == numeral) {
+                this.activeSquare = {
+                  'row' : row_index,
+                  'col' : col_index,
+                };
+                return this;
+              }
             }
           }
         }
       }
       else {
-        var numeral = this.data.puzzle.clues.down[index].numeral;
-        var grid = this.data.puzzle.grid;
-        for (var row_index = 0; row_index < grid.length; row_index++) {
-          for (var col_index = 0; col_index < grid[row_index].length; col_index++) {
-            if (grid[row_index][col_index].numeral == numeral) {
-              this.activeSquare = {
-                'row' : row_index,
-                'col' : col_index,
-              };
-              return this;
+        if (index >= 0 && index < this.data.puzzle.clues.down.length) {
+          this.activeClue = index;
+          var numeral = this.data.puzzle.clues.down[index].numeral;
+          var grid = this.data.puzzle.grid;
+          for (var row_index = 0; row_index < grid.length; row_index++) {
+            for (var col_index = 0; col_index < grid[row_index].length; col_index++) {
+              if (grid[row_index][col_index].numeral == numeral) {
+                this.activeSquare = {
+                  'row' : row_index,
+                  'col' : col_index,
+                };
+                return this;
+              }
             }
           }
         }
@@ -90,6 +95,36 @@
       return this;
     }
 
+    this.advanceActiveSquare = function() {
+      if (this.dir == 'across') {
+        this.moveActiveSquare(0, 1);
+      }
+      else {
+        this.moveActiveSquare(1, 0);
+      }
+      return this;
+    }
+
+    this.retreatActiveSquare = function() {
+      if (this.dir == 'across') {
+        this.moveActiveSquare(0, -1);
+      }
+      else {
+        this.moveActiveSquare(-1, 0);
+      }
+      return this;
+    }
+
+    this.advanceActiveClue = function() {
+      this.setActiveClue(this.activeClue + 1);
+      return this;
+    }
+
+    this.retreatActiveClue = function() {
+      this.setActiveClue(this.activeClue - 1);
+      return this;
+    }
+
     this.setActiveClue(0);
   }
 
@@ -102,31 +137,41 @@
         //keyboard event listeners.
         addEventListener("keydown", function(event) {
           //for arrows, spacebar, and tab
+          event.preventDefault();
           switch(event.keyCode) {
             case 38:
               //up
-              event.preventDefault();
               Crossword.moveActiveSquare(-1, 0);
               Drupal.behaviors.crossword.updateClasses(Crossword);
               break;
             case 37:
               //left
-              event.preventDefault();
               Crossword.moveActiveSquare(0, -1);
               Drupal.behaviors.crossword.updateClasses(Crossword);
               break;
             case 39:
               //right
-              event.preventDefault();
               Crossword.moveActiveSquare(0, 1);
               Drupal.behaviors.crossword.updateClasses(Crossword);
               break;
             case 40:
               //down
-              event.preventDefault();
               Crossword.moveActiveSquare(1, 0);
               Drupal.behaviors.crossword.updateClasses(Crossword);
               break;
+            case 32:
+              //spacebar
+              Crossword.changeDir();
+              Drupal.behaviors.crossword.updateClasses(Crossword);
+              break;
+            case 9:
+              if (event.shiftKey) {
+                Crossword.retreatActiveClue();
+              }
+              else {
+                Crossword.advanceActiveClue();
+              }
+              Drupal.behaviors.crossword.updateClasses(Crossword);
           }
 
         });
