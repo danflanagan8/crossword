@@ -75,6 +75,7 @@ class CrosswordFileParser {
               $clues['across'][] = [
                 'text' => $raw_clues['across'][$iterator['index_across']],
                 'numeral' => $iterator['numeral'],
+                'references' => $this->findReferences($raw_clues['across'][$iterator['index_across']]),
               ];
               $numeral_incremented = TRUE;
 
@@ -113,6 +114,7 @@ class CrosswordFileParser {
               $clues['down'][] = [
                 'text' => $raw_clues['down'][$iterator['index_down']],
                 'numeral' => $iterator['numeral'],
+                'references' => $this->findReferences($raw_clues['down'][$iterator['index_down']]),
               ];
               $numeral_incremented = TRUE;
 
@@ -138,10 +140,65 @@ class CrosswordFileParser {
       $grid[] = $row;
     }
 
+    $this->addIndexToClueReferences($clues);
+
     return [
       'grid' => $grid,
       'clues' => $clues,
     ];
+  }
+
+  private function addIndexToClueReferences(&$clues) {
+    foreach ($clues['down'] as $index => $down_clue) {
+      if (!empty($down_clue['references'])) {
+        if (!empty($down_clue['references']['across'])) {
+          $down_clue['references']['across']['index'] = [];
+          foreach ($down_clue['references']['across']['numeral'] as $numeral) {
+            foreach($clues['across'] as $key => $clue) {
+              if ($clue['numeral'] === $numeral) {
+                $down_clue['references']['across']['index'][] = $key;
+              }
+            }
+          }
+        }
+        if (!empty($down_clue['references']['down'])) {
+          $down_clue['references']['down']['index'] = [];
+          foreach ($down_clue['references']['down']['numeral'] as $numeral) {
+            foreach($clues['down'] as $key => $clue) {
+              if ($clue['numeral'] === $numeral) {
+                $down_clue['references']['down']['index'][] = $key;
+              }
+            }
+          }
+        }
+        $clues['down'][$index] = $down_clue;
+      }
+    }
+    foreach ($clues['across'] as $index => $across_clue) {
+      if (!empty($across_clue['references'])) {
+        if (!empty($across_clue['references']['across'])) {
+          $across_clue['references']['across']['index'] = [];
+          foreach ($across_clue['references']['across']['numeral'] as $numeral) {
+            foreach($clues['across'] as $key => $clue) {
+              if ($clue['numeral'] == $numeral) {
+                $across_clue['references']['across']['index'][] = $key;
+              }
+            }
+          }
+        }
+        if (!empty($across_clue['references']['down'])) {
+          $across_clue['references']['down']['index'] = [];
+          foreach ($across_clue['references']['down']['numeral'] as $numeral) {
+            foreach($clues['down'] as $key => $clue) {
+              if ($clue['numeral'] == $numeral) {
+                $across_clue['references']['down']['index'][] = $key;
+              }
+            }
+          }
+        }
+        $clues['across'][$index] = $across_clue;
+      }
+    }
   }
 
   public function getRawClues() {
@@ -158,7 +215,6 @@ class CrosswordFileParser {
     else {
       $down_clues = array_slice($this->lines, $down_clues_start_index);
     }
-
 
     return [
       'across' => $across_clues,
@@ -180,6 +236,57 @@ class CrosswordFileParser {
       }
     }
     return $raw_grid;
+  }
+
+  private function findReferences($text) {
+    //find references
+    $refRegex = '/(\d+\-)|(Down)|(Across)/';
+    if( preg_match('/(\d+\-)/', $text) === 1 && preg_match('/(Across)|(Down)/', $text) === 1 ){
+      //there's likely a reference
+      $matches = [];
+      $references = [];
+      preg_match_all($refRegex, $text, $matches);
+      $matches = $matches[0]; //something like [13- , 23- , Across, 45-, Down]
+      $across_index = array_search("Across", $matches);
+      $down_index = array_search("Down", $matches);
+
+      if( $across_index === FALSE ){
+        //just down references
+        $i = 0;
+        while( $i < $down_index ){
+          $ref_num = str_replace("-", "", $matches[$i]);
+          $references['down']['numeral'][] = $ref_num;
+          $i++;
+        }
+      }
+      if( $down_index === FALSE ){
+        //just across references
+        $i = 0;
+        while( $i < $across_index ){
+          $ref_num = str_replace("-", "", $matches[$i]);
+          $references['across']['numeral'][] = $ref_num;
+          $i++;
+        }
+      }
+      if( $across_index > -1 && $down_index > -1 ){
+        //assume Across references are first, as they should be
+        //across
+        $i = 0;
+        while( $i < $across_index ){
+          $ref_num = str_replace("-", "", $matches[$i]);
+          $references['across']['numeral'][] = $ref_num;
+          $i++;
+        }
+        //now down. We have to move past the acrossIndex
+        $i = $across_index + 1;
+        while( $i < $down_index ){
+          $ref_num = str_replace("-", "", $matches[$i]);
+          $references['down']['numeral'][] = $ref_num;
+          $i++;
+        }
+      }
+      return $references;
+    }
   }
 
 }
