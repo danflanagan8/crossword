@@ -31,7 +31,7 @@ class CrosswordFormatter extends FileFormatterBase {
         '#content' => $this->parse($file),
         '#attached' => [
           'library' => [
-            'crossword/crossword'
+            'crossword/crossword',
           ],
         ],
       ];
@@ -66,7 +66,7 @@ class CrosswordFormatter extends FileFormatterBase {
         '#text' => $across['text'],
         '#numeral' => $across['numeral'],
         '#attributes' => [
-          'data-clue-index' => [$across_index],
+          'data-clue-index' => (string) $across_index,
         ],
       ];
     }
@@ -81,7 +81,7 @@ class CrosswordFormatter extends FileFormatterBase {
         '#text' => $down['text'],
         '#numeral' => $down['numeral'],
         '#attributes' => [
-          'data-clue-index' => [$down_index],
+          'data-clue-index' => (string) $down_index,
         ],
       ];
     }
@@ -100,8 +100,8 @@ class CrosswordFormatter extends FileFormatterBase {
           $render_row['#content'][] = [
             '#theme' => 'crossword_square',
             '#attributes' => [
-              'data-col' => [(string) $col_index],
-              'data-row' => [(string) $row_index],
+              'data-col' => (string) $col_index,
+              'data-row' => (string) $row_index,
               'class' => [
                 'black',
               ],
@@ -114,12 +114,12 @@ class CrosswordFormatter extends FileFormatterBase {
             '#fill' => $square['fill'],
             '#numeral' => $square['numeral'],
             '#attributes' => [
-              'data-col' => [(string) $col_index],
-              'data-row' => [(string) $row_index],
-              'data-clue-index-across' => [(string) $square['across']['index']],
-              'data-clue-index-down' => [(string) $square['down']['index']],
-              'data-numeral' => [$square['numeral']],
-              'data-fill' => [$square['fill']],
+              'data-col' => (string) $col_index,
+              'data-row' => (string) $row_index,
+              'data-clue-index-across' => (string) $square['across']['index'],
+              'data-clue-index-down' => (string) $square['down']['index'],
+              'data-numeral' => $square['numeral'],
+              'data-fill' => $square['fill'],
             ],
           ];
         }

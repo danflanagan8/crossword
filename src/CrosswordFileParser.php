@@ -53,11 +53,9 @@ class CrosswordFileParser {
       $row = [];
       for ($col_index = 0; $col_index < count($raw_row); $col_index++) {
         $fill = $raw_row[$col_index];
-
+        $square = [];
         if ($fill === NULL) {
-          $row[] = [
-            'fill' => NULL,
-          ];
+          $square['fill'] = NULL;
         }
         else {
           // init some things to NULL
@@ -79,7 +77,24 @@ class CrosswordFileParser {
                 'numeral' => $iterator['numeral'],
               ];
               $numeral_incremented = TRUE;
+
+              $square['fill'] = $fill;
+              $square['across'] = [
+                'index' => $iterator['index_across'],
+              ];
+              $square['numeral'] = $numeral;
             }
+            else {
+              // In here? It's an uncrosswed square. No across clue. No numeral.
+              $square['fill'] = $fill;
+            }
+          }
+          else {
+            // In here? No numeral.
+            $square['fill'] = $fill;
+            $square['across'] = [
+              'index' => $iterator['index_across'],
+            ];
           }
 
           /**
@@ -100,22 +115,27 @@ class CrosswordFileParser {
                 'numeral' => $iterator['numeral'],
               ];
               $numeral_incremented = TRUE;
+
+              $square['fill'] = $fill;
+              $square['down'] = [
+                'index' => $iterator['index_down'],
+              ];
+              $square['numeral'] = $numeral;
+            }
+            else {
+              // In here? It's an uncrosswed square. No across clue. No numeral.
+              $square['fill'] = $fill;
             }
           }
-
-          $row[] = [
-            'fill' => $fill,
-            'across' => [
-              'index' => $iterator['index_across'],
-            ],
-            'down' => [
+          else {
+            // In here? No numeral.
+            $square['fill'] = $fill;
+            $square['down'] = [
               'index' => $iterator['index_down'],
-            ],
-            'numeral' => $numeral,
-          ];
-
+            ];
+          }
         }
-
+        $row[] = $square;
       }
       $grid[] = $row;
     }
