@@ -80,6 +80,8 @@ class CrosswordFormatter extends FileFormatterBase {
         '#numeral' => $across['numeral'],
         '#attributes' => [
           'data-clue-index-across' => (string) $across_index,
+          'data-clue-numeral-across' => $across['numeral'],
+          'data-clue-references' => json_encode($across['references']),
         ],
       ];
     }
@@ -98,6 +100,8 @@ class CrosswordFormatter extends FileFormatterBase {
         '#numeral' => $down['numeral'],
         '#attributes' => [
           'data-clue-index-down' => (string) $down_index,
+          'data-clue-numeral-down' => $down['numeral'],
+          'data-clue-references' => json_encode($down['references']),
         ],
       ];
     }
@@ -131,13 +135,13 @@ class CrosswordFormatter extends FileFormatterBase {
           $render_row['#content'][] = [
             '#theme' => 'crossword_square',
             '#fill' => $square['fill'],
-            '#numeral' => $square['numeral'],
+            '#numeral' => isset($square['numeral']) ? $square['numeral'] : NULL,
             '#attributes' => [
               'data-col' => (string) $col_index,
               'data-row' => (string) $row_index,
               'data-clue-index-across' => (string) $square['across']['index'],
               'data-clue-index-down' => (string) $square['down']['index'],
-              'data-numeral' => $square['numeral'],
+              'data-numeral' => isset($square['numeral']) ? $square['numeral'] : NULL,
               'data-fill' => $square['fill'],
             ],
           ];

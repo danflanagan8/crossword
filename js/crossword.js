@@ -3,9 +3,11 @@
   Drupal.Crossword = function(data) {
     var Crossword = this;
     this.data = data;
+
     this.dir = 'across';
     this.activeSquare = {'row' : null, 'col': null};
     this.activeClue = null;
+    this.activeReferences = [];
     this.answers = emptyAnswers();
 
     function emptyAnswers() {
@@ -40,6 +42,7 @@
             this.activeClue = null;
           }
         }
+        this.setActiveReferences();
       }
       return this;
     }
@@ -48,6 +51,7 @@
       if (this.dir == 'across') {
         if (index >= 0 && index < this.data.puzzle.clues.across.length) {
           this.activeClue = index;
+          this.setActiveReferences();
           var numeral = this.data.puzzle.clues.across[index].numeral;
           var grid = this.data.puzzle.grid;
           for (var row_index = 0; row_index < grid.length; row_index++) {
@@ -66,6 +70,7 @@
       else {
         if (index >= 0 && index < this.data.puzzle.clues.down.length) {
           this.activeClue = index;
+          this.setActiveReferences();
           var numeral = this.data.puzzle.clues.down[index].numeral;
           var grid = this.data.puzzle.grid;
           for (var row_index = 0; row_index < grid.length; row_index++) {
@@ -123,17 +128,28 @@
       return this;
     }
 
+    this.setActiveReferences = function() {
+      if (this.dir == 'across') {
+        this.activeReferences = this.data.puzzle.clues.across[this.activeClue].references;
+      }
+      else {
+        this.activeReferences = this.data.puzzle.clues.down[this.activeClue].references;
+      }
+    }
+
     this.setAnswer = function(letter) {
       this.answers[this.activeSquare.row][this.activeSquare.col] = letter;
     }
 
     this.setActiveClue(0);
+
   }
 
   Drupal.behaviors.crossword = {
     attach: function (context, settings) {
       $('body').once('crossword-init').each(function(){
         var data = drupalSettings.crossword;
+        console.log(data);
         var Crossword = new Drupal.Crossword(data);
         Drupal.behaviors.crossword.updateClasses(Crossword, false);
         //keyboard event listeners.
@@ -227,8 +243,7 @@
       });
     },
     updateClasses: function (Crossword, focus) {
-      $('.crossword-square.active, .crossword-clue.active').removeClass('active');
-      $('.crossword-square.highlight').removeClass('highlight');
+      $('.crossword-square, .crossword-clue').removeClass('active').removeClass('highlight').removeClass('reference');
       var $activeSquare = $('.crossword-square[data-row="' + Crossword.activeSquare.row + '"][data-col="' + Crossword.activeSquare.col + '"]');
       $activeSquare.addClass('active');
       if (focus) {
@@ -236,12 +251,30 @@
       }
 
       if (Crossword.dir == 'across') {
-        $('.crossword-clue[data-clue-index-across="' + Crossword.activeClue + '"]').addClass('active');
+        var $activeClue = $('.crossword-clue[data-clue-index-across="' + Crossword.activeClue + '"]');
+        $activeClue.addClass('active');
         $('.crossword-square[data-clue-index-across="' + Crossword.activeClue + '"]').addClass('highlight');
       }
       else {
-        $('.crossword-clue[data-clue-index-down="' + Crossword.activeClue + '"]').addClass('active');
+        var $activeClue = $('.crossword-clue[data-clue-index-down="' + Crossword.activeClue + '"]');
+        $activeClue.addClass('active');
         $('.crossword-square[data-clue-index-down="' + Crossword.activeClue + '"]').addClass('highlight');
+      }
+
+      // references!
+      if (Crossword.activeReferences) {
+        if (Crossword.activeReferences.across) {
+          for (var i = 0; i < Crossword.activeReferences.across.index.length; i++) {
+            $('.crossword-square[data-clue-index-across="' + Crossword.activeReferences.across.index[i] + '"]').addClass('reference');
+            $('.crossword-clue[data-clue-index-across="' + Crossword.activeReferences.across.index[i] + '"]').addClass('reference');
+          }
+        }
+        if (Crossword.activeReferences.down) {
+          for (var i = 0; i < Crossword.activeReferences.down.index.length; i++) {
+            $('.crossword-square[data-clue-index-down="' + Crossword.activeReferences.down.index[i] + '"]').addClass('reference');
+            $('.crossword-clue[data-clue-index-down="' + Crossword.activeReferences.down.index[i] + '"]').addClass('reference');
+          }
+        }
       }
     },
     printLetter: function (letter, Crossword){

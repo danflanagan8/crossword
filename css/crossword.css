@@ -14,6 +14,10 @@
   position: relative;
 }
 
+.crossword-square.reference,
+.crossword-clue.reference {
+  background-color: #C80;
+}
 .crossword-square.highlight {
   background-color: #0AF;
 }

@@ -155,7 +155,7 @@ class CrosswordFileParser {
           $down_clue['references']['across']['index'] = [];
           foreach ($down_clue['references']['across']['numeral'] as $numeral) {
             foreach($clues['across'] as $key => $clue) {
-              if ($clue['numeral'] === $numeral) {
+              if ($clue['numeral'] == $numeral) {
                 $down_clue['references']['across']['index'][] = $key;
               }
             }
@@ -165,7 +165,7 @@ class CrosswordFileParser {
           $down_clue['references']['down']['index'] = [];
           foreach ($down_clue['references']['down']['numeral'] as $numeral) {
             foreach($clues['down'] as $key => $clue) {
-              if ($clue['numeral'] === $numeral) {
+              if ($clue['numeral'] == $numeral) {
                 $down_clue['references']['down']['index'][] = $key;
               }
             }
