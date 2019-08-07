@@ -41,6 +41,14 @@
   padding-top: 100%;
 }
 
+.square-fill {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  font-size: 16px;
+}
+
 input.phantom {
   height: 1px;
   width: 1px;
