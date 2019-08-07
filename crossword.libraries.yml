@@ -1,0 +1,4 @@
+crossword:
+  css:
+    layout:
+      css/crossword.css: {}

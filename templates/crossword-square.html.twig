@@ -1,3 +1,7 @@
-<span{{ attributes}}>
-  {{ fill }}
-</span>
+<div{{ attributes.addClass('crossword-square') }}>
+  {% if numeral is not empty %}
+    <span class="numeral">{{ numeral }}</span>
+  {% endif %}
+  <input type='text' class='phantom'>
+  <div class="square-bulk"></div>
+</div>

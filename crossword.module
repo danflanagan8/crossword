@@ -20,6 +20,7 @@ function crossword_theme($existing, $type, $theme, $path) {
     'crossword_square' => array(
       'variables' => array(
         'fill' => NULL,
+        'numeral' => NULL,
         'attributes' => [],
       ),
     ),

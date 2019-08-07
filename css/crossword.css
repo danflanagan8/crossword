@@ -1,0 +1,45 @@
+.crossword-grid {
+  border: 1px solid black;
+}
+
+.crossword-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.crossword-square {
+  flex: 1 1 100%;
+  border: 1px solid black;
+  position: relative;
+}
+
+.crossword-square.black {
+  background: black;
+}
+
+.crossword-square .numeral {
+  font-size: 8px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.square-bulk {
+  height: 0;
+  padding-top: 100%;
+}
+
+input.phantom {
+  height: 1px;
+  width: 1px;
+  border: none;
+  background: none;
+  font-size: 100px;
+  color: transparent;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+}

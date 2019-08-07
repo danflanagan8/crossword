@@ -29,6 +29,11 @@ class CrosswordFormatter extends FileFormatterBase {
       $elements[$delta] = [
         '#theme' => 'crossword',
         '#content' => $this->parse($file),
+        '#attached' => [
+          'library' => [
+            'crossword/crossword'
+          ],
+        ],
       ];
     }
     return $elements;
