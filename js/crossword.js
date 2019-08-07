@@ -28,7 +28,7 @@
           try {
             this.activeClue = this.data.puzzle.grid[row][col].across.index;
           }
-          catch {
+          catch(error) {
             this.activeClue = null;
           }
         }
@@ -36,7 +36,7 @@
           try {
             this.activeClue = this.data.puzzle.grid[row][col].down.index;
           }
-          catch {
+          catch(error) {
             this.activeClue = null;
           }
         }
@@ -232,7 +232,7 @@
       var $activeSquare = $('.crossword-square[data-row="' + Crossword.activeSquare.row + '"][data-col="' + Crossword.activeSquare.col + '"]');
       $activeSquare.addClass('active');
       if (focus) {
-        $activeSquare.find('input').focus;
+        $activeSquare.find('input').focus();
       }
 
       if (Crossword.dir == 'across') {
