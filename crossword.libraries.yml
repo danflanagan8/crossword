@@ -2,3 +2,9 @@ crossword:
   css:
     layout:
       css/crossword.css: {}
+  js:
+    js/crossword.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings

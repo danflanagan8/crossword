@@ -26,12 +26,25 @@ class CrosswordFormatter extends FileFormatterBase {
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
     foreach ($this->getEntitiesToView($items, $langcode) as $delta => $file) {
+
+      $parser = new CrosswordFileParser($file);
+      $data = $parser->parse();
+
       $elements[$delta] = [
         '#theme' => 'crossword',
-        '#content' => $this->parse($file),
+        '#content' => [
+          'title' => $this->getTitle($data),
+          'author' => $this->getAuthor($data),
+          'across' => $this->getAcross($data),
+          'down' => $this->getDown($data),
+          'grid' => $this->getGrid($data),
+        ],
         '#attached' => [
           'library' => [
             'crossword/crossword',
+          ],
+          'drupalSettings' => [
+            'crossword' => $data,
           ],
         ],
       ];
@@ -39,29 +52,29 @@ class CrosswordFormatter extends FileFormatterBase {
     return $elements;
   }
 
-  private function parse($file) {
-    $render = [];
-    $parser = new CrosswordFileParser($file);
-    $data = $parser->parse();
-
-    $render['title'] = [
+  private function getTitle($data) {
+    return [
       '#type' => 'html_tag',
       '#tag' => 'h1',
       '#value' => $data['title'],
     ];
+  }
 
-    $render['author'] = [
+  private function getAuthor($data) {
+    return [
       '#type' => 'html_tag',
       '#tag' => 'h2',
       '#value' => $data['author'],
     ];
+  }
 
-    $render['across'] = [
+  private function getAcross($data) {
+    $render = [
       '#theme' => 'crossword_clues',
       '#content' => [],
     ];
     foreach ($data['puzzle']['clues']['across'] as $across_index => $across) {
-      $render['across']['#content'][] = [
+      $render['#content'][] = [
         '#theme' => 'crossword_clue',
         '#text' => $across['text'],
         '#numeral' => $across['numeral'],
@@ -70,13 +83,16 @@ class CrosswordFormatter extends FileFormatterBase {
         ],
       ];
     }
+    return $render;
+  }
 
-    $render['down'] = [
+  private function getDown($data) {
+    $render = [
       '#theme' => 'crossword_clues',
       '#content' => [],
     ];
     foreach ($data['puzzle']['clues']['down'] as $down_index => $down) {
-      $render['down']['#content'][] = [
+      $render['#content'][] = [
         '#theme' => 'crossword_clue',
         '#text' => $down['text'],
         '#numeral' => $down['numeral'],
@@ -85,8 +101,11 @@ class CrosswordFormatter extends FileFormatterBase {
         ],
       ];
     }
+    return $render;
+  }
 
-    $render['grid'] = [
+  private function getGrid($data) {
+    $render = [
       '#theme' => 'crossword_grid',
       '#content' => [],
     ];
@@ -124,7 +143,7 @@ class CrosswordFormatter extends FileFormatterBase {
           ];
         }
       }
-      $render['grid']['#content'][] = $render_row;
+      $render['#content'][] = $render_row;
     }
 
     return $render;
