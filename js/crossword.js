@@ -23,10 +23,20 @@
     this.setActiveSquare = function(row, col) {
       this.activeSquare = {'row' : row, 'col': col};
       if (this.dir == 'across') {
-        this.activeClue = this.data.puzzle.grid[row][col].across.index;
+        try {
+          this.activeClue = this.data.puzzle.grid[row][col].across.index;
+        }
+        catch {
+          this.activeClue = null;
+        }
       }
       else {
-        this.activeClue = this.data.puzzle.grid[row][col].down.index;
+        try {
+          this.activeClue = this.data.puzzle.grid[row][col].down.index;
+        }
+        catch {
+          this.activeClue = null;
+        }
       }
 
       return this;
@@ -98,6 +108,14 @@
       });
 
       $('.crossword-clue').once('crossword-clue-click').click(function(){
+        if ($(this).data('clue-index-across') !== undefined) {
+          Crossword.dir = 'across';
+          Crossword.setActiveClue($(this).data('clue-index-across'));
+        }
+        else {
+          Crossword.dir = 'down';
+          Crossword.setActiveClue($(this).data('clue-index-down'));
+        }
         Drupal.behaviors.crossword.updateClasses(Crossword);
       });
     },
