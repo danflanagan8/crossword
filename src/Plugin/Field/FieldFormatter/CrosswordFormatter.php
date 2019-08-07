@@ -79,7 +79,7 @@ class CrosswordFormatter extends FileFormatterBase {
         '#text' => $across['text'],
         '#numeral' => $across['numeral'],
         '#attributes' => [
-          'data-clue-index' => (string) $across_index,
+          'data-clue-index-across' => (string) $across_index,
         ],
       ];
     }
@@ -97,7 +97,7 @@ class CrosswordFormatter extends FileFormatterBase {
         '#text' => $down['text'],
         '#numeral' => $down['numeral'],
         '#attributes' => [
-          'data-clue-index' => (string) $down_index,
+          'data-clue-index-down' => (string) $down_index,
         ],
       ];
     }

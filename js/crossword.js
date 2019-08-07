@@ -1,8 +1,106 @@
 (function ($, Drupal, drupalSettings) {
 
+  Drupal.Crossword = function(data) {
+    var Crossword = this;
+    this.data = data;
+    this.dir = 'across';
+    this.activeSquare = {'row' : null, 'col': null};
+    this.activeClue = null;
+    this.answers = emptyAnswers();
+
+    function emptyAnswers() {
+      var grid = Crossword.data.puzzle.grid;
+      var answers = [];
+      for (var row_index = 0; row_index < grid.length; row_index++) {
+        answers.push([]);
+        for (var col_index = 0; col_index < grid[row_index].length; col_index++) {
+          answers[row_index].push(null);
+        }
+      }
+      return answers;
+    }
+
+    this.setActiveSquare = function(row, col) {
+      this.activeSquare = {'row' : row, 'col': col};
+      if (this.dir == 'across') {
+        this.activeClue = this.data.puzzle.grid[row][col].across.index;
+      }
+      else {
+        this.activeClue = this.data.puzzle.grid[row][col].down.index;
+      }
+
+      return this;
+    }
+
+    this.setActiveClue = function(index) {
+      this.activeClue = index;
+      if (this.dir == 'across') {
+        var numeral = this.data.puzzle.clues.across[index].numeral;
+        var grid = this.data.puzzle.grid;
+        console.log(grid);
+        for (var row_index = 0; row_index < grid.length; row_index++) {
+          for (var col_index = 0; col_index < grid[row_index].length; col_index++) {
+            console.log(grid[row_index][col_index].numeral);
+            if (grid[row_index][col_index].numeral == numeral) {
+              this.activeSquare = {
+                'row' : row_index,
+                'col' : col_index,
+              };
+              return this;
+            }
+          }
+        }
+      }
+      else {
+        var numeral = this.data.puzzle.clues.down[index].numeral;
+        var grid = this.data.puzzle.grid;
+        for (var row_index = 0; row_index < grid.length; row_index++) {
+          for (var col_index = 0; col_index < grid[row_index].length; col_index++) {
+            if (grid[row_index][col_index].numeral == numeral) {
+              this.activeSquare = {
+                'row' : row_index,
+                'col' : col_index,
+              };
+              return this;
+            }
+          }
+        }
+      }
+    }
+
+    this.setActiveClue(0);
+  }
+
   Drupal.behaviors.crossword = {
     attach: function (context, settings) {
-      console.log(drupalSettings.crossword);
+
+      var data = drupalSettings.crossword;
+      var Crossword = new Drupal.Crossword(data);
+
+      $('.crossword-square').once('crossword-square-click').click(function(){
+        var row = Number($(this).data('row'));
+        var col = Number($(this).data('col'));
+        Crossword.setActiveSquare(row, col);
+        Drupal.behaviors.crossword.updateClasses(Crossword);
+      });
+
+      $('.crossword-clue').once('crossword-clue-click').click(function(){
+        Drupal.behaviors.crossword.updateClasses(Crossword);
+      });
+    },
+    updateClasses: function (Crossword) {
+      $('.crossword-square.active, .crossword-clue.active').removeClass('active');
+      $('.crossword-square.highlight').removeClass('highlight');
+      $('.crossword-square[data-row="' + Crossword.activeSquare.row + '"][data-col="' + Crossword.activeSquare.col + '"]').addClass('active');
+
+      if (Crossword.dir == 'across') {
+        $('.crossword-clue[data-clue-index-across="' + Crossword.activeClue + '"]').addClass('active');
+        $('.crossword-square[data-clue-index-across="' + Crossword.activeClue + '"]').addClass('highlight');
+      }
+      else {
+        $('.crossword-clue[data-clue-index-down="' + Crossword.activeClue + '"]').addClass('active');
+        $('.crossword-square[data-clue-index-down="' + Crossword.activeClue + '"]').addClass('highlight');
+      }
     }
   }
 })(jQuery, Drupal, drupalSettings);
