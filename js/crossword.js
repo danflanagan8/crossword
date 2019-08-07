@@ -3,7 +3,7 @@
   Drupal.Crossword = function(data) {
     var Crossword = this;
     this.data = data;
-    this.dir = 'across';
+    this.dir = 'down';
     this.activeSquare = {'row' : null, 'col': null};
     this.activeClue = null;
     this.answers = emptyAnswers();
@@ -68,6 +68,11 @@
       }
     }
 
+    this.changeDir = function() {
+      this.dir = this.dir == 'across' ? 'down' : 'across';
+      this.setActiveSquare(this.activeSquare.row, this.activeSquare.col);
+    }
+
     this.setActiveClue(0);
   }
 
@@ -78,10 +83,18 @@
       var Crossword = new Drupal.Crossword(data);
 
       $('.crossword-square').once('crossword-square-click').click(function(){
-        var row = Number($(this).data('row'));
-        var col = Number($(this).data('col'));
-        Crossword.setActiveSquare(row, col);
+
+        if ($(this).hasClass('active')) {
+          Crossword.changeDir();
+        }
+        else {
+          var row = Number($(this).data('row'));
+          var col = Number($(this).data('col'));
+          Crossword.setActiveSquare(row, col);
+        }
+
         Drupal.behaviors.crossword.updateClasses(Crossword);
+        console.log(Crossword);
       });
 
       $('.crossword-clue').once('crossword-clue-click').click(function(){

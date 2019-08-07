@@ -123,16 +123,14 @@ class CrosswordFileParser {
               $square['numeral'] = $numeral;
             }
             else {
-              // In here? It's an uncrosswed square. No across clue. No numeral.
+              // In here? It's an uncrosswed square. No down clue. No numeral.
               $square['fill'] = $fill;
             }
           }
           else {
-            // In here? No numeral.
+            // In here? No numeral. Take the down value from the square above.
             $square['fill'] = $fill;
-            $square['down'] = [
-              'index' => $iterator['index_down'],
-            ];
+            $square['down'] = $grid[$row_index - 1][$col_index]['down'];
           }
         }
         $row[] = $square;
