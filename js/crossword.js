@@ -240,6 +240,29 @@
           }
           Drupal.behaviors.crossword.updateClasses(Crossword, false);
         });
+
+        $('.crossword-clue-change').once('crossword-clue-change-click').click(function(e){
+          e.preventDefault();
+          var dir = $(this).data('dir');
+          var change = Number($(this).data('clue-change'));
+          if (dir == Crossword.dir) {
+            Crossword.setActiveClue(Crossword.activeClue + change);
+          }
+          else {
+            Crossword.dir = dir;
+            Crossword.setActiveClue(0);
+          }
+          Drupal.behaviors.crossword.updateClasses(Crossword, false);
+        });
+
+        $('.crossword-dir-change').once('crossword-dir-change-click').click(function(e){
+          e.preventDefault();
+          var dir = $(this).data('dir');
+          if (dir != Crossword.dir) {
+            Crossword.changeDir();
+            Drupal.behaviors.crossword.updateClasses(Crossword, false);
+          }
+        });
       });
     },
     updateClasses: function (Crossword, focus) {
