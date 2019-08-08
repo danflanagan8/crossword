@@ -142,3 +142,17 @@ input.phantom {
   width: 1.5em;
   float: left;
 }
+
+.active-clues {
+  min-height: 3em;
+}
+
+.active-clues .reference {
+  color: #88C;
+}
+.active-clues .across .numeral:after {
+  content: "A";
+}
+.active-clues .down .numeral:after {
+  content: "D";
+}
