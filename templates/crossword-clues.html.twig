@@ -1,3 +1,6 @@
-<div class="crossword-clues">
+<div{{ attributes.addClass('crossword-clues') }}>
+  {% if direction %}
+    <h2>{{ direction }}</h2>
+  {% endif %}
   {{ content }}
 </div>

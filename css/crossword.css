@@ -27,8 +27,6 @@
   background-color: #06C;
 }
 
-
-
 .crossword-square.black {
   background: black;
 }
@@ -65,4 +63,11 @@ input.phantom {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.crossword-clues {
+  box-sizing: border-box;
+  width: 50%;
+  float: left;
+  padding: 1em;
 }

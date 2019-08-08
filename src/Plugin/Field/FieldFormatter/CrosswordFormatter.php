@@ -57,14 +57,24 @@ class CrosswordFormatter extends FileFormatterBase {
       '#type' => 'html_tag',
       '#tag' => 'h1',
       '#value' => $data['title'],
+      '#attributes' => [
+        'class' => [
+          'crossword-title',
+        ],
+      ],
     ];
   }
 
   private function getAuthor($data) {
     return [
       '#type' => 'html_tag',
-      '#tag' => 'h2',
+      '#tag' => 'div',
       '#value' => $data['author'],
+      '#attributes' => [
+        'class' => [
+          'crossword-author',
+        ],
+      ],
     ];
   }
 
@@ -72,6 +82,10 @@ class CrosswordFormatter extends FileFormatterBase {
     $render = [
       '#theme' => 'crossword_clues',
       '#content' => [],
+      '#direction' => 'across',
+      '#attributes' => [
+        'class' => ['across'],
+      ],
     ];
     foreach ($data['puzzle']['clues']['across'] as $across_index => $across) {
       $render['#content'][] = [
@@ -92,6 +106,10 @@ class CrosswordFormatter extends FileFormatterBase {
     $render = [
       '#theme' => 'crossword_clues',
       '#content' => [],
+      '#direction' => 'down',
+      '#attributes' => [
+        'class' => ['down'],
+      ],
     ];
     foreach ($data['puzzle']['clues']['down'] as $down_index => $down) {
       $render['#content'][] = [

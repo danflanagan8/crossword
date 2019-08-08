@@ -1,1 +1,14 @@
-{{ content }}
+<div class="crossword">
+  <div class="crossword-layout-column">
+    <div class="details">
+      {{ content.title }}
+      {{ content.author }}
+    </div>
+    {{ content.grid }}
+    <div class="active-clues"></div>
+  </div>
+  <div class="crossword-layout-column clearfix">
+    {{ content.across }}
+    {{ content.down }}
+  </div>
+</div>
