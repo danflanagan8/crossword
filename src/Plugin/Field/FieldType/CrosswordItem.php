@@ -15,7 +15,7 @@ use Drupal\file\Plugin\Field\FieldType\FileItem;
  *   default_widget = "file_generic",
  *   default_formatter = "file_default",
  *   list_class = "\Drupal\file\Plugin\Field\FieldType\FileFieldItemList",
- *   constraints = {"ReferenceAccess" = {}, "FileValidation" = {}}
+ *   constraints = {"ReferenceAccess" = {}, "FileValidation" = {}, "CrosswordFile" = {}}
  * )
  */
 class CrosswordItem extends FileItem {
@@ -25,7 +25,7 @@ class CrosswordItem extends FileItem {
    */
   public static function defaultFieldSettings() {
     return [
-      'file_extensions' => 'txt puz',
+      'file_extensions' => 'txt',
     ] + parent::defaultFieldSettings();
   }
 

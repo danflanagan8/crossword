@@ -17,6 +17,68 @@ class CrosswordFileParser {
     $this->lines = explode("\n", $this->contents);
   }
 
+  /**
+   * Checks for missing tags, extra tags, oout of order tags.
+   */
+  public function validationErrors() {
+    $missing_tags = [];
+    $extra_tags = [];
+    $required_tags = [
+      "<GRID>",
+      "<ACROSS>",
+      "<DOWN>",
+      "<NOTEPAD>",
+    ];
+    $expected_order = [
+      "<TITLE>",
+      "<AUTHOR>",
+      "<COPYRIGHT>",
+      "<SIZE>",
+      "<GRID>",
+      "<REBUS>",
+      "<ACROSS>",
+      "<DOWN>",
+      "<NOTEPAD>",
+    ];
+
+    $matches = [];
+    preg_match_all("/<[A-Z]+?>/", $this->contents, $matches);
+    $actual_tags = $matches[0];
+
+    foreach ($required_tags as $tag) {
+      if (array_search($tag, $actual_tags) === FALSE) {
+        $missing_tags[] = $tag;
+      }
+    }
+    foreach ($actual_tags as $tag) {
+      if (array_search($tag, $expected_order) === FALSE) {
+        $extra_tags[] = $tag;
+      }
+    }
+    if (!empty($missing_tags) || !empty($extra_tags)) {
+      return [
+        'missing' => $missing_tags,
+        'extra' => $extra_tags,
+      ];
+    }
+
+
+    $relevant_tags = [];
+    foreach ($expected_order as $tag) {
+      if (array_search($tag, $actual_tags) > -1) {
+        $relevant_tags[] = $tag;
+      }
+    }
+    foreach($relevant_tags as $index => $tag) {
+      if ($relevant_tags[$index] != $actual_tags[$index]) {
+        return [
+          'out_of_order' => TRUE,
+        ];
+      }
+    }
+    return [];
+  }
+
   public function parse() {
     return [
       'title' => $this->getTitle(),
