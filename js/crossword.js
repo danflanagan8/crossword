@@ -238,7 +238,7 @@
             Crossword.dir = 'down';
             Crossword.setActiveClue($(this).data('clue-index-down'));
           }
-          Drupal.behaviors.crossword.updateClasses(Crossword, false);
+          Drupal.behaviors.crossword.updateClasses(Crossword, true);
         });
 
         $('.crossword-clue-change').once('crossword-clue-change-click').click(function(e){

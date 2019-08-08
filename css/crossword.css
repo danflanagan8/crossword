@@ -1,3 +1,7 @@
+.crossword {
+  position: relative;
+}
+
 .crossword-grid {
   border: 1px solid black;
 }
@@ -143,8 +147,20 @@ input.phantom {
   float: left;
 }
 
-.active-clues {
-  min-height: 3em;
+#active-clues {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  padding: 1em;
+  margin: 1em -1em;
+  -webkit-box-shadow: 0px 3px 3px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 3px 3px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 3px 3px 0px rgba(0,0,0,0.75);
+  border-top: 1px solid black;
+  z-index: 999;
 }
 
 .active-clues .reference {

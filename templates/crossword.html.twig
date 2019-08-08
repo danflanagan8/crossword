@@ -1,32 +1,36 @@
 <div class="crossword show-references">
-  <div class="crossword-layout-column">
-    <div class="crossword-header">
-      <div class="crosswword-details">
-        {{ content.title }}
-        {{ content.author }}
+
+  <div class="crossword-header">
+    <div class="crossword-details">
+      {{ content.title }}
+      {{ content.author }}
+    </div>
+    <div class="crossword-buttons">
+      <div class="show-errors-wrapper">
+        <input type="checkbox" id="show-errors" name="show-errors">
+        <label for="show-errors">Show Incorrect Letters</label>
       </div>
-      <div class="crossword-buttons">
-        <div class="show-errors-wrapper">
-          <input type="checkbox" id="show-errors" name="show-errors">
-          <label for="show-errors">Show Incorrect Letters</label>
-        </div>
-        <div class="show-references-wrapper">
-          <input type="checkbox" id="show-references" name="show-references">
-          <label for="show-references">Highlight References</label>
-        </div>
-        <div class="show-solution-wrapper">
-          <button class="show-solution">Show Solution</button>
-        </div>
-        <div class="show-cheat-wrapper">
-          <button class="cheat">Cheat</button>
-        </div>
+      <div class="show-references-wrapper">
+        <input type="checkbox" id="show-references" name="show-references">
+        <label for="show-references">Highlight References</label>
+      </div>
+      <div class="show-solution-wrapper">
+        <button class="show-solution">Show Solution</button>
+      </div>
+      <div class="show-cheat-wrapper">
+        <button class="cheat">Cheat</button>
       </div>
     </div>
-    {{ content.grid }}
-    <div class="active-clues"></div>
   </div>
-  <div class="crossword-layout-column crossword-clues-wrapper clearfix">
+
+  <div id="active-clues" class="active-clues">
+  </div>
+
+  {{ content.grid }}
+
+  <div class="rossword-clues-wrapper clearfix">
     {{ content.across }}
     {{ content.down }}
   </div>
+
 </div>
