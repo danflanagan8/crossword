@@ -14,8 +14,8 @@
   position: relative;
 }
 
-.crossword-square.reference,
-.crossword-clue.reference {
+.show-references .crossword-square.reference,
+.show-references .crossword-clue.reference {
   background-color: #CCF;
 }
 .crossword-square.highlight,
@@ -148,6 +148,11 @@ input.phantom {
 }
 
 .active-clues .reference {
+  display: none;
+}
+
+.show-references .active-clues .reference {
+  display: block;
   color: #88C;
 }
 .active-clues .across .numeral:after {
@@ -155,4 +160,13 @@ input.phantom {
 }
 .active-clues .down .numeral:after {
   content: "D";
+}
+
+.crossword.show-errors .crossword-square.error .square-fill {
+  color: red;
+}
+
+.crossword-buttons label {
+  font-weight: normal;
+  display: inline;
 }

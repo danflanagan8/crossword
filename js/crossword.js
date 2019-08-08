@@ -263,6 +263,25 @@
             Drupal.behaviors.crossword.updateClasses(Crossword, false);
           }
         });
+
+        $('.show-solution').once('crossword-show-solution-click').click(function(e){
+          e.preventDefault();
+          Drupal.behaviors.crossword.showSolution();
+        });
+
+        $('.cheat').once('crossword-show-solution-click').click(function(e){
+          e.preventDefault();
+          Drupal.behaviors.crossword.printLetter($('.crossword-square.active').data('fill'), Crossword);
+        });
+
+        $('#show-errors').once('crossword-show-errors-change').on('change', function(){
+          $('.crossword').toggleClass('show-errors');
+        });
+
+        $('#show-references').once('crossword-show-references-change').on('change', function(){
+          $('.crossword').toggleClass('show-references');
+        }).prop('checked', true);
+
       });
     },
     updateClasses: function (Crossword, focus) {
@@ -312,9 +331,9 @@
 
       var $activeSquare = $('.crossword-square[data-row="' + Crossword.activeSquare.row + '"][data-col="' + Crossword.activeSquare.col + '"]');
       $activeSquare.find('.square-fill').text(letter);
-      $activeSquare.removeClass('wrong');
+      $activeSquare.removeClass('error');
       if (Crossword.data.puzzle.grid[Crossword.activeSquare.row][Crossword.activeSquare.col].fill !== letter) {
-        $activeSquare.addClass('wrong');
+        $activeSquare.addClass('error');
       }
 
       if (letter == "") {
@@ -325,6 +344,11 @@
       }
 
       Drupal.behaviors.crossword.updateClasses(Crossword, true);
+    },
+    showSolution: function () {
+      $('.crossword-square').each(function(){
+        $(this).find('.square-fill').text($(this).data('fill'));
+      });
     }
   }
 })(jQuery, Drupal, drupalSettings);
