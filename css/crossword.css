@@ -77,6 +77,11 @@
   z-index: 2;
 }
 
+.rebus .square-fill {
+  transform: translate3d(-50%, -50%, 0) rotate(45deg);
+  font-size: 12px;
+}
+
 input.phantom {
   height: 1px;
   width: 1px;

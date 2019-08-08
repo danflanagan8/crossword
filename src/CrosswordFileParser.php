@@ -49,6 +49,8 @@ class CrosswordFileParser {
       'numeral' => 0,
     ];
 
+    $rebus_array = $this->getRebusArray();
+
     foreach ($raw_grid as $row_index => $raw_row) {
       $row = [];
       for ($col_index = 0; $col_index < count($raw_row); $col_index++) {
@@ -135,6 +137,13 @@ class CrosswordFileParser {
             $square['down'] = $grid[$row_index - 1][$col_index]['down'];
           }
         }
+
+        //is it a rebus square?
+        if (is_numeric($square['fill']) && !empty($rebus_array) && isset($rebus_array[$square['fill'] - 1])) {
+          $square['fill'] = $rebus_array[$square['fill'] - 1];
+          $square['rebus'] = TRUE;
+        }
+
         $row[] = $square;
       }
       $grid[] = $row;
@@ -286,6 +295,22 @@ class CrosswordFileParser {
         }
       }
       return $references;
+    }
+  }
+
+  private function getRebusArray() {
+    if (array_search("<REBUS>", $this->lines) > -1) {
+      $rebus_start_index = array_search("<REBUS>", $this->lines) + 1;
+      $rebus_array = [];
+      $i = $rebus_start_index;
+      while ($this->lines[$i] != "<ACROSS>") {
+        $line = explode(':', $this->lines[$i]);
+        if (isset($line[1])) {
+          $rebus_array[] = $line[1];
+        }
+        $i++;
+      }
+      return $rebus_array;
     }
   }
 

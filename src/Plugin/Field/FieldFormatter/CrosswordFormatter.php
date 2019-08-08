@@ -162,6 +162,7 @@ class CrosswordFormatter extends FileFormatterBase {
               'data-numeral' => isset($square['numeral']) ? $square['numeral'] : NULL,
               'data-fill' => $square['fill'],
               'data-circle' => $square['fill'] != strtoupper($square['fill']),
+              'data-rebus' => isset($square['numeral']) ? $square['numeral'] : NULL,
             ],
           ];
         }

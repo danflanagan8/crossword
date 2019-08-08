@@ -210,7 +210,7 @@
             //letter key
             event.preventDefault();
             console.log(event.which);
-            Drupal.behaviors.crossword.printLetter(String.fromCharCode(event.which).toUpperCase(), Crossword);
+            Drupal.behaviors.crossword.printLetter(String.fromCharCode(event.which), Crossword);
           }
         });
 
@@ -327,27 +327,55 @@
       }
     },
     printLetter: function (letter, Crossword){
-      Crossword.setAnswer(letter);
 
       var $activeSquare = $('.crossword-square[data-row="' + Crossword.activeSquare.row + '"][data-col="' + Crossword.activeSquare.col + '"]');
-      $activeSquare.find('.square-fill').text(letter);
-      $activeSquare.removeClass('error');
-      if (Crossword.data.puzzle.grid[Crossword.activeSquare.row][Crossword.activeSquare.col].fill !== letter) {
-        $activeSquare.addClass('error');
-      }
+      $activeSquare.removeClass('error').removeClass('rebus');
 
-      if (letter == "") {
-        Crossword.retreatActiveSquare();
+      if (letter != letter.toLowerCase()) {
+        // uppercase letters are used for rebus puzzles.
+        // append this to what's already there
+        $activeSquare.addClass('rebus');
+        var current_text = $activeSquare.find('.square-fill').text();
+        // is it all uppercase already? If so, append
+        if (current_text != current_text.toLowerCase()) {
+          $activeSquare.find('.square-fill').text(current_text + letter);
+          Crossword.setAnswer(current_text + letter);
+        }
+        else {
+          $activeSquare.find('.square-fill').text(letter);
+          Crossword.setAnswer(letter);
+        }
+        if (Crossword.data.puzzle.grid[Crossword.activeSquare.row][Crossword.activeSquare.col].fill.toUpperCase() !== $activeSquare.find('.square-fill').text().toUpperCase()) {
+          $activeSquare.addClass('error');
+        }
       }
       else {
-        Crossword.advanceActiveSquare();
+        Crossword.setAnswer(letter);
+
+        var $activeSquare = $('.crossword-square[data-row="' + Crossword.activeSquare.row + '"][data-col="' + Crossword.activeSquare.col + '"]');
+        $activeSquare.find('.square-fill').text(letter.toUpperCase());
+
+        if (Crossword.data.puzzle.grid[Crossword.activeSquare.row][Crossword.activeSquare.col].fill.toUpperCase() !== letter.toUpperCase()) {
+          $activeSquare.addClass('error');
+        }
+
+        if (letter == "") {
+          Crossword.retreatActiveSquare();
+        }
+        else {
+          Crossword.advanceActiveSquare();
+        }
       }
 
       Drupal.behaviors.crossword.updateClasses(Crossword, true);
     },
     showSolution: function () {
       $('.crossword-square').each(function(){
-        $(this).find('.square-fill').text($(this).data('fill'));
+        var fill = $(this).data('fill');
+        $(this).find('.square-fill').text(fill);
+        if (fill && fill.length > 1) {
+          $(this).addClass('rebus');
+        }
       });
     }
   }
