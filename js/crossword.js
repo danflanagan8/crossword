@@ -271,7 +271,7 @@
 
         $('.cheat').once('crossword-show-solution-click').click(function(e){
           e.preventDefault();
-          Drupal.behaviors.crossword.printLetter($('.crossword-square.active').data('fill'), Crossword);
+          Drupal.behaviors.crossword.cheat(Crossword);
         });
 
         $('#show-errors').once('crossword-show-errors-change').on('change', function(){
@@ -325,6 +325,15 @@
           }
         }
       }
+    },
+    cheat: function(Crossword) {
+      var $activeSquare = $('.crossword-square[data-row="' + Crossword.activeSquare.row + '"][data-col="' + Crossword.activeSquare.col + '"]');
+      $activeSquare.removeClass('error').removeClass('rebus');
+      $activeSquare.find('.square-fill').text($activeSquare.data('fill'));
+      if($activeSquare.data('fill').length > 1) {
+        $activeSquare.addClass('rebus');
+      }
+      Crossword.setAnswer($(this).data('fill'));
     },
     printLetter: function (letter, Crossword){
 

@@ -2,6 +2,25 @@
   position: relative;
 }
 
+.crossword-header {
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.crossword-title {
+  margin-top: 0;
+}
+
+.crossword-buttons > div {
+  margin: 0.5em 0;
+}
+
+.crossword-buttons {
+  padding: 0.5em;
+  background-color: #CCF;
+}
+
 .crossword-grid {
   border: 1px solid black;
 }
@@ -119,6 +138,7 @@ input.phantom {
   -moz-appearance: none;
   appearance: none;
   overflow: hidden;
+  text-transform: uppercase;
 }
 
 .crossword-clue-change {
