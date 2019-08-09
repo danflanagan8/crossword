@@ -98,7 +98,7 @@
         }
       });
     },
-    addKeydownHandlers: function($crossword) {
+    addKeypressHandlers: function($crossword) {
       var Crossword = $crossword.data("Crossword");
 
       $(document).on("keypress", function(event) {
@@ -171,7 +171,7 @@
             .removeClass('active')
             .removeClass('highlight')
             .removeClass('reference')
-            .removeClass('focus');
+            .removeClass('focus')
             .find('input').blur();
         })
         .on('crossword-cheat', function(){
