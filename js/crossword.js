@@ -2,11 +2,15 @@
 
   Drupal.behaviors.crossword = {
     attach: function (context, settings) {
-      $('body').once('crossword-init').each(function(){
+      $('.crossword').once('crossword-init').each(function(){
+        var $crossword = $(this);
         var data = drupalSettings.crossword;
         console.log(data);
         var Crossword = new Drupal.Crossword.Crossword(data);
+        $crossword.data("Crossword", Crossword);
         console.log(Crossword);
+        Drupal.behaviors.crossword.connectSquares($crossword);
+        Drupal.behaviors.crossword.connectClues($crossword);
         Drupal.behaviors.crossword.updateClasses(Crossword, false);
         //keyboard event listeners.
         addEventListener("keydown", function(event) {
@@ -242,6 +246,27 @@
           $(this).addClass('rebus');
         }
       });
-    }
+    },
+    connectSquares: function ($crossword) {
+      $('.crossword-square', $crossword).each(function(){
+        var row = Number($(this).data('row'));
+        var col = Number($(this).data('col'));
+        $(this).data("Square", $crossword.data("Crossword").grid[row][col]);
+        $(this).data("Square")['$square'] = $(this);
+      });
+    },
+    connectClues: function ($crossword) {
+      $('.crossword-clue', $crossword).each(function(){
+        if ($(this).data('clue-index-across') !== undefined) {
+          var index = Number($(this).data('clue-index-across'));
+          $(this).data("Clue", $crossword.data("Crossword").clues.across[index]);
+        }
+        else {
+          var index = Number($(this).data('clue-index-down'));
+          $(this).data("Clue", $crossword.data("Crossword").clues.down[index]);
+        }
+        $(this).data("Clue")["$clue"] = $(this);
+      });
+    },
   }
 })(jQuery, Drupal, drupalSettings);

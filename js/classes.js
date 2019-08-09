@@ -28,7 +28,7 @@
       this.numeral = data.numeral;
       this.references = data.references; //starts as contstants. objects get added later
       this.squares = [];
-      this.$clue;
+      this.$clue = null;
     },
 
     Crossword: function(data) {
@@ -56,126 +56,70 @@
         return answers;
       }
 
-      this.setActiveSquare = function(row, col) {
-        var grid = Crossword.data.puzzle.grid;
-        if (row >= 0 && row < grid.length && col >= 0 && col < grid[row].length && grid[row][col].fill !== null) {
-          this.activeSquare = {'row' : row, 'col': col};
-          if (this.dir == 'across') {
-            try {
-              this.activeClue = this.data.puzzle.grid[row][col].across.index;
-            }
-            catch(error) {
-              this.activeClue = null;
-            }
-          }
-          else {
-            try {
-              this.activeClue = this.data.puzzle.grid[row][col].down.index;
-            }
-            catch(error) {
-              this.activeClue = null;
-            }
-          }
-          this.setActiveReferences();
-        }
+      this.setActiveSquare = function(Square) {
+        this.activeSquare = Square;
+        this.activeClue = Square[this.dir];
         return this;
       }
 
-      this.setActiveClue = function(index) {
-        if (this.dir == 'across') {
-          if (index >= 0 && index < this.data.puzzle.clues.across.length) {
-            this.activeClue = index;
-            this.setActiveReferences();
-            var numeral = this.data.puzzle.clues.across[index].numeral;
-            var grid = this.data.puzzle.grid;
-            for (var row_index = 0; row_index < grid.length; row_index++) {
-              for (var col_index = 0; col_index < grid[row_index].length; col_index++) {
-                if (grid[row_index][col_index].numeral == numeral) {
-                  this.activeSquare = {
-                    'row' : row_index,
-                    'col' : col_index,
-                  };
-                  return this;
-                }
-              }
-            }
-          }
-        }
-        else {
-          if (index >= 0 && index < this.data.puzzle.clues.down.length) {
-            this.activeClue = index;
-            this.setActiveReferences();
-            var numeral = this.data.puzzle.clues.down[index].numeral;
-            var grid = this.data.puzzle.grid;
-            for (var row_index = 0; row_index < grid.length; row_index++) {
-              for (var col_index = 0; col_index < grid[row_index].length; col_index++) {
-                if (grid[row_index][col_index].numeral == numeral) {
-                  this.activeSquare = {
-                    'row' : row_index,
-                    'col' : col_index,
-                  };
-                  return this;
-                }
-              }
-            }
-          }
-        }
+      this.setActiveClue = function(Clue) {
+        this.activeClue = Clue;
+        this.dir = Clue.dir;
+        this.activeSquare = Clue.squares[0];
+        this.activeReferences = Clue.references;
+        return this;
       }
 
       this.changeDir = function() {
         this.dir = this.dir == 'across' ? 'down' : 'across';
-        this.setActiveSquare(this.activeSquare.row, this.activeSquare.col);
+        this.setActiveSquare(this.activeSquare);
+        return this;
       }
 
-      this.moveActiveSquare = function(rows, cols) {
-        this.setActiveSquare(this.activeSquare.row + rows, this.activeSquare.col + cols);
+      this.moveActiveSquare = function(move) {
+        if (this.activeSquare.moves[move]) {
+          this.setActiveSquare(this.activeSquare.moves[move]);
+        }
         return this;
       }
 
       this.advanceActiveSquare = function() {
-        if (this.dir == 'across') {
-          this.moveActiveSquare(0, 1);
+        if (this.dir == 'across' && this.activeSquare.moves['right']) {
+          this.moveActiveSquare('right');
         }
         else {
-          this.moveActiveSquare(1, 0);
+          this.moveActiveSquare('down');
         }
         return this;
       }
 
       this.retreatActiveSquare = function() {
-        if (this.dir == 'across') {
-          this.moveActiveSquare(0, -1);
+        if (this.dir == 'across' && this.activeSquare.moves['left']) {
+          this.moveActiveSquare('left');
         }
         else {
-          this.moveActiveSquare(-1, 0);
+          this.moveActiveSquare('up');
         }
         return this;
       }
 
       this.advanceActiveClue = function() {
-        this.setActiveClue(this.activeClue + 1);
+        if (this.clues[this.dir][this.activeClue.index + 1]) {
+          this.setActiveClue(this.clues[this.dir][this.activeClue.index + 1]);
+        }
         return this;
       }
 
       this.retreatActiveClue = function() {
-        this.setActiveClue(this.activeClue - 1);
+        if (this.clues[this.dir][this.activeClue.index - 1]) {
+          this.setActiveClue(this.clues[this.dir][this.activeClue.index - 1]);
+        }
         return this;
       }
 
-      this.setActiveReferences = function() {
-        if (this.dir == 'across') {
-          this.activeReferences = this.data.puzzle.clues.across[this.activeClue].references;
-        }
-        else {
-          this.activeReferences = this.data.puzzle.clues.down[this.activeClue].references;
-        }
+      this.setAnswer = function(fill) {
+        this.answers[this.activeSquare.row][this.activeSquare.col] = fill;
       }
-
-      this.setAnswer = function(letter) {
-        this.answers[this.activeSquare.row][this.activeSquare.col] = letter;
-      }
-
-      this.setActiveClue(0);
 
       function makeGrid() {
         var grid = [];
@@ -249,6 +193,8 @@
           }
         }
       }
+
+      this.setActiveClue(this.clues.across[0]);
 
     }
   }
