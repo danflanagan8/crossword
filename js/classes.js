@@ -1,11 +1,8 @@
 (function ($, Drupal, drupalSettings) {
 
   Drupal.Crossword = {
+
     Square: function(data) {
-      /**
-       * When created, it just has row, col, fill, numeral.
-       * Later, it can get connected to Clues.
-       */
       this.row = data.row;
       this.column = data.col;
       this.fill = "";
@@ -52,18 +49,6 @@
       this.grid = makeGrid();
       this.clues = makeClues();
       connectCluesAndSquares();
-
-      function emptyAnswers() {
-        var grid = Crossword.data.puzzle.grid;
-        var answers = [];
-        for (var row_index = 0; row_index < grid.length; row_index++) {
-          answers.push([]);
-          for (var col_index = 0; col_index < grid[row_index].length; col_index++) {
-            answers[row_index].push(null);
-          }
-        }
-        return answers;
-      }
 
       this.setActiveSquare = function(Square) {
         if (Square.fill !== "") {
@@ -193,6 +178,88 @@
         }
       }
 
+      /**
+       * Functions that trigger events on dom elements.
+       */
+
+      this.sendOffEvents = function(){
+        if (this.activeClue) {
+          this.activeClue['$clue'].trigger('crossword-off');
+          this.activeClue.squares.forEach(function(item, index){
+            item['$square'].trigger('crossword-off');
+          });
+          if(this.activeReferences) {
+            this.activeReferences.forEach(function(clue, index){
+              clue['$clue'].trigger('crossword-off');
+              clue.squares.forEach(function(item, index){
+                item['$square'].trigger('crossword-off');
+              });
+            });
+          }
+        }
+      }
+
+      this.sendOnEvents = function(){
+        if (this.activeClue && this.activeClue['$clue']) {
+          this.activeClue['$clue'].trigger('crossword-active');
+          this.activeClue.squares.forEach(function(item, index){
+            item['$square'].trigger('crossword-highlight');
+          });
+          if(this.activeReferences) {
+            this.activeReferences.forEach(function(clue, index){
+              clue['$clue'].trigger('crossword-reference');
+              clue.squares.forEach(function(item, index){
+                item['$square'].trigger('crossword-reference');
+              });
+            });
+          }
+        }
+        if (this.activeSquare && this.activeSquare['$square']) {
+          this.activeSquare['$square'].trigger('crossword-active');
+        }
+      }
+
+      this.sendAnswerEvents = function(Square){
+        if (Square && Square['$square']) {
+          Square['$square'].trigger('crossword-answer', [Square.answer]);
+          if (Square.answer.toUpperCase() !== Square.fill.toUpperCase()) {
+            Square['$square'].trigger('crossword-error');
+          }
+          else {
+            Square['$square'].trigger('crossword-ok');
+          }
+          if (Square.answer.length > 1 && Square.answer.toLowerCase() !== Square.answer) {
+            Square['$square'].trigger('crossword-rebus');
+          }
+          else {
+            Square['$square'].trigger('crossword-not-rebus');
+          }
+        }
+      }
+
+      this.sendCheatEvents = function(Square){
+        if (Square && Square['$square']) {
+          Square['$square'].trigger('crossword-cheat');
+          Square.across['$clue'].trigger('crossword-cheat');
+          Square.down['$clue'].trigger('crossword-cheat');
+        }
+      }
+
+      /**
+       * Internal functions for initialization.
+       */
+      function emptyAnswers() {
+        var grid = Crossword.data.puzzle.grid;
+        var answers = [];
+        for (var row_index = 0; row_index < grid.length; row_index++) {
+          answers.push([]);
+          for (var col_index = 0; col_index < grid[row_index].length; col_index++) {
+            answers[row_index].push(null);
+          }
+        }
+        return answers;
+      }
+
       function makeGrid() {
         var grid = [];
         var data_grid = Crossword.data.puzzle.grid;
@@ -268,69 +335,7 @@
         }
       }
 
-      this.sendOffEvents = function(){
-        if (this.activeClue) {
-          this.activeClue['$clue'].trigger('crossword-off');
-          this.activeClue.squares.forEach(function(item, index){
-            item['$square'].trigger('crossword-off');
-          });
-          if(this.activeReferences) {
-            this.activeReferences.forEach(function(clue, index){
-              clue['$clue'].trigger('crossword-off');
-              clue.squares.forEach(function(item, index){
-                item['$square'].trigger('crossword-off');
-              });
-            });
-          }
-        }
-      }
-
-      this.sendOnEvents = function(){
-        if (this.activeClue && this.activeClue['$clue']) {
-          this.activeClue['$clue'].trigger('crossword-active');
-          this.activeClue.squares.forEach(function(item, index){
-            item['$square'].trigger('crossword-highlight');
-          });
-          if(this.activeReferences) {
-            this.activeReferences.forEach(function(clue, index){
-              clue['$clue'].trigger('crossword-reference');
-              clue.squares.forEach(function(item, index){
-                item['$square'].trigger('crossword-reference');
-              });
-            });
-          }
-        }
-        if (this.activeSquare && this.activeSquare['$square']) {
-          this.activeSquare['$square'].trigger('crossword-active');
-        }
-      }
-
-      this.sendAnswerEvents = function(Square){
-        if (Square && Square['$square']) {
-          Square['$square'].trigger('crossword-answer', [Square.answer]);
-          if (Square.answer.toUpperCase() !== Square.fill.toUpperCase()) {
-            Square['$square'].trigger('crossword-error');
-          }
-          else {
-            Square['$square'].trigger('crossword-ok');
-          }
-          if (Square.answer.length > 1 && Square.answer.toLowerCase() !== Square.answer) {
-            Square['$square'].trigger('crossword-rebus');
-          }
-          else {
-            Square['$square'].trigger('crossword-not-rebus');
-          }
-        }
-      }
-
-      this.sendCheatEvents = function(Square){
-        if (Square && Square['$square']) {
-          Square['$square'].trigger('crossword-cheat');
-          Square.across['$clue'].trigger('crossword-cheat');
-          Square.down['$clue'].trigger('crossword-cheat');
-        }
-      }
-
+      // A funny thing for initialization that doesn't have anywhere nice to go.
       this.setActiveClue(this.clues.across[0]);
 
     }
