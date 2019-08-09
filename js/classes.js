@@ -57,17 +57,21 @@
       }
 
       this.setActiveSquare = function(Square) {
+        this.sendOffEvents();
         this.activeSquare = Square;
         this.activeClue = Square[this.dir];
         this.activeReferences = Square[this.dir].references;
+        this.sendOnEvents();
         return this;
       }
 
       this.setActiveClue = function(Clue) {
+        this.sendOffEvents();
         this.activeClue = Clue;
         this.dir = Clue.dir;
         this.activeSquare = Clue.squares[0];
         this.activeReferences = Clue.references;
+        this.sendOnEvents();
         return this;
       }
 
@@ -206,6 +210,43 @@
               }
             }
           }
+        }
+      }
+
+      this.sendOffEvents = function(){
+        if (this.activeClue) {
+          this.activeClue['$clue'].trigger('crossword-off');
+          this.activeClue.squares.forEach(function(item, index){
+            item['$square'].trigger('crossword-off');
+          });
+          if(this.activeReferences) {
+            this.activeReferences.forEach(function(clue, index){
+              clue['$clue'].trigger('crossword-off');
+              clue.squares.forEach(function(item, index){
+                item['$square'].trigger('crossword-off');
+              });
+            });
+          }
+        }
+      }
+
+      this.sendOnEvents = function(){
+        if (this.activeClue && this.activeClue['$clue']) {
+          this.activeClue['$clue'].trigger('crossword-active');
+          this.activeClue.squares.forEach(function(item, index){
+            item['$square'].trigger('crossword-highlight');
+          });
+          if(this.activeReferences) {
+            this.activeReferences.forEach(function(clue, index){
+              clue['$clue'].trigger('crossword-reference');
+              clue.squares.forEach(function(item, index){
+                item['$square'].trigger('crossword-reference');
+              });
+            });
+          }
+        }
+        if (this.activeSquare && this.activeSquare['$square']) {
+          this.activeSquare['$square'].trigger('crossword-active');
         }
       }
 

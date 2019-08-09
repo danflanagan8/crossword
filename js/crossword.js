@@ -12,6 +12,7 @@
         Drupal.behaviors.crossword.connectSquares($crossword);
         Drupal.behaviors.crossword.connectClues($crossword);
         Drupal.behaviors.crossword.addClickHandlers($crossword);
+        Drupal.behaviors.crossword.addCrosswordEventHandlers($crossword);
         Drupal.behaviors.crossword.updateClasses(Crossword, false);
         //keyboard event listeners.
         addEventListener("keydown", function(event) {
@@ -20,32 +21,27 @@
             case 38:
               //up
               event.preventDefault();
-              Crossword.moveActiveSquare(-1, 0);
-              Drupal.behaviors.crossword.updateClasses(Crossword, true);
+              Crossword.moveActiveSquare('up');
               break;
             case 37:
               //left
               event.preventDefault();
-              Crossword.moveActiveSquare(0, -1);
-              Drupal.behaviors.crossword.updateClasses(Crossword, true);
+              Crossword.moveActiveSquare('left');
               break;
             case 39:
               //right
               event.preventDefault();
-              Crossword.moveActiveSquare(0, 1);
-              Drupal.behaviors.crossword.updateClasses(Crossword, true);
+              Crossword.moveActiveSquare('right');
               break;
             case 40:
               //down
               event.preventDefault();
-              Crossword.moveActiveSquare(1, 0);
-              Drupal.behaviors.crossword.updateClasses(Crossword, true);
+              Crossword.moveActiveSquare('down');
               break;
             case 32:
               //spacebar
               event.preventDefault();
               Crossword.changeDir();
-              Drupal.behaviors.crossword.updateClasses(Crossword, true);
               break;
             case 9:
               //tab
@@ -56,7 +52,6 @@
               else {
                 Crossword.advanceActiveClue();
               }
-              Drupal.behaviors.crossword.updateClasses(Crossword, true);
             case 46:
             case 8:
               Drupal.behaviors.crossword.printLetter("", Crossword);
@@ -229,23 +224,17 @@
         else {
           Crossword.setActiveSquare($(this).data("Square"));
         }
-        console.log(Crossword);
-        //Drupal.behaviors.crossword.updateClasses(Crossword, true);
       });
 
       $('.crossword-clue', $crossword).once('crossword-clue-click').click(function(){
         Crossword.setActiveClue($(this).data("Clue"));
-        console.log(Crossword);
-        //Drupal.behaviors.crossword.updateClasses(Crossword, true);
       });
 
       $('.crossword-clue-change', $crossword).once('crossword-clue-change-click').click(function(e){
         e.preventDefault();
         var dir = $(this).data('dir');
         var change = Number($(this).data('clue-change'));
-        Crossword.changeClue(dir, change);
-        console.log(Crossword);
-        //Drupal.behaviors.crossword.updateClasses(Crossword, false);
+        Crossword.changeActiveClue(dir, change);
       });
 
       $('.crossword-dir-change', $crossword).once('crossword-dir-change-click').click(function(e){
@@ -253,11 +242,27 @@
         var dir = $(this).data('dir');
         if (dir != Crossword.dir) {
           Crossword.changeDir();
-          console.log(Crossword);
-          //Drupal.behaviors.crossword.updateClasses(Crossword, false);
         }
       });
 
+    },
+    addCrosswordEventHandlers: function ($crossword) {
+      $('.crossword-clue, .crossword-square')
+        .on('crossword-active', function(){
+          $(this).addClass('active');
+        })
+        .on('crossword-highlight ', function(){
+          $(this).addClass('highlight');
+        })
+        .on('crossword-reference', function(){
+          $(this).addClass('reference');
+        })
+        .on('crossword-off', function(){
+          $(this)
+            .removeClass('active')
+            .removeClass('highlight')
+            .removeClass('reference');
+        });
     },
   }
 })(jQuery, Drupal, drupalSettings);
