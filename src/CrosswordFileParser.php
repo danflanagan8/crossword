@@ -62,7 +62,6 @@ class CrosswordFileParser {
       ];
     }
 
-
     $relevant_tags = [];
     foreach ($expected_order as $tag) {
       if (array_search($tag, $actual_tags) > -1) {
@@ -80,11 +79,16 @@ class CrosswordFileParser {
   }
 
   public function parse() {
-    return [
+
+    $data = [
       'title' => $this->getTitle(),
       'author' => $this->getAuthor(),
       'puzzle' => $this->getGridAndClues(),
     ];
+
+    \Drupal::moduleHandler()->alter('crossword_parse', $data, $this->contents);
+
+    return $data;
   }
 
   public function getTitle() {
