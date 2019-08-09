@@ -35,6 +35,7 @@ class CrosswordFormatter extends FileFormatterBase {
         '#content' => [
           'title' => $this->getTitle($data),
           'author' => $this->getAuthor($data),
+          'notepad' => $this->getNotepad($data),
           'across' => $this->getAcross($data),
           'down' => $this->getDown($data),
           'grid' => $this->getGrid($data),
@@ -76,6 +77,21 @@ class CrosswordFormatter extends FileFormatterBase {
         ],
       ],
     ];
+  }
+
+  private function getNotepad($data) {
+    if ($data['notepad']) {
+      return [
+        '#type' => 'html_tag',
+        '#tag' => 'p',
+        '#value' => nl2br($data['notepad']),
+        '#attributes' => [
+          'class' => [
+            'crossword-notepad',
+          ],
+        ],
+      ];
+    }
   }
 
   private function getAcross($data) {

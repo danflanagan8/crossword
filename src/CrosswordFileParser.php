@@ -83,6 +83,7 @@ class CrosswordFileParser {
     $data = [
       'title' => $this->getTitle(),
       'author' => $this->getAuthor(),
+      'notepad' => $this->getNotepad(),
       'puzzle' => $this->getGridAndClues(),
     ];
 
@@ -97,6 +98,13 @@ class CrosswordFileParser {
 
   public function getAuthor() {
     return $this->lines[array_search("<AUTHOR>", $this->lines) + 1];
+  }
+
+  public function getNotepad() {
+    $notepad_index = strpos($this->contents, "<NOTEPAD>");
+    if ($notepad_index > -1) {
+      return substr($this->contents, $notepad_index + 9);
+    }
   }
 
   public function getGridAndClues() {
