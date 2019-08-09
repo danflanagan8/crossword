@@ -72,11 +72,6 @@
           }
         });
 
-        $('.show-solution').once('crossword-show-solution-click').click(function(e){
-          e.preventDefault();
-          Drupal.behaviors.crossword.showSolution();
-        });
-
         $('#show-errors').once('crossword-show-errors-change').on('change', function(){
           $('.crossword').toggleClass('show-errors');
         });
@@ -85,15 +80,6 @@
           $('.crossword').toggleClass('show-references');
         }).prop('checked', true);
 
-      });
-    },
-    showSolution: function () {
-      $('.crossword-square').each(function(){
-        var fill = $(this).data('fill');
-        $(this).find('.square-fill').text(fill);
-        if (fill && fill.length > 1) {
-          $(this).addClass('rebus');
-        }
       });
     },
     connectSquares: function ($crossword) {
@@ -152,6 +138,11 @@
       $('.cheat').once('crossword-cheat-click').click(function(e){
         e.preventDefault();
         Crossword.cheat();
+      });
+
+      $('.show-solution').once('crossword-show-solution-click').click(function(e){
+        e.preventDefault();
+        Crossword.reveal();
       });
 
     },

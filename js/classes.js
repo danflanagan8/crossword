@@ -8,7 +8,7 @@
        */
       this.row = data.row;
       this.column = data.col;
-      this.fill = null;
+      this.fill = "";
       if (data.fill !== null) {
         if (data.fill.length > 1) {
           this.fill = data.fill.toUpperCase(); //uppercase means rebus
@@ -17,7 +17,7 @@
           this.fill = data.fill.toLowerCase();
         }
       }
-      this.answer = null;
+      this.answer = "";
       this.numeral = data.numeral;
       this.across = data.across ? data.across.index : null;
       this.down = data.down ? data.down.index : null;
@@ -66,7 +66,7 @@
       }
 
       this.setActiveSquare = function(Square) {
-        if (Square.fill !== null) {
+        if (Square.fill !== "") {
           this.sendOffEvents();
           this.activeSquare = Square;
           this.activeClue = Square[this.dir];
@@ -100,7 +100,7 @@
       }
 
       this.advanceActiveSquare = function() {
-        if (this.dir == 'across' && this.activeSquare.moves['right']) {
+        if (this.dir == 'across') {
           this.moveActiveSquare('right');
         }
         else {
@@ -110,7 +110,7 @@
       }
 
       this.retreatActiveSquare = function() {
-        if (this.dir == 'across' && this.activeSquare.moves['left']) {
+        if (this.dir == 'across') {
           this.moveActiveSquare('left');
         }
         else {
@@ -162,11 +162,11 @@
           else {
             this.activeSquare.answer = letter;
           }
-          this.sendAnswerEvents();
+          this.sendAnswerEvents(this.activeSquare);
         }
         else {
           this.activeSquare.answer = letter;
-          this.sendAnswerEvents();
+          this.sendAnswerEvents(this.activeSquare);
           if (letter === "") {
             this.retreatActiveSquare();
           }
@@ -177,8 +177,21 @@
       }
 
       this.cheat = function() {
-        this.sendCheatEvents();
+        this.sendCheatEvents(this.activeSquare);
         this.setAnswer(this.activeSquare.fill);
+      }
+
+      this.reveal = function() {
+        for (var row_index = 0; row_index < this.grid.length; row_index++) {
+          for (var col_index = 0; col_index < this.grid[row_index].length; col_index++) {
+            var Square = this.grid[row_index][col_index];
+            if (Square.answer.toUpperCase() !== Square.fill.toUpperCase()) {
+              Square.answer = Square.fill;
+              this.sendCheatEvents(Square);
+              this.sendAnswerEvents(Square);
+            }
+          }
+        }
       }
 
       function makeGrid() {
@@ -293,29 +306,29 @@
         }
       }
 
-      this.sendAnswerEvents = function(){
-        if (this.activeSquare && this.activeSquare['$square']) {
-          this.activeSquare['$square'].trigger('crossword-answer', [this.activeSquare.answer]);
-          if (this.activeSquare.answer !== null && this.activeSquare.answer.toUpperCase() !== this.activeSquare.fill.toUpperCase()) {
-            this.activeSquare['$square'].trigger('crossword-error');
+      this.sendAnswerEvents = function(Square){
+        if (Square && Square['$square']) {
+          Square['$square'].trigger('crossword-answer', [Square.answer]);
+          if (Square.answer.toUpperCase() !== Square.fill.toUpperCase()) {
+            Square['$square'].trigger('crossword-error');
           }
           else {
-            this.activeSquare['$square'].trigger('crossword-ok');
+            Square['$square'].trigger('crossword-ok');
           }
-          if (this.activeSquare.answer !== null && this.activeSquare.answer.length > 1 && this.activeSquare.answer.toLowerCase() !== this.activeSquare.answer) {
-            this.activeSquare['$square'].trigger('crossword-rebus');
+          if (Square.answer.length > 1 && Square.answer.toLowerCase() !== Square.answer) {
+            Square['$square'].trigger('crossword-rebus');
           }
           else {
-            this.activeSquare['$square'].trigger('crossword-not-rebus');
+            Square['$square'].trigger('crossword-not-rebus');
           }
         }
       }
 
-      this.sendCheatEvents = function(){
-        if (this.activeSquare && this.activeSquare['$square']) {
-          this.activeSquare['$square'].trigger('crossword-cheat');
-          this.activeSquare.across['$clue'].trigger('crossword-cheat');
-          this.activeSquare.down['$clue'].trigger('crossword-cheat');
+      this.sendCheatEvents = function(Square){
+        if (Square && Square['$square']) {
+          Square['$square'].trigger('crossword-cheat');
+          Square.across['$clue'].trigger('crossword-cheat');
+          Square.down['$clue'].trigger('crossword-cheat');
         }
       }
 

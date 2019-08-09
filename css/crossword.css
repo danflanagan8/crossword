@@ -229,6 +229,11 @@ input.phantom {
   color: red;
 }
 
+.crossword-clue.cheat,
+.crossword-square.cheat .square-fill {
+  color: #0A0;
+}
+
 .crossword-buttons label {
   font-weight: normal;
   display: inline;
