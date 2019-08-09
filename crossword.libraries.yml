@@ -3,6 +3,7 @@ crossword:
     layout:
       css/crossword.css: {}
   js:
+    js/classes.js: {}
     js/crossword.js: {}
   dependencies:
     - core/jquery
