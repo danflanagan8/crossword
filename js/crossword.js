@@ -14,6 +14,7 @@
         Drupal.behaviors.crossword.connectClues($crossword);
         Drupal.behaviors.crossword.addClickHandlers($crossword);
         Drupal.behaviors.crossword.addCrosswordEventHandlers($crossword);
+
         //keyboard event listeners.
         addEventListener("keydown", function(event) {
           //for arrows, spacebar, and tab
@@ -57,6 +58,7 @@
             case 46:
             case 8:
               Crossword.setAnswer("");
+              Crossword.focus();
           }
 
         });
@@ -66,7 +68,6 @@
           if(event.which){
             //letter key
             event.preventDefault();
-            console.log(event.which);
             Crossword.setAnswer(String.fromCharCode(event.which));
           }
         });
@@ -125,10 +126,12 @@
         else {
           Crossword.setActiveSquare($(this).data("Square"));
         }
+        Crossword.focus();
       });
 
       $('.crossword-clue', $crossword).once('crossword-clue-click').click(function(){
         Crossword.setActiveClue($(this).data("Clue"));
+        Crossword.focus();
       });
 
       $('.crossword-clue-change', $crossword).once('crossword-clue-change-click').click(function(e){
@@ -167,7 +170,8 @@
           $(this)
             .removeClass('active')
             .removeClass('highlight')
-            .removeClass('reference');
+            .removeClass('reference')
+            .find('input').blur();
         })
         .on('crossword-cheat', function(){
           $(this).addClass('cheat');
@@ -188,6 +192,9 @@
         })
         .on('crossword-not-rebus', function(){
           $(this).removeClass('rebus');
+        })
+        .on('crossword-focus', function(){
+          $(this).find('input').focus();
         });
     },
   }

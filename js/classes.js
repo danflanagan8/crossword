@@ -145,6 +145,12 @@
         return this;
       }
 
+      this.focus = function() {
+        if (this.activeSquare && this.activeSquare['$square']) {
+          this.activeSquare['$square'].trigger('crossword-focus');
+        }
+      }
+
       this.setAnswer = function(letter) {
 
         if (letter.toLowerCase() !== letter) {
@@ -296,7 +302,7 @@
           else {
             this.activeSquare['$square'].trigger('crossword-ok');
           }
-          if (this.activeSquare.answer !== null && this.activeSquare.answer.toLowerCase() !== this.activeSquare.answer) {
+          if (this.activeSquare.answer !== null && this.activeSquare.answer.length > 1 && this.activeSquare.answer.toLowerCase() !== this.activeSquare.answer) {
             this.activeSquare['$square'].trigger('crossword-rebus');
           }
           else {
