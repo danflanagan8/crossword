@@ -59,6 +59,7 @@
       this.setActiveSquare = function(Square) {
         this.activeSquare = Square;
         this.activeClue = Square[this.dir];
+        this.activeReferences = Square[this.dir].references;
         return this;
       }
 
@@ -117,6 +118,18 @@
         return this;
       }
 
+      this.changeActiveClue = function(dir, change) {
+        // change will be +/- 1
+        if (dir == this.dir) {
+          change > 0 ? this.advanceActiveClue() : this.retreatActiveClue();
+        }
+        else {
+          var newDir = dir == 'across' ? 'down' : 'across';
+          this.setActiveClue(this.clues[newDir][0]);
+        }
+        return this;
+      }
+
       this.setAnswer = function(fill) {
         this.answers[this.activeSquare.row][this.activeSquare.col] = fill;
       }
@@ -166,10 +179,12 @@
         for (var dir in dirs) {
           for (var i = 0; i < clues[dir].length; i++) {
             if (clues[dir][i].references) {
+              var realRefs = [];
               var refs = clues[dir][i].references
               for (var ref_index in refs) {
-                refs[ref_index]['clue'] = clues[refs[ref_index].dir][refs[ref_index].index];
+                realRefs.push(clues[refs[ref_index].dir][refs[ref_index].index]);
               }
+              clues[dir][i].references = realRefs;
             }
           }
         }

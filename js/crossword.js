@@ -11,6 +11,7 @@
         console.log(Crossword);
         Drupal.behaviors.crossword.connectSquares($crossword);
         Drupal.behaviors.crossword.connectClues($crossword);
+        Drupal.behaviors.crossword.addClickHandlers($crossword);
         Drupal.behaviors.crossword.updateClasses(Crossword, false);
         //keyboard event listeners.
         addEventListener("keydown", function(event) {
@@ -74,55 +75,6 @@
           }
         });
 
-        $('.crossword-square').once('crossword-square-click').click(function(){
-
-          if ($(this).hasClass('active')) {
-            Crossword.changeDir();
-          }
-          else {
-            var row = Number($(this).data('row'));
-            var col = Number($(this).data('col'));
-            Crossword.setActiveSquare(row, col);
-          }
-
-          Drupal.behaviors.crossword.updateClasses(Crossword, true);
-
-        });
-
-        $('.crossword-clue').once('crossword-clue-click').click(function(){
-          if ($(this).data('clue-index-across') !== undefined) {
-            Crossword.dir = 'across';
-            Crossword.setActiveClue($(this).data('clue-index-across'));
-          }
-          else {
-            Crossword.dir = 'down';
-            Crossword.setActiveClue($(this).data('clue-index-down'));
-          }
-          Drupal.behaviors.crossword.updateClasses(Crossword, true);
-        });
-
-        $('.crossword-clue-change').once('crossword-clue-change-click').click(function(e){
-          e.preventDefault();
-          var dir = $(this).data('dir');
-          var change = Number($(this).data('clue-change'));
-          if (dir == Crossword.dir) {
-            Crossword.setActiveClue(Crossword.activeClue + change);
-          }
-          else {
-            Crossword.dir = dir;
-            Crossword.setActiveClue(0);
-          }
-          Drupal.behaviors.crossword.updateClasses(Crossword, false);
-        });
-
-        $('.crossword-dir-change').once('crossword-dir-change-click').click(function(e){
-          e.preventDefault();
-          var dir = $(this).data('dir');
-          if (dir != Crossword.dir) {
-            Crossword.changeDir();
-            Drupal.behaviors.crossword.updateClasses(Crossword, false);
-          }
-        });
 
         $('.show-solution').once('crossword-show-solution-click').click(function(e){
           e.preventDefault();
@@ -267,6 +219,45 @@
         }
         $(this).data("Clue")["$clue"] = $(this);
       });
+    },
+    addClickHandlers: function ($crossword) {
+      var Crossword = $crossword.data("Crossword");
+      $('.crossword-square', $crossword).once('crossword-square-click').click(function(){
+        if ($(this).data("Square") == Crossword.activeSquare) {
+          Crossword.changeDir();
+        }
+        else {
+          Crossword.setActiveSquare($(this).data("Square"));
+        }
+        console.log(Crossword);
+        //Drupal.behaviors.crossword.updateClasses(Crossword, true);
+      });
+
+      $('.crossword-clue', $crossword).once('crossword-clue-click').click(function(){
+        Crossword.setActiveClue($(this).data("Clue"));
+        console.log(Crossword);
+        //Drupal.behaviors.crossword.updateClasses(Crossword, true);
+      });
+
+      $('.crossword-clue-change', $crossword).once('crossword-clue-change-click').click(function(e){
+        e.preventDefault();
+        var dir = $(this).data('dir');
+        var change = Number($(this).data('clue-change'));
+        Crossword.changeClue(dir, change);
+        console.log(Crossword);
+        //Drupal.behaviors.crossword.updateClasses(Crossword, false);
+      });
+
+      $('.crossword-dir-change', $crossword).once('crossword-dir-change-click').click(function(e){
+        e.preventDefault();
+        var dir = $(this).data('dir');
+        if (dir != Crossword.dir) {
+          Crossword.changeDir();
+          console.log(Crossword);
+          //Drupal.behaviors.crossword.updateClasses(Crossword, false);
+        }
+      });
+
     },
   }
 })(jQuery, Drupal, drupalSettings);
