@@ -12,67 +12,12 @@
 
         Drupal.behaviors.crossword.connectSquares($crossword);
         Drupal.behaviors.crossword.connectClues($crossword);
+        Drupal.behaviors.crossword.addKeydownHandlers($crossword);
+        Drupal.behaviors.crossword.addKeypressHandlers($crossword);
         Drupal.behaviors.crossword.addClickHandlers($crossword);
         Drupal.behaviors.crossword.addCrosswordEventHandlers($crossword);
 
-        //keyboard event listeners.
-        addEventListener("keydown", function(event) {
-          //for arrows, spacebar, and tab
-          switch(event.keyCode) {
-            case 38:
-              //up
-              event.preventDefault();
-              Crossword.moveActiveSquare('up');
-              break;
-            case 37:
-              //left
-              event.preventDefault();
-              Crossword.moveActiveSquare('left');
-              break;
-            case 39:
-              //right
-              event.preventDefault();
-              Crossword.moveActiveSquare('right');
-              break;
-            case 40:
-              //down
-              event.preventDefault();
-              Crossword.moveActiveSquare('down');
-              break;
-            case 32:
-              //spacebar
-              event.preventDefault();
-              Crossword.changeDir();
-              break;
-            case 9:
-              //tab
-              event.preventDefault();
-              if (event.shiftKey) {
-                Crossword.retreatActiveClue();
-              }
-              else {
-                Crossword.advanceActiveClue();
-              }
-              break;
-              //backspace
-            case 46:
-            case 8:
-              Crossword.setAnswer("");
-              Crossword.focus();
-          }
-
-        });
-
-        addEventListener("keypress", function(event) {
-          //printable characters
-          if(event.which){
-            //letter key
-            event.preventDefault();
-            Crossword.setAnswer(String.fromCharCode(event.which));
-            Crossword.focus();
-          }
-        });
-
+        // Some stuff for the checkboxes that might as well be here.
         $('#show-errors').once('crossword-show-errors-change').on('change', function(){
           $('.crossword').toggleClass('show-errors');
         });
@@ -104,10 +49,73 @@
         $(this).data("Clue")["$clue"] = $(this);
       });
     },
+    addKeydownHandlers: function($crossword) {
+      var Crossword = $crossword.data("Crossword");
+
+      $(document).on("keydown", function(event) {
+        //for arrows, spacebar, and tab
+        switch(event.keyCode) {
+          case 38:
+            //up
+            event.preventDefault();
+            Crossword.moveActiveSquare('up');
+            break;
+          case 37:
+            //left
+            event.preventDefault();
+            Crossword.moveActiveSquare('left');
+            break;
+          case 39:
+            //right
+            event.preventDefault();
+            Crossword.moveActiveSquare('right');
+            break;
+          case 40:
+            //down
+            event.preventDefault();
+            Crossword.moveActiveSquare('down');
+            break;
+          case 32:
+            //spacebar
+            event.preventDefault();
+            Crossword.changeDir();
+            break;
+          case 9:
+            //tab
+            event.preventDefault();
+            if (event.shiftKey) {
+              Crossword.retreatActiveClue();
+            }
+            else {
+              Crossword.advanceActiveClue();
+            }
+            break;
+            //backspace
+          case 46:
+          case 8:
+            Crossword.setAnswer("");
+            Crossword.focus();
+        }
+      });
+    },
+    addKeydownHandlers: function($crossword) {
+      var Crossword = $crossword.data("Crossword");
+
+      $(document).on("keypress", function(event) {
+        //printable characters
+        if(event.which){
+          //letter key
+          event.preventDefault();
+          Crossword.setAnswer(String.fromCharCode(event.which));
+          Crossword.focus();
+        }
+      });
+    },
     addClickHandlers: function ($crossword) {
       var Crossword = $crossword.data("Crossword");
+
       $('.crossword-square', $crossword).once('crossword-square-click').click(function(){
-        if ($(this).data("Square") == Crossword.activeSquare) {
+        if ($(this).data("Square") == Crossword.activeSquare && $(this).hasClass('focus')) {
           Crossword.changeDir();
         }
         else {
@@ -152,7 +160,7 @@
         .on('crossword-active', function(){
           $(this).addClass('active');
         })
-        .on('crossword-highlight ', function(){
+        .on('crossword-highlight', function(){
           $(this).addClass('highlight');
         })
         .on('crossword-reference', function(){
@@ -163,6 +171,7 @@
             .removeClass('active')
             .removeClass('highlight')
             .removeClass('reference')
+            .removeClass('focus');
             .find('input').blur();
         })
         .on('crossword-cheat', function(){
@@ -186,7 +195,16 @@
           $(this).removeClass('rebus');
         })
         .on('crossword-focus', function(){
+          $(this).addClass('focus');
           $(this).find('input').focus();
+        });
+
+      $('.crossword-clue', $crossword)
+        .on('crossword-active', function(){
+          $('.active-clues', $crossword).html('<div class="active ' + $(this).data("Clue").dir + '">' + $(this).html() + '</div>');
+        })
+        .on('crossword-reference', function(){
+          $('.active-clues', $crossword).append('<div class="reference ' + $(this).data("Clue").dir + '">' + $(this).html() + '</div>');
         });
     },
   }
