@@ -8,7 +8,16 @@
        */
       this.row = data.row;
       this.column = data.col;
-      this.fill = data.fill ? data.fill.toUpperCase() : null;
+      this.fill = null;
+      if (data.fill !== null) {
+        if (data.fill.length > 1) {
+          this.fill = data.fill.toUpperCase(); //uppercase means rebus
+        }
+        else {
+          this.fill = data.fill.toLowerCase();
+        }
+      }
+      this.answer = null;
       this.numeral = data.numeral;
       this.across = data.across ? data.across.index : null;
       this.down = data.down ? data.down.index : null;
@@ -57,11 +66,13 @@
       }
 
       this.setActiveSquare = function(Square) {
-        this.sendOffEvents();
-        this.activeSquare = Square;
-        this.activeClue = Square[this.dir];
-        this.activeReferences = Square[this.dir].references;
-        this.sendOnEvents();
+        if (Square.fill !== null) {
+          this.sendOffEvents();
+          this.activeSquare = Square;
+          this.activeClue = Square[this.dir];
+          this.activeReferences = Square[this.dir].references;
+          this.sendOnEvents();
+        }
         return this;
       }
 
@@ -134,8 +145,34 @@
         return this;
       }
 
-      this.setAnswer = function(fill) {
-        this.answers[this.activeSquare.row][this.activeSquare.col] = fill;
+      this.setAnswer = function(letter) {
+
+        if (letter.toLowerCase() !== letter) {
+          // uppercase letters are for rebus
+          // Is the existing answer uppercase? If so append. Otherwise, replace.
+          if (this.activeSquare.answer && this.activeSquare.answer.toLowerCase() !== this.activeSquare.answer) {
+            this.activeSquare.answer += letter;
+          }
+          else {
+            this.activeSquare.answer = letter;
+          }
+          this.sendAnswerEvents();
+        }
+        else {
+          this.activeSquare.answer = letter;
+          this.sendAnswerEvents();
+          if (letter === "") {
+            this.retreatActiveSquare();
+          }
+          else {
+            this.advanceActiveSquare();
+          }
+        }
+      }
+
+      this.cheat = function() {
+        this.sendCheatEvents();
+        this.setAnswer(this.activeSquare.fill);
       }
 
       function makeGrid() {
@@ -247,6 +284,32 @@
         }
         if (this.activeSquare && this.activeSquare['$square']) {
           this.activeSquare['$square'].trigger('crossword-active');
+        }
+      }
+
+      this.sendAnswerEvents = function(){
+        if (this.activeSquare && this.activeSquare['$square']) {
+          this.activeSquare['$square'].trigger('crossword-answer', [this.activeSquare.answer]);
+          if (this.activeSquare.answer !== null && this.activeSquare.answer.toUpperCase() !== this.activeSquare.fill.toUpperCase()) {
+            this.activeSquare['$square'].trigger('crossword-error');
+          }
+          else {
+            this.activeSquare['$square'].trigger('crossword-ok');
+          }
+          if (this.activeSquare.answer !== null && this.activeSquare.answer.toLowerCase() !== this.activeSquare.answer) {
+            this.activeSquare['$square'].trigger('crossword-rebus');
+          }
+          else {
+            this.activeSquare['$square'].trigger('crossword-not-rebus');
+          }
+        }
+      }
+
+      this.sendCheatEvents = function(){
+        if (this.activeSquare && this.activeSquare['$square']) {
+          this.activeSquare['$square'].trigger('crossword-cheat');
+          this.activeSquare.across['$clue'].trigger('crossword-cheat');
+          this.activeSquare.down['$clue'].trigger('crossword-cheat');
         }
       }
 

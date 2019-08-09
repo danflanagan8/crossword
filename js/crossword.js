@@ -4,16 +4,16 @@
     attach: function (context, settings) {
       $('.crossword').once('crossword-init').each(function(){
         var $crossword = $(this);
+
         var data = drupalSettings.crossword;
-        console.log(data);
         var Crossword = new Drupal.Crossword.Crossword(data);
+
         $crossword.data("Crossword", Crossword);
-        console.log(Crossword);
+
         Drupal.behaviors.crossword.connectSquares($crossword);
         Drupal.behaviors.crossword.connectClues($crossword);
         Drupal.behaviors.crossword.addClickHandlers($crossword);
         Drupal.behaviors.crossword.addCrosswordEventHandlers($crossword);
-        Drupal.behaviors.crossword.updateClasses(Crossword, false);
         //keyboard event listeners.
         addEventListener("keydown", function(event) {
           //for arrows, spacebar, and tab
@@ -52,10 +52,11 @@
               else {
                 Crossword.advanceActiveClue();
               }
+              break;
+              //backspace
             case 46:
             case 8:
-              Drupal.behaviors.crossword.printLetter("", Crossword);
-              Drupal.behaviors.crossword.updateClasses(Crossword, true);
+              Crossword.setAnswer("");
           }
 
         });
@@ -66,19 +67,13 @@
             //letter key
             event.preventDefault();
             console.log(event.which);
-            Drupal.behaviors.crossword.printLetter(String.fromCharCode(event.which), Crossword);
+            Crossword.setAnswer(String.fromCharCode(event.which));
           }
         });
-
 
         $('.show-solution').once('crossword-show-solution-click').click(function(e){
           e.preventDefault();
           Drupal.behaviors.crossword.showSolution();
-        });
-
-        $('.cheat').once('crossword-show-solution-click').click(function(e){
-          e.preventDefault();
-          Drupal.behaviors.crossword.cheat(Crossword);
         });
 
         $('#show-errors').once('crossword-show-errors-change').on('change', function(){
@@ -90,100 +85,6 @@
         }).prop('checked', true);
 
       });
-    },
-    updateClasses: function (Crossword, focus) {
-      $('.crossword-square, .crossword-clue').removeClass('active').removeClass('highlight').removeClass('reference');
-      var $activeSquare = $('.crossword-square[data-row="' + Crossword.activeSquare.row + '"][data-col="' + Crossword.activeSquare.col + '"]');
-      $activeSquare.addClass('active');
-      if (focus) {
-        console.log('focus!');
-        $activeSquare.find('input').focus();
-      }
-
-      if (Crossword.dir == 'across') {
-        var $activeClue = $('.crossword-clue[data-clue-index-across="' + Crossword.activeClue + '"]');
-        $activeClue.addClass('active');
-        $('.active-clues').html('<div class="across">' + $activeClue.html() + '</div>');
-        $('.crossword-square[data-clue-index-across="' + Crossword.activeClue + '"]').addClass('highlight');
-      }
-      else {
-        var $activeClue = $('.crossword-clue[data-clue-index-down="' + Crossword.activeClue + '"]');
-        $activeClue.addClass('active');
-        $('.active-clues').html('<div class="down">' + $activeClue.html() + '</div>');
-        $('.crossword-square[data-clue-index-down="' + Crossword.activeClue + '"]').addClass('highlight');
-      }
-
-      // references!
-      if (Crossword.activeReferences) {
-        if (Crossword.activeReferences.across) {
-          for (var i = 0; i < Crossword.activeReferences.across.index.length; i++) {
-            var $referencedClue = $('.crossword-clue[data-clue-index-across="' + Crossword.activeReferences.across.index[i] + '"]');
-            $referencedClue.addClass('reference');
-            $('.active-clues').append('<div class="reference across">' + $referencedClue.html() + '</div>');
-            $('.crossword-square[data-clue-index-across="' + Crossword.activeReferences.across.index[i] + '"]').addClass('reference');
-          }
-        }
-        if (Crossword.activeReferences.down) {
-          for (var i = 0; i < Crossword.activeReferences.down.index.length; i++) {
-            var $referencedClue = $('.crossword-clue[data-clue-index-down="' + Crossword.activeReferences.down.index[i] + '"]');
-            $referencedClue.addClass('reference');
-            $('.active-clues').append('<div class="reference down">' + $referencedClue.html() + '</div>');
-            $('.crossword-square[data-clue-index-down="' + Crossword.activeReferences.down.index[i] + '"]').addClass('reference');
-          }
-        }
-      }
-    },
-    cheat: function(Crossword) {
-      var $activeSquare = $('.crossword-square[data-row="' + Crossword.activeSquare.row + '"][data-col="' + Crossword.activeSquare.col + '"]');
-      $activeSquare.removeClass('error').removeClass('rebus');
-      $activeSquare.find('.square-fill').text($activeSquare.data('fill'));
-      if($activeSquare.data('fill').length > 1) {
-        $activeSquare.addClass('rebus');
-      }
-      Crossword.setAnswer($(this).data('fill'));
-    },
-    printLetter: function (letter, Crossword){
-
-      var $activeSquare = $('.crossword-square[data-row="' + Crossword.activeSquare.row + '"][data-col="' + Crossword.activeSquare.col + '"]');
-      $activeSquare.removeClass('error').removeClass('rebus');
-
-      if (letter != letter.toLowerCase()) {
-        // uppercase letters are used for rebus puzzles.
-        // append this to what's already there
-        $activeSquare.addClass('rebus');
-        var current_text = $activeSquare.find('.square-fill').text();
-        // is it all uppercase already? If so, append
-        if (current_text != current_text.toLowerCase()) {
-          $activeSquare.find('.square-fill').text(current_text + letter);
-          Crossword.setAnswer(current_text + letter);
-        }
-        else {
-          $activeSquare.find('.square-fill').text(letter);
-          Crossword.setAnswer(letter);
-        }
-        if (Crossword.data.puzzle.grid[Crossword.activeSquare.row][Crossword.activeSquare.col].fill.toUpperCase() !== $activeSquare.find('.square-fill').text().toUpperCase()) {
-          $activeSquare.addClass('error');
-        }
-      }
-      else {
-        Crossword.setAnswer(letter);
-
-        var $activeSquare = $('.crossword-square[data-row="' + Crossword.activeSquare.row + '"][data-col="' + Crossword.activeSquare.col + '"]');
-        $activeSquare.find('.square-fill').text(letter.toUpperCase());
-
-        if (Crossword.data.puzzle.grid[Crossword.activeSquare.row][Crossword.activeSquare.col].fill.toUpperCase() !== letter.toUpperCase()) {
-          $activeSquare.addClass('error');
-        }
-
-        if (letter == "") {
-          Crossword.retreatActiveSquare();
-        }
-        else {
-          Crossword.advanceActiveSquare();
-        }
-      }
-
-      Drupal.behaviors.crossword.updateClasses(Crossword, true);
     },
     showSolution: function () {
       $('.crossword-square').each(function(){
@@ -245,9 +146,14 @@
         }
       });
 
+      $('.cheat').once('crossword-cheat-click').click(function(e){
+        e.preventDefault();
+        Crossword.cheat();
+      });
+
     },
     addCrosswordEventHandlers: function ($crossword) {
-      $('.crossword-clue, .crossword-square')
+      $('.crossword-clue, .crossword-square', $crossword)
         .on('crossword-active', function(){
           $(this).addClass('active');
         })
@@ -262,6 +168,26 @@
             .removeClass('active')
             .removeClass('highlight')
             .removeClass('reference');
+        })
+        .on('crossword-cheat', function(){
+          $(this).addClass('cheat');
+        });
+
+      $('.crossword-square', $crossword)
+        .on('crossword-answer', function(e, answer){
+          $(this).find('.square-fill').text(answer.toUpperCase());
+        })
+        .on('crossword-error', function(){
+          $(this).addClass('error');
+        })
+        .on('crossword-ok', function(){
+          $(this).removeClass('error');
+        })
+        .on('crossword-rebus', function(){
+          $(this).addClass('rebus');
+        })
+        .on('crossword-not-rebus', function(){
+          $(this).removeClass('rebus');
         });
     },
   }
