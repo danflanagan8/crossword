@@ -10,7 +10,6 @@
       this.column = data.col;
       this.fill = data.fill ? data.fill.toUpperCase() : null;
       this.numeral = data.numeral;
-      console.log(data);
       this.across = data.across ? data.across.index : null;
       this.down = data.down ? data.down.index : null;
       this.moves = {
@@ -28,6 +27,7 @@
       this.index = data.index;
       this.numeral = data.numeral;
       this.references = data.references; //starts as contstants. objects get added later
+      this.squares = [];
       this.$clue;
     },
 
@@ -42,7 +42,7 @@
       this.answers = emptyAnswers();
       this.grid = makeGrid();
       this.clues = makeClues();
-      addCluesToSquares();
+      connectCluesAndSquares();
 
       function emptyAnswers() {
         var grid = Crossword.data.puzzle.grid;
@@ -232,7 +232,7 @@
         return clues;
       }
 
-      function addCluesToSquares() {
+      function connectCluesAndSquares() {
         var grid = Crossword.grid;
         var clues = Crossword.clues;
         var dirs = {'across' : true, 'down' : true};
@@ -241,13 +241,15 @@
           for (var col_index = 0; col_index < grid[row_index].length; col_index++) {
             var Square = grid[row_index][col_index];
             for (var dir in dirs) {
-              if (Square[dir] > -1) {
+              if (Square[dir] !== null) {
+                clues[dir][Square[dir]]['squares'].push(Square);
                 Square[dir] = clues[dir][Square[dir]];
               }
             }
           }
         }
       }
+
     }
   }
 
