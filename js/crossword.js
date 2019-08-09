@@ -6,6 +6,7 @@
         var data = drupalSettings.crossword;
         console.log(data);
         var Crossword = new Drupal.Crossword.Crossword(data);
+        console.log(Crossword);
         Drupal.behaviors.crossword.updateClasses(Crossword, false);
         //keyboard event listeners.
         addEventListener("keydown", function(event) {

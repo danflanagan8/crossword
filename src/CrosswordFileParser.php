@@ -117,7 +117,10 @@ class CrosswordFileParser {
       $row = [];
       for ($col_index = 0; $col_index < count($raw_row); $col_index++) {
         $fill = $raw_row[$col_index];
-        $square = [];
+        $square = [
+          'row' => $row_index,
+          'col' => $col_index,
+        ];
         if ($fill === NULL) {
           $square['fill'] = NULL;
         }
@@ -263,54 +266,26 @@ class CrosswordFileParser {
   }
 
   private function addIndexToClueReferences(&$clues) {
-    foreach ($clues['down'] as $index => $down_clue) {
+    foreach ($clues['down'] as &$down_clue) {
       if (!empty($down_clue['references'])) {
-        if (!empty($down_clue['references']['across'])) {
-          $down_clue['references']['across']['index'] = [];
-          foreach ($down_clue['references']['across']['numeral'] as $numeral) {
-            foreach($clues['across'] as $key => $clue) {
-              if ($clue['numeral'] == $numeral) {
-                $down_clue['references']['across']['index'][] = $key;
-              }
+        foreach ($down_clue['references'] as &$reference) {
+          foreach($clues[$reference['dir']] as $index => $clue) {
+            if ($clue['numeral'] == $reference['numeral']) {
+              $reference['index'] = $index;
             }
           }
         }
-        if (!empty($down_clue['references']['down'])) {
-          $down_clue['references']['down']['index'] = [];
-          foreach ($down_clue['references']['down']['numeral'] as $numeral) {
-            foreach($clues['down'] as $key => $clue) {
-              if ($clue['numeral'] == $numeral) {
-                $down_clue['references']['down']['index'][] = $key;
-              }
-            }
-          }
-        }
-        $clues['down'][$index] = $down_clue;
       }
     }
-    foreach ($clues['across'] as $index => $across_clue) {
+    foreach ($clues['across'] as &$across_clue) {
       if (!empty($across_clue['references'])) {
-        if (!empty($across_clue['references']['across'])) {
-          $across_clue['references']['across']['index'] = [];
-          foreach ($across_clue['references']['across']['numeral'] as $numeral) {
-            foreach($clues['across'] as $key => $clue) {
-              if ($clue['numeral'] == $numeral) {
-                $across_clue['references']['across']['index'][] = $key;
-              }
+        foreach ($across_clue['references'] as &$reference) {
+          foreach($clues[$reference['dir']] as $index => $clue) {
+            if ($clue['numeral'] == $reference['numeral']) {
+              $reference['index'] = $index;
             }
           }
         }
-        if (!empty($across_clue['references']['down'])) {
-          $across_clue['references']['down']['index'] = [];
-          foreach ($across_clue['references']['down']['numeral'] as $numeral) {
-            foreach($clues['down'] as $key => $clue) {
-              if ($clue['numeral'] == $numeral) {
-                $across_clue['references']['down']['index'][] = $key;
-              }
-            }
-          }
-        }
-        $clues['across'][$index] = $across_clue;
       }
     }
   }
@@ -369,7 +344,10 @@ class CrosswordFileParser {
         $i = 0;
         while( $i < $down_index ){
           $ref_num = str_replace("-", "", $matches[$i]);
-          $references['down']['numeral'][] = $ref_num;
+          $references[] = [
+            'dir' => 'down',
+            'numeral' => $ref_num,
+          ];
           $i++;
         }
       }
@@ -378,7 +356,10 @@ class CrosswordFileParser {
         $i = 0;
         while( $i < $across_index ){
           $ref_num = str_replace("-", "", $matches[$i]);
-          $references['across']['numeral'][] = $ref_num;
+          $references[] = [
+            'dir' => 'across',
+            'numeral' => $ref_num,
+          ];
           $i++;
         }
       }
@@ -388,14 +369,20 @@ class CrosswordFileParser {
         $i = 0;
         while( $i < $across_index ){
           $ref_num = str_replace("-", "", $matches[$i]);
-          $references['across']['numeral'][] = $ref_num;
+          $references[] = [
+            'dir' => 'across',
+            'numeral' => $ref_num,
+          ];
           $i++;
         }
         //now down. We have to move past the acrossIndex
         $i = $across_index + 1;
         while( $i < $down_index ){
           $ref_num = str_replace("-", "", $matches[$i]);
-          $references['down']['numeral'][] = $ref_num;
+          $references[] = [
+            'dir' => 'down',
+            'numeral' => $ref_num,
+          ];
           $i++;
         }
       }
