@@ -17,6 +17,9 @@
         Drupal.behaviors.crossword.addClickHandlers($crossword);
         Drupal.behaviors.crossword.addCrosswordEventHandlers($crossword);
 
+        // Trick the display into updating now that everything is connected.
+        Crossword.setActiveClue(Crossword.activeClue);
+
         // Some stuff for the checkboxes that might as well be here.
         $('#show-errors').once('crossword-show-errors-change').on('change', function(){
           $('.crossword').toggleClass('show-errors');
