@@ -69,6 +69,7 @@
             //letter key
             event.preventDefault();
             Crossword.setAnswer(String.fromCharCode(event.which));
+            Crossword.focus();
           }
         });
 

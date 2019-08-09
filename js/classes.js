@@ -139,8 +139,7 @@
           change > 0 ? this.advanceActiveClue() : this.retreatActiveClue();
         }
         else {
-          var newDir = dir == 'across' ? 'down' : 'across';
-          this.setActiveClue(this.clues[newDir][0]);
+          this.changeDir();
         }
         return this;
       }
