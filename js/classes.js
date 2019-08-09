@@ -10,8 +10,9 @@
       this.column = data.col;
       this.fill = data.fill ? data.fill.toUpperCase() : null;
       this.numeral = data.numeral;
-      this.across = null; //a Clue
-      this.down = null; //a Clue
+      console.log(data);
+      this.across = data.across ? data.across.index : null;
+      this.down = data.down ? data.down.index : null;
       this.moves = {
         'up' : false,
         'down' : false,
@@ -41,6 +42,7 @@
       this.answers = emptyAnswers();
       this.grid = makeGrid();
       this.clues = makeClues();
+      addCluesToSquares();
 
       function emptyAnswers() {
         var grid = Crossword.data.puzzle.grid;
@@ -228,6 +230,23 @@
           }
         }
         return clues;
+      }
+
+      function addCluesToSquares() {
+        var grid = Crossword.grid;
+        var clues = Crossword.clues;
+        var dirs = {'across' : true, 'down' : true};
+
+        for (var row_index = 0; row_index < grid.length; row_index++) {
+          for (var col_index = 0; col_index < grid[row_index].length; col_index++) {
+            var Square = grid[row_index][col_index];
+            for (var dir in dirs) {
+              if (Square[dir] > -1) {
+                Square[dir] = clues[dir][Square[dir]];
+              }
+            }
+          }
+        }
       }
     }
   }
