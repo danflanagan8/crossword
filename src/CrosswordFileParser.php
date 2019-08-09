@@ -213,10 +213,53 @@ class CrosswordFileParser {
 
     $this->addIndexToClueReferences($clues);
 
+    $this->addSquareMoves($grid, $clues);
+
     return [
       'grid' => $grid,
       'clues' => $clues,
     ];
+  }
+
+  private function addSquareMoves(&$grid, $clues) {
+    foreach ($grid as $row_index => $row) {
+      foreach ($row as $col_index => $square) {
+        $grid[$row_index][$col_index]['moves'] = [
+          'up' => NULL,
+          'down' => NULL,
+          'left' => NULL,
+          'right' => NULL,
+        ];
+        //up
+        if (isset($grid[$row_index - 1][$col_index]['fill'])) {
+          $grid[$row_index][$col_index]['moves']['up'] = [
+            'row' => $row_index - 1,
+            'col' => $col_index,
+          ];
+        }
+        //down
+        if (isset($grid[$row_index + 1][$col_index]['fill'])) {
+          $grid[$row_index][$col_index]['moves']['down'] = [
+            'row' => $row_index + 1,
+            'col' => $col_index,
+          ];
+        }
+        //left
+        if (isset($grid[$row_index][$col_index - 1]['fill'])) {
+          $grid[$row_index][$col_index]['moves']['left'] = [
+            'row' => $row_index,
+            'col' => $col_index - 1,
+          ];
+        }
+        //right
+        if (isset($grid[$row_index][$col_index + 1]['fill'])) {
+          $grid[$row_index][$col_index]['moves']['right'] = [
+            'row' => $row_index,
+            'col' => $col_index + 1,
+          ];
+        }
+      }
+    }
   }
 
   private function addIndexToClueReferences(&$clues) {
