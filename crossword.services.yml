@@ -1,0 +1,4 @@
+services:
+  crossword.manager.parser:
+    class: Drupal\crossword\CrosswordFileParserManager
+    parent: default_plugin_manager

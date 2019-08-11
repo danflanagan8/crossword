@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class CrosswordFile extends Constraint {
 
-  // The message that will be shown if the value is not an integer.
+  public $no_parser = 'There is no existing CrosswordFileParser Plugin that can parse this file.';
   public $missingTag = '%tag is missing.';
   public $extraTag = '%tag is not allowed.';
   public $outOfOrder = 'Tags are out of order. Expected order is (* -> required): TITLE, AUTHOR, COPYRIGHT, SIZE, GRID*, REBUS, ACROSS*, DOWN*';

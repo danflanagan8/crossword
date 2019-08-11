@@ -26,8 +26,9 @@ class CrosswordFormatter extends FileFormatterBase {
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
     foreach ($this->getEntitiesToView($items, $langcode) as $delta => $file) {
-
-      $parser = new CrosswordFileParser($file);
+      
+      $parser_manager = \Drupal::service('crossword.manager.parser');
+      $parser = $parser_manager->loadCrosswordFileParserFromInput($file);
       $data = $parser->parse();
 
       $elements[$delta] = [

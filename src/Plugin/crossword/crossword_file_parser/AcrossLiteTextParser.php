@@ -1,26 +1,52 @@
 <?php
 
-namespace Drupal\crossword;
+namespace Drupal\crossword\Plugin\crossword\crossword_file_parser;
 
-class CrosswordFileParser {
+use Drupal\Core\Plugin\PluginBase;
+use Drupal\crossword\CrosswordFileParserPluginInterface;
+use Drupal\file\Entity\File;
 
-  public $file;
+/**
+ * @CrosswordFileParser(
+ *   id = "across_lite_text",
+ *   title = @Translation("Across Lite Text")
+ * )
+ */
+class AcrossLiteTextParser extends PluginBase implements CrosswordFileParserPluginInterface {
 
-  private $contents;
-
-  private $lines;
-
-  public function __construct($file) {
-    $this->file = $file;
-    $this->contents = file_get_contents($file->getFileUri());
+  /**
+   * Create a plugin with the given input.
+   *
+   * @param string $configuration
+   *   The configuration of the plugin.
+   * @param string $plugin_id
+   *   The plugin id.
+   * @param array $plugin_definition
+   *   The plugin definition.
+   *
+   * @throws \Exception
+   */
+  public function __construct($configuration, $plugin_id, $plugin_definition) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->file = File::load($configuration['fid']);
+    if (!static::isApplicable($this->file)) {
+      throw new \Exception('Chosen crossword file parser cannot parse this file.');
+    }
+    $this->contents = file_get_contents($this->file->getFileUri());
     $this->contents = trim($this->contents);
     $this->lines = explode("\n", $this->contents);
   }
 
   /**
+   * {@inheritdoc}
+   *
    * Checks for missing tags, extra tags, oout of order tags.
    */
-  public function validationErrors() {
+  public static function isApplicable($file) {
+
+    $contents = file_get_contents($file->getFileUri());
+    $contents = trim($contents);
+
     $missing_tags = [];
     $extra_tags = [];
     $required_tags = [
@@ -42,17 +68,19 @@ class CrosswordFileParser {
     ];
 
     $matches = [];
-    preg_match_all("/<[A-Z]+?>/", $this->contents, $matches);
+    preg_match_all("/<[A-Z]+?>/", $contents, $matches);
     $actual_tags = $matches[0];
 
     foreach ($required_tags as $tag) {
       if (array_search($tag, $actual_tags) === FALSE) {
-        $missing_tags[] = $tag;
+        //$missing_tags[] = $tag;
+        return FALSE;
       }
     }
     foreach ($actual_tags as $tag) {
       if (array_search($tag, $expected_order) === FALSE) {
-        $extra_tags[] = $tag;
+        //$extra_tags[] = $tag;
+        return FALSE;
       }
     }
     if (!empty($missing_tags) || !empty($extra_tags)) {
@@ -70,12 +98,14 @@ class CrosswordFileParser {
     }
     foreach($relevant_tags as $index => $tag) {
       if ($relevant_tags[$index] != $actual_tags[$index]) {
-        return [
-          'out_of_order' => TRUE,
-        ];
+        //return [
+        //  'out_of_order' => TRUE,
+        //];
+        return FALSE;
       }
     }
-    return [];
+    return TRUE;
+    //return [];
   }
 
   public function parse() {
