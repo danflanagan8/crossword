@@ -1,4 +1,4 @@
-<div class="crossword show-references">
+<div{{ attributes.addClass('crossword').addClass('show-references') }}>
 
   <div class="crossword-header">
     <div class="crossword-details">
@@ -27,9 +27,8 @@
   <div id="active-clues" class="active-clues">
   </div>
 
-  {{ content.grid }}
-
-  <div class="crossword-clues-wrapper clearfix">
+  <div class="crossword-puzzle clearfix">
+    {{ content.grid }}
     {{ content.across }}
     {{ content.down }}
   </div>

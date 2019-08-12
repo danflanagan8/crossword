@@ -26,7 +26,7 @@ class CrosswordFormatter extends FileFormatterBase {
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
     foreach ($this->getEntitiesToView($items, $langcode) as $delta => $file) {
-      
+
       $parser_manager = \Drupal::service('crossword.manager.parser');
       $parser = $parser_manager->loadCrosswordFileParserFromInput($file);
       $data = $parser->parse();
@@ -43,11 +43,14 @@ class CrosswordFormatter extends FileFormatterBase {
         ],
         '#attached' => [
           'library' => [
-            'crossword/crossword',
+            'crossword/crossword.default',
           ],
           'drupalSettings' => [
             'crossword' => $data,
           ],
+        ],
+        '#attributes' => [
+          'class' => [],
         ],
       ];
     }

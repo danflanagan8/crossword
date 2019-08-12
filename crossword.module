@@ -5,6 +5,7 @@ function crossword_theme($existing, $type, $theme, $path) {
     'crossword' => array(
       'variables' => array(
         'content' => NULL,
+        'attributes' => [],
       ),
     ),
     'crossword_grid' => array(

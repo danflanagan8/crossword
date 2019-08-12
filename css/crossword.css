@@ -238,3 +238,115 @@ input.phantom {
   font-weight: normal;
   display: inline;
 }
+
+/* Make it look like a classic book layout */
+.crossword.crossword-book .crossword-grid {
+  float: right;
+  width: 60%;
+  margin-right: 7%;
+  margin-top: 2%;
+}
+
+.crossword.crossword-book .crossword-clues {
+  font-size: 1.5vw;
+}
+
+.crossword.crossword-book .crossword-clues.across {
+  width: 25%;
+  padding: 0;
+}
+
+.crossword.crossword-book .crossword-clues.down {
+  width: 75%;
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3;
+}
+
+.crossword.crossword-book #active-clues {
+  display: none;
+}
+
+.crossword.crossword-book .crossword-square .numeral {
+  font-size: 0.6vw;
+}
+
+.crossword.crossword-book .crossword-square .square-fill {
+  font-size: 2vw;
+}
+
+.crossword.crossword-book .crossword-square.rebus .square-fill {
+  font-size: 1vw;
+}
+
+/* The print layout is very much like the book layout */
+@media print {
+  .crossword-grid {
+    float: right;
+    width: 60%;
+    margin-right: 7%;
+    margin-top: 2%;
+  }
+
+  .square-fill {
+    font-size: 2vw;
+  }
+
+  .crossword-clues {
+    font-size: 1.5vw;
+  }
+
+  .crossword-clues.across {
+    width: 25%;
+    padding: 0;
+  }
+
+  .crossword-clues.down {
+    width: 75%;
+    -webkit-column-count: 3;
+    -moz-column-count: 3;
+    column-count: 3;
+  }
+
+  .crossword-buttons {
+    display: none;
+  }
+
+  #active-clues {
+    display: none;
+  }
+
+  .crossword-clue,
+  .crossword-square:not(.black) {
+    background-color: transparent !important;
+  }
+
+  .crossword-square .numeral {
+    font-size: 0.6vw;
+  }
+
+  .crossword-square .square-fill {
+    font-size: 2vw;
+  }
+
+  .crossword-square.rebus .square-fill {
+    font-size: 1vw;
+  }
+
+  .crossword-clue-change {
+    display: none;
+  }
+
+  /* get rid of some drupal stuff */
+  header,
+  .block-core,
+  .region-breadcrumb {
+    display: none;
+  }
+
+  main,
+  #main {
+    margin: 0;
+  }
+
+}
