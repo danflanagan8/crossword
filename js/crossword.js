@@ -208,6 +208,9 @@
         })
         .on('crossword-reference', function(){
           $('.active-clues', $crossword).append('<div class="reference ' + $(this).data("Clue").dir + '">' + $(this).html() + '</div>');
+        })
+        .on('crossword-off', function(){
+          $('.active-clues', $crossword).html(null);
         });
     },
   }

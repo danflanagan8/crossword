@@ -55,7 +55,7 @@
           this.sendOffEvents();
           this.activeSquare = Square;
           this.activeClue = Square[this.dir];
-          this.activeReferences = Square[this.dir].references;
+          this.activeReferences = Square[this.dir] ? Square[this.dir].references : [];
           this.sendOnEvents();
         }
         return this;
@@ -196,6 +196,9 @@
               });
             });
           }
+        }
+        if (this.activeSquare && this.activeSquare['$square']) {
+          this.activeSquare['$square'].trigger('crossword-off');
         }
       }
 
