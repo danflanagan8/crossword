@@ -45,19 +45,13 @@ class CrosswordFileValidator extends ConstraintValidator implements ContainerInj
    * {@inheritdoc}
    */
   public function validate($items, Constraint $constraint) {
-    dpm('trying...');
     foreach ($items as $item) {
       if (get_class($item) == "Drupal\Core\TypedData\Plugin\DataType\IntegerData") {
         $file = File::load($item->getCastedValue());
-        dpm($file->id());
-        $parser = new CrosswordFileParser($file);
-        dpm('parser loaded?');
         if(FALSE === $this->providerManager->loadDefinitionFromInput($file)){
-          dpm('bad');
           $this->context->addViolation($constraint->no_parser);
         }
       }
     }
-    dpm('ok?');
   }
 }
