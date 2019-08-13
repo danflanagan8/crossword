@@ -8,6 +8,12 @@ function crossword_theme($existing, $type, $theme, $path) {
         'attributes' => [],
       ),
     ),
+    'crossword_solution' => array(
+      'variables' => array(
+        'content' => NULL,
+        'attributes' => [],
+      ),
+    ),
     'crossword_grid' => array(
       'variables' => array(
         'content' => NULL,

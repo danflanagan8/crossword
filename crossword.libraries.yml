@@ -10,3 +10,8 @@ crossword.default:
     - core/jquery.once
     - core/drupal
     - core/drupalSettings
+
+crossword.solution:
+  css:
+    layout:
+      css/crossword.css: {}

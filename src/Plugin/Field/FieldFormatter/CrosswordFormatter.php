@@ -57,7 +57,7 @@ class CrosswordFormatter extends FileFormatterBase {
     return $elements;
   }
 
-  private function getTitle($data) {
+  protected function getTitle($data) {
     return [
       '#type' => 'html_tag',
       '#tag' => 'h1',
@@ -70,7 +70,7 @@ class CrosswordFormatter extends FileFormatterBase {
     ];
   }
 
-  private function getAuthor($data) {
+  protected function getAuthor($data) {
     return [
       '#type' => 'html_tag',
       '#tag' => 'div',
@@ -83,7 +83,7 @@ class CrosswordFormatter extends FileFormatterBase {
     ];
   }
 
-  private function getNotepad($data) {
+  protected function getNotepad($data) {
     if ($data['notepad']) {
       return [
         '#type' => 'html_tag',
@@ -98,7 +98,7 @@ class CrosswordFormatter extends FileFormatterBase {
     }
   }
 
-  private function getAcross($data) {
+  protected function getAcross($data) {
     $render = [
       '#theme' => 'crossword_clues',
       '#content' => [],
@@ -122,7 +122,7 @@ class CrosswordFormatter extends FileFormatterBase {
     return $render;
   }
 
-  private function getDown($data) {
+  protected function getDown($data) {
     $render = [
       '#theme' => 'crossword_clues',
       '#content' => [],
@@ -146,7 +146,7 @@ class CrosswordFormatter extends FileFormatterBase {
     return $render;
   }
 
-  private function getGrid($data) {
+  protected function getGrid($data) {
     $render = [
       '#theme' => 'crossword_grid',
       '#content' => [],
@@ -172,7 +172,7 @@ class CrosswordFormatter extends FileFormatterBase {
         else {
           $render_row['#content'][] = [
             '#theme' => 'crossword_square',
-            '#fill' => $square['fill'],
+            '#fill' => NULL,
             '#numeral' => isset($square['numeral']) ? $square['numeral'] : NULL,
             '#attributes' => [
               'data-col' => (string) $col_index,
