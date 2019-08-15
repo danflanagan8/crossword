@@ -89,13 +89,18 @@ class AcrossLitePuzParser extends PluginBase implements CrosswordFileParserPlugi
     // A line break is indicated by 0.
 
     $lines = [];
+    $dec_lines = [];
     $line = '';
+    $dec_line = '';
     foreach ($dec_array as $i => $dec) {
       if ($dec == 0) {
+        $dec_lines[] = $dec_line;
+        $dec_line = '';
         $lines[] = $line;
         $line = '';
       }
       else {
+        $dec_line .= $dec;
         try {
           $char = chr($dec);
           $line .= $char;
@@ -104,6 +109,7 @@ class AcrossLitePuzParser extends PluginBase implements CrosswordFileParserPlugi
         }
       }
     }
+    $dec_lines[] = $dec_line;
     $lines[] = $line; // There's an un-added line at this point.
 
     $pre_parse = [
@@ -111,6 +117,7 @@ class AcrossLitePuzParser extends PluginBase implements CrosswordFileParserPlugi
      'cols' => $cols,
      'num_clues' => $num_clues,
      'lines' => $lines,
+     'dec_lines' => $dec_lines,
     ];
 
     $data = [
@@ -158,12 +165,18 @@ class AcrossLitePuzParser extends PluginBase implements CrosswordFileParserPlugi
       'numeral' => 0,
     ];
 
-    $rebus_array = $this->getRebusArray();
+    $rebus_grid = $this->getRebusGrid($pre_parse);
 
     foreach ($raw_grid as $row_index => $raw_row) {
       $row = [];
       for ($col_index = 0; $col_index < count($raw_row); $col_index++) {
-        $fill = $raw_row[$col_index];
+
+        if (!empty($rebus_grid) && $rebus_grid[$row_index][$col_index] !== 0) {
+          $fill = $rebus_grid[$row_index][$col_index];
+        }
+        else {
+          $fill = $raw_row[$col_index];
+        }
         $square = [
           'row' => $row_index,
           'col' => $col_index,
@@ -234,6 +247,7 @@ class AcrossLitePuzParser extends PluginBase implements CrosswordFileParserPlugi
               ];
               $numeral_incremented = TRUE;
 
+
               $square['fill'] = $fill;
               $square['down'] = [
                 'index' => $iterator['index_down'],
@@ -250,12 +264,6 @@ class AcrossLitePuzParser extends PluginBase implements CrosswordFileParserPlugi
             $square['fill'] = $fill;
             $square['down'] = $grid[$row_index - 1][$col_index]['down'];
           }
-        }
-
-        //is it a rebus square?
-        if (is_numeric($square['fill']) && !empty($rebus_array) && isset($rebus_array[$square['fill'] - 1])) {
-          $square['fill'] = $rebus_array[$square['fill'] - 1];
-          $square['rebus'] = TRUE;
         }
 
         $row[] = $square;
@@ -422,21 +430,67 @@ class AcrossLitePuzParser extends PluginBase implements CrosswordFileParserPlugi
     }
   }
 
-  private function getRebusArray() {
-    return NULL;
-    if (array_search("<REBUS>", $this->lines) > -1) {
-      $rebus_start_index = array_search("<REBUS>", $this->lines) + 1;
-      $rebus_array = [];
-      $i = $rebus_start_index;
-      while ($this->lines[$i] != "<ACROSS>") {
-        $line = explode(':', $this->lines[$i]);
-        if (isset($line[1])) {
-          $rebus_array[] = $line[1];
-        }
+  // Returns a grid that has zeros or rebus entries.
+  // This was really hard to write and may seem magical.
+  private function getRebusGrid($pre_parse) {
+    // If there's anything after the notepad, it's for the rebus.
+    if (!isset($pre_parse['lines'][3 + $pre_parse['num_clues'] + 1])) {
+      return [];
+    }
+    //the next line indicates the number of rebus squares, but we don't actually need it.
+    // Now the next rows * cols lines are representative of squares.
+    // 0 means the square is not a rebus
+    // Something like 9 indicates that the square contains the letters that correspond to rebus #8.
+    // I have no idea why the numbers are offset like that.
+    // For these rebus grid lines, they are decimal values, not chars.
+    $rebus_grid_lines = array_slice($pre_parse['dec_lines'], 3 + $pre_parse['num_clues'] + 3, $pre_parse['rows'] * $pre_parse['cols']);
+    $i = 0;
+    $rebus_grid_lines_processed = [];
+    // We have to do this processing because the 0 following a rebus entry gets stipped in the pre_parse function.
+    // Also, if it starts with a zero, a sero got stripped off the beginning.
+    if ($rebus_grid_lines[0] == '') {
+      array_unshift($rebus_grid_lines, '');
+    }
+    while (count($rebus_grid_lines_processed) < $pre_parse['rows'] * $pre_parse['cols']) {
+      if (strlen($rebus_grid_lines[$i]) > 1) {
+        // in here indicates multiple consecutive rebus entries
+        $rebus_grid_lines_processed[] = $rebus_grid_lines[$i][0];
+        $rebus_grid_lines[$i] = substr($rebus_grid_lines[$i], 1);
+      }
+      else if (strlen($rebus_grid_lines[$i]) == 1){
+        // in here means a rebus entry not followed by a rebus.
+        // The 0 after this got stripped in the pre_parse function.
+        $rebus_grid_lines_processed[] = $rebus_grid_lines[$i];
+        $rebus_grid_lines_processed[] = 0;
         $i++;
       }
-      return $rebus_array;
+      else {
+        $rebus_grid_lines_processed[] = 0;
+        $i++;
+      }
     }
+
+    $rebus_code_line = $pre_parse['lines'][count($pre_parse['lines']) - 1];
+    // The first three chars are worthless
+    $rebus_code_line = substr($rebus_code_line, 3);
+    $rebus_code_line_array = explode(";", $rebus_code_line);
+    foreach($rebus_code_line_array as &$val) {
+      $val = trim(strtoupper($val)); //The module always wants rebus to be in caps.
+    }
+    $rebus_key_val_array = [];
+    foreach($rebus_code_line_array as $val) {
+      $exploded = explode(":", $val);
+      $rebus_key_val_array[$exploded[0]] = $exploded[1];
+    }
+
+    foreach($rebus_grid_lines_processed as &$square) {
+      if ($square != 0) {
+        $square = $rebus_key_val_array[$square - 1];
+      }
+    }
+    $rebus_grid_array = array_chunk($rebus_grid_lines_processed, $pre_parse['cols']);
+    return $rebus_grid_array;
+
   }
 
 }
