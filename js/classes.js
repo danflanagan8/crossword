@@ -243,8 +243,12 @@
       this.sendCheatEvents = function(Square){
         if (Square && Square['$square']) {
           Square['$square'].trigger('crossword-cheat');
-          Square.across['$clue'].trigger('crossword-cheat');
-          Square.down['$clue'].trigger('crossword-cheat');
+          if (Square.across && Square.across['$clue']) {
+            Square.across['$clue'].trigger('crossword-cheat');
+          }
+          if (Square.down && Square.down['$clue']) {
+            Square.down['$clue'].trigger('crossword-cheat');
+          }
         }
       }
 
