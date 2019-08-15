@@ -1,11 +1,13 @@
 <div{{ attributes.addClass('crossword').addClass('show-references') }}>
 
   <div class="crossword-header">
-    <div class="crossword-details">
-      {{ content.title }}
-      {{ content.author }}
-      {{ content.notepad }}
-    </div>
+    {% if content.title is not empty or content.author is not empty or content.notepad is not empty %}
+      <div class="crossword-details">
+        {{ content.title }}
+        {{ content.author }}
+        {{ content.notepad }}
+      </div>
+    {% endif %}
     <div class="crossword-buttons">
       <div class="show-errors-wrapper">
         <input type="checkbox" id="show-errors" name="show-errors">
@@ -25,6 +27,7 @@
   </div>
 
   <div id="active-clues" class="active-clues">
+  {# This gets populated by js #}
   </div>
 
   <div class="crossword-puzzle clearfix">

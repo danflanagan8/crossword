@@ -1,11 +1,13 @@
-<div{{ attributes.addClass('crossword').addClass('crossword-solution') }}>
+<div{{ attributes.addClass('crossword').addClass('crossword') }}>
 
   <div class="crossword-header">
-    <div class="crossword-details">
-      {{ content.title }}
-      {{ content.author }}
-      {{ content.notepad }}
-    </div>
+    {% if content.title is not empty or content.author is not empty or content.notepad is not empty %}
+      <div class="crossword-details">
+        {{ content.title }}
+        {{ content.author }}
+        {{ content.notepad }}
+      </div>
+    {% endif %}
   </div>
 
   {{ content.grid }}

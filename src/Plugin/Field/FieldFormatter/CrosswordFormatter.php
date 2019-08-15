@@ -6,6 +6,7 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\file\Plugin\Field\FieldFormatter\FileFormatterBase;
 use Drupal\field\Entity\File;
 use Drupal\crossword\CrosswordFileParser;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Plugin implementation of the 'crossword' formatter.
@@ -19,6 +20,55 @@ use Drupal\crossword\CrosswordFileParser;
  * )
  */
 class CrosswordFormatter extends FileFormatterBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function defaultSettings() {
+    $options['title_tag'] = 'h1';
+    $options['author_tag'] = 'h2';
+    $options['notepad_tag'] = 'p';
+    return $options;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+
+    $tag_options = [
+      'h1' => 'h1',
+      'h2' => 'h2',
+      'h3' => 'h3',
+      'h4' => 'h4',
+      'p' => 'p',
+      'div' => 'div',
+      'span' => 'span',
+    ];
+
+    $form['title_tag'] = [
+      '#type' => 'select',
+      '#title' => 'Title',
+      '#default_value' => $this->getSetting('title_tag'),
+      '#options' => $tag_options,
+      '#empty_option' => $this->t("Do not render the title"),
+    ];
+    $form['author_tag'] = [
+      '#type' => 'select',
+      '#title' => 'Author',
+      '#default_value' => $this->getSetting('author_tag'),
+      '#options' => $tag_options,
+      '#empty_option' => $this->t("Do not render the author"),
+    ];
+    $form['notepad_tag'] = [
+      '#type' => 'select',
+      '#title' => 'Notepad',
+      '#default_value' => $this->getSetting('notepad_tag'),
+      '#options' => $tag_options,
+      '#empty_option' => $this->t("Do not render the notepad"),
+    ];
+    return $form;
+  }
 
   /**
    * {@inheritdoc}
@@ -58,36 +108,40 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   protected function getTitle($data) {
-    return [
-      '#type' => 'html_tag',
-      '#tag' => 'h1',
-      '#value' => $data['title'],
-      '#attributes' => [
-        'class' => [
-          'crossword-title',
+    if ($this->getSetting('title_tag')) {
+      return [
+        '#type' => 'html_tag',
+        '#tag' => $this->getSetting('title_tag'),
+        '#value' => $data['title'],
+        '#attributes' => [
+          'class' => [
+            'crossword-title',
+          ],
         ],
-      ],
-    ];
+      ];
+    }
   }
 
   protected function getAuthor($data) {
-    return [
-      '#type' => 'html_tag',
-      '#tag' => 'div',
-      '#value' => $data['author'],
-      '#attributes' => [
-        'class' => [
-          'crossword-author',
+    if ($this->getSetting('author_tag') && isset($data['author'])) {
+      return [
+        '#type' => 'html_tag',
+        '#tag' => $this->getSetting('author_tag'),
+        '#value' => $data['author'],
+        '#attributes' => [
+          'class' => [
+            'crossword-author',
+          ],
         ],
-      ],
-    ];
+      ];
+    }
   }
 
   protected function getNotepad($data) {
-    if ($data['notepad']) {
+    if ($this->getSetting('notepad_tag') && isset($data['notepad'])) {
       return [
         '#type' => 'html_tag',
-        '#tag' => 'p',
+        '#tag' => $this->getSetting('notepad_tag'),
         '#value' => nl2br($data['notepad']),
         '#attributes' => [
           'class' => [
