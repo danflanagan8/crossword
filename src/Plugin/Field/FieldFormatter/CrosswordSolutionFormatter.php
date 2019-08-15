@@ -46,6 +46,9 @@ class CrosswordSolutionFormatter extends CrosswordFormatter {
         '#attributes' => [
           'class' => [],
         ],
+        '#cache' => [
+          'tags' => $file->getCacheTags(),
+        ],
       ];
     }
     return $elements;
