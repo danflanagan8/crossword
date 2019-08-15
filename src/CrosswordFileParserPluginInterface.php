@@ -9,6 +9,4 @@ interface CrosswordFileParserPluginInterface {
 
   public static function isApplicable($file);
 
-  public function parse();
-
 }

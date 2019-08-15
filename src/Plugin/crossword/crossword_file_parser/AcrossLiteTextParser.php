@@ -5,6 +5,7 @@ namespace Drupal\crossword\Plugin\crossword\crossword_file_parser;
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\crossword\CrosswordFileParserPluginInterface;
 use Drupal\file\Entity\File;
+use Drupal\crossword\CrosswordFileParserBase;
 
 /**
  * @CrosswordFileParser(
@@ -12,30 +13,7 @@ use Drupal\file\Entity\File;
  *   title = @Translation("Across Lite Text")
  * )
  */
-class AcrossLiteTextParser extends PluginBase implements CrosswordFileParserPluginInterface {
-
-  /**
-   * Create a plugin with the given input.
-   *
-   * @param string $configuration
-   *   The configuration of the plugin.
-   * @param string $plugin_id
-   *   The plugin id.
-   * @param array $plugin_definition
-   *   The plugin definition.
-   *
-   * @throws \Exception
-   */
-  public function __construct($configuration, $plugin_id, $plugin_definition) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->file = File::load($configuration['fid']);
-    if (!static::isApplicable($this->file)) {
-      throw new \Exception('Chosen crossword file parser cannot parse this file.');
-    }
-    $this->contents = file_get_contents($this->file->getFileUri());
-    $this->contents = trim($this->contents);
-    $this->lines = explode("\n", $this->contents);
-  }
+class AcrossLiteTextParser extends CrosswordFileParserBase {
 
   /**
    * {@inheritdoc}
@@ -112,44 +90,46 @@ class AcrossLiteTextParser extends PluginBase implements CrosswordFileParserPlug
     //return [];
   }
 
-  public function parse() {
+
+
+  protected function getData() {
+
+    $lines = explode("\n", $this->contents);
 
     $data = [
-      'title' => $this->getTitle(),
-      'author' => $this->getAuthor(),
-      'notepad' => $this->getNotepad(),
-      'puzzle' => $this->getGridAndClues(),
+      'title' => $this->getTitle($lines),
+      'author' => $this->getAuthor($lines),
+      'notepad' => $this->getNotepad($lines),
+      'puzzle' => $this->getGridAndClues($lines),
     ];
-
-    \Drupal::moduleHandler()->alter('crossword_parse', $data, $this->contents);
 
     return $data;
   }
 
-  public function getTitle() {
-    return $this->lines[array_search("<TITLE>", $this->lines) + 1];
+  public function getTitle($lines) {
+    return $lines[array_search("<TITLE>", $lines) + 1];
   }
 
-  public function getAuthor() {
-    return $this->lines[array_search("<AUTHOR>", $this->lines) + 1];
+  public function getAuthor($lines) {
+    return $lines[array_search("<AUTHOR>", $lines) + 1];
   }
 
-  public function getNotepad() {
+  public function getNotepad($lines) {
     $notepad_index = strpos($this->contents, "<NOTEPAD>");
     if ($notepad_index > -1) {
       return substr($this->contents, $notepad_index + 9);
     }
   }
 
-  public function getGridAndClues() {
+  public function getGridAndClues($lines) {
     $grid = [];
     $clues = [
       'across' => [],
       'down' => [],
     ];
 
-    $raw_clues = $this->getRawClues();
-    $raw_grid = $this->getRawGrid();
+    $raw_clues = $this->getRawClues($lines);
+    $raw_grid = $this->getRawGrid($lines);
 
     $iterator = [
       'index_across' => -1,
@@ -157,7 +137,7 @@ class AcrossLiteTextParser extends PluginBase implements CrosswordFileParserPlug
       'numeral' => 0,
     ];
 
-    $rebus_array = $this->getRebusArray();
+    $rebus_array = $this->getRebusArray($lines);
 
     foreach ($raw_grid as $row_index => $raw_row) {
       $row = [];
@@ -336,19 +316,19 @@ class AcrossLiteTextParser extends PluginBase implements CrosswordFileParserPlug
     }
   }
 
-  public function getRawClues() {
-    $across_clues_start_index = array_search("<ACROSS>", $this->lines) + 1;
-    $down_clues_start_index = array_search("<DOWN>", $this->lines) + 1;
+  public function getRawClues($lines) {
+    $across_clues_start_index = array_search("<ACROSS>", $lines) + 1;
+    $down_clues_start_index = array_search("<DOWN>", $lines) + 1;
 
     $across_clues_number = $down_clues_start_index - $across_clues_start_index - 1;
-    $across_clues = array_slice($this->lines, $across_clues_start_index, $across_clues_number);
+    $across_clues = array_slice($lines, $across_clues_start_index, $across_clues_number);
 
-    if (array_search("<NOTEPAD>", $this->lines) > -1) {
-      $down_clues_number = array_search("<NOTEPAD>", $this->lines) - $down_clues_start_index;
-      $down_clues = array_slice($this->lines, $down_clues_start_index, $down_clues_number);
+    if (array_search("<NOTEPAD>", $lines) > -1) {
+      $down_clues_number = array_search("<NOTEPAD>", $lines) - $down_clues_start_index;
+      $down_clues = array_slice($lines, $down_clues_start_index, $down_clues_number);
     }
     else {
-      $down_clues = array_slice($this->lines, $down_clues_start_index);
+      $down_clues = array_slice($lines, $down_clues_start_index);
     }
 
     return [
@@ -357,13 +337,13 @@ class AcrossLiteTextParser extends PluginBase implements CrosswordFileParserPlug
     ];
   }
 
-  public function getRawGrid() {
+  public function getRawGrid($lines) {
     $raw_grid = [];
 
-    $grid_start_index = array_search("<GRID>", $this->lines) + 1;
-    $after_grid_index = array_search("<REBUS>", $this->lines) > -1 ? array_search("<REBUS>", $this->lines) : array_search("<ACROSS>", $this->lines);
+    $grid_start_index = array_search("<GRID>", $lines) + 1;
+    $after_grid_index = array_search("<REBUS>", $lines) > -1 ? array_search("<REBUS>", $lines) : array_search("<ACROSS>", $lines);
     $number_of_rows = $after_grid_index - $grid_start_index;
-    $grid_lines = array_slice($this->lines, $grid_start_index, $number_of_rows);
+    $grid_lines = array_slice($lines, $grid_start_index, $number_of_rows);
 
     foreach ($grid_lines as $row_index => $grid_line) {
       for ($col_index = 0; $col_index < strlen($grid_line); $col_index++) {
@@ -436,13 +416,13 @@ class AcrossLiteTextParser extends PluginBase implements CrosswordFileParserPlug
     }
   }
 
-  private function getRebusArray() {
-    if (array_search("<REBUS>", $this->lines) > -1) {
-      $rebus_start_index = array_search("<REBUS>", $this->lines) + 1;
+  private function getRebusArray($lines) {
+    if (array_search("<REBUS>", $lines) > -1) {
+      $rebus_start_index = array_search("<REBUS>", $lines) + 1;
       $rebus_array = [];
       $i = $rebus_start_index;
-      while ($this->lines[$i] != "<ACROSS>") {
-        $line = explode(':', $this->lines[$i]);
+      while ($lines[$i] != "<ACROSS>") {
+        $line = explode(':', $lines[$i]);
         if (isset($line[1])) {
           $rebus_array[] = $line[1];
         }

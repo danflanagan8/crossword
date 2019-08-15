@@ -5,6 +5,7 @@ namespace Drupal\crossword\Plugin\crossword\crossword_file_parser;
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\crossword\CrosswordFileParserPluginInterface;
 use Drupal\file\Entity\File;
+use Drupal\crossword\CrosswordFileParserBase;
 
 /**
  * @CrosswordFileParser(
@@ -12,29 +13,8 @@ use Drupal\file\Entity\File;
  *   title = @Translation("Across Lite Puz")
  * )
  */
-class AcrossLitePuzParser extends PluginBase implements CrosswordFileParserPluginInterface {
+class AcrossLitePuzParser extends CrosswordFileParserBase {
 
-  /**
-   * Create a plugin with the given input.
-   *
-   * @param string $configuration
-   *   The configuration of the plugin.
-   * @param string $plugin_id
-   *   The plugin id.
-   * @param array $plugin_definition
-   *   The plugin definition.
-   *
-   * @throws \Exception
-   */
-  public function __construct($configuration, $plugin_id, $plugin_definition) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->file = File::load($configuration['fid']);
-    if (!static::isApplicable($this->file)) {
-      throw new \Exception('Chosen crossword file parser cannot parse this file.');
-    }
-    $this->contents = file_get_contents($this->file->getFileUri());
-    $this->contents = trim($this->contents);
-  }
 
   /**
    * {@inheritdoc}
@@ -61,7 +41,7 @@ class AcrossLitePuzParser extends PluginBase implements CrosswordFileParserPlugi
 
   }
 
-  public function parse() {
+  protected function getData() {
 
     $hex = bin2hex($this->contents);
     $hex_arr = [];
@@ -126,8 +106,6 @@ class AcrossLitePuzParser extends PluginBase implements CrosswordFileParserPlugi
       'notepad' => $this->getNotepad($pre_parse),
       'puzzle' => $this->getGridAndClues($pre_parse),
     ];
-
-    \Drupal::moduleHandler()->alter('crossword_parse', $data, $this->contents);
 
     return $data;
   }
