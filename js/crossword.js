@@ -2,10 +2,11 @@
 
   Drupal.behaviors.crossword = {
     attach: function (context, settings) {
-      $('.crossword').once('crossword-init').each(function(){
+      var selector = drupalSettings.crossword.selector;
+      $(selector).once('crossword-init').each(function(){
         var $crossword = $(this);
 
-        var data = drupalSettings.crossword;
+        var data = drupalSettings.crossword.data;
         var Crossword = new Drupal.Crossword.Crossword(data);
 
         $crossword.data("Crossword", Crossword);

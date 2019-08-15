@@ -96,11 +96,17 @@ class CrosswordFormatter extends FileFormatterBase {
             'crossword/crossword.default',
           ],
           'drupalSettings' => [
-            'crossword' => $data,
+            'crossword' => [
+              'data' => $data,
+              'selector' => '.crossword',
+            ],
           ],
         ],
         '#attributes' => [
           'class' => [],
+        ],
+        '#cache' => [
+          'tags' => $file->getCacheTags(),
         ],
       ];
     }
