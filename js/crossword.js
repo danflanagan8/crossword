@@ -15,8 +15,9 @@
         Drupal.behaviors.crossword.addCrosswordEventHandlers($crossword);
         Drupal.behaviors.crossword.connectClues($crossword);
         Drupal.behaviors.crossword.connectSquares($crossword);
+        Drupal.behaviors.crossword.addInputHandlers($crossword);
         Drupal.behaviors.crossword.addKeydownHandlers($crossword);
-        Drupal.behaviors.crossword.addKeypressHandlers($crossword);
+        //Drupal.behaviors.crossword.addKeypressHandlers($crossword);
         Drupal.behaviors.crossword.addClickHandlers($crossword);
 
         // Trick the display into updating now that everything is connected.
@@ -75,6 +76,14 @@
         $(this).data("Clue").connect($(this));
       });
     },
+    addInputHandlers: function($crossword) {
+      var Crossword = $crossword.data("Crossword");
+      $('.crossword-square input', $crossword).on('input', function(e){
+        Crossword.setAnswer(e.target.value);
+        Crossword.focus();
+        $(this).val("");
+      });
+    },
     addKeydownHandlers: function($crossword) {
       var Crossword = $crossword.data("Crossword");
 
@@ -85,35 +94,42 @@
             //up
             event.preventDefault();
             Crossword.moveActiveSquare('up');
+            Crossword.focus();
             break;
           case 37:
             //left
             event.preventDefault();
             Crossword.moveActiveSquare('left');
+            Crossword.focus();
             break;
           case 39:
             //right
             event.preventDefault();
             Crossword.moveActiveSquare('right');
+            Crossword.focus();
             break;
           case 40:
             //down
             event.preventDefault();
             Crossword.moveActiveSquare('down');
+            Crossword.focus();
             break;
           case 32:
             //spacebar
             event.preventDefault();
             Crossword.changeDir();
+            Crossword.focus();
             break;
           case 9:
             //tab
             event.preventDefault();
             if (event.shiftKey) {
               Crossword.retreatActiveClue();
+              Crossword.focus();
             }
             else {
               Crossword.advanceActiveClue();
+              Crossword.focus();
             }
             break;
             //backspace
