@@ -163,24 +163,26 @@
         }
       }
 
-      this.setAnswer = function(letter, undo) {
+      this.setAnswer = function(letter, undo, redo) {
         if (letter.toLowerCase() !== letter) {
           // uppercase letters are for rebus
-          // Is the existing answer uppercase? If so append. Otherwise, replace.
-          if (this.activeSquare.answer && this.activeSquare.answer.toLowerCase() !== this.activeSquare.answer) {
+          // Is the existing answer uppercase and is the "letter" one letter? If so append. Otherwise, replace.
+          if (this.activeSquare.answer && this.activeSquare.answer.toLowerCase() !== this.activeSquare.answer && letter.length == 1) {
             this.activeSquare.answer += letter;
           }
           else {
-            if (!undo) {
+            if (!(undo || redo)) {
               this.stack.undo.push({'square' : this.activeSquare, 'letter' : this.activeSquare.answer});
+              this.stack.redo = [];
             }
             this.activeSquare.answer = letter;
           }
           this.sendAnswerEvents(this.activeSquare);
         }
         else {
-          if (!undo) {
+          if (!(undo || redo)) {
             this.stack.undo.push({'square' : this.activeSquare, 'letter' : this.activeSquare.answer});
+            this.stack.redo = [];
           }
           this.activeSquare.answer = letter;
           this.sendAnswerEvents(this.activeSquare);
@@ -203,8 +205,18 @@
       this.undo = function() {
         if (this.stack.undo.length) {
           var oldState = this.stack.undo.pop();
+          this.stack.redo.push({'square' : oldState.square, 'letter' : oldState.square.answer });
           this.setActiveSquare(oldState.square);
           this.setAnswer(oldState.letter, true);
+        }
+      }
+
+      this.redo = function() {
+        if (this.stack.redo.length) {
+          var oldState = this.stack.redo.pop();
+          this.stack.undo.push({'square' : oldState.square, 'letter' : oldState.square.answer });
+          this.setActiveSquare(oldState.square);
+          this.setAnswer(oldState.letter, false, true);
         }
       }
 

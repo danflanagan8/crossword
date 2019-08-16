@@ -180,6 +180,11 @@
         Crossword.undo();
       });
 
+      $('.redo').once('crossword-redo-click').click(function(e){
+        e.preventDefault();
+        Crossword.redo();
+      });
+
       $('.show-solution').once('crossword-show-solution-click').click(function(e){
         e.preventDefault();
         if (confirm('Do you really want to give up?')) {
