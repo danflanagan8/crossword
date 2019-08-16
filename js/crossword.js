@@ -175,6 +175,11 @@
         Crossword.cheat();
       });
 
+      $('.undo').once('crossword-undo-click').click(function(e){
+        e.preventDefault();
+        Crossword.undo();
+      });
+
       $('.show-solution').once('crossword-show-solution-click').click(function(e){
         e.preventDefault();
         if (confirm('Do you really want to give up?')) {

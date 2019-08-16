@@ -73,6 +73,10 @@
       this.grid = makeGrid(this.answers);
       this.clues = makeClues();
       connectCluesAndSquares();
+      this.stack = {
+        'undo' : [],
+        'redo' : [],
+      };
 
       this.setActiveSquare = function(Square) {
         if (Square.fill !== "") {
@@ -159,8 +163,7 @@
         }
       }
 
-      this.setAnswer = function(letter) {
-
+      this.setAnswer = function(letter, undo) {
         if (letter.toLowerCase() !== letter) {
           // uppercase letters are for rebus
           // Is the existing answer uppercase? If so append. Otherwise, replace.
@@ -168,18 +171,26 @@
             this.activeSquare.answer += letter;
           }
           else {
+            if (!undo) {
+              this.stack.undo.push({'square' : this.activeSquare, 'letter' : this.activeSquare.answer});
+            }
             this.activeSquare.answer = letter;
           }
           this.sendAnswerEvents(this.activeSquare);
         }
         else {
+          if (!undo) {
+            this.stack.undo.push({'square' : this.activeSquare, 'letter' : this.activeSquare.answer});
+          }
           this.activeSquare.answer = letter;
           this.sendAnswerEvents(this.activeSquare);
-          if (letter === "") {
-            this.retreatActiveSquare();
-          }
-          else {
-            this.advanceActiveSquare();
+          if (!undo) {
+            if (letter === "") {
+              this.retreatActiveSquare();
+            }
+            else {
+              this.advanceActiveSquare();
+            }
           }
         }
       }
@@ -187,6 +198,14 @@
       this.cheat = function() {
         this.sendCheatEvents(this.activeSquare);
         this.setAnswer(this.activeSquare.fill);
+      }
+
+      this.undo = function() {
+        if (this.stack.undo.length) {
+          var oldState = this.stack.undo.pop();
+          this.setActiveSquare(oldState.square);
+          this.setAnswer(oldState.letter, true);
+        }
       }
 
       this.reveal = function() {
@@ -219,6 +238,7 @@
       }
 
       this.setAnswers = function(answers) {
+        this.stack.undo = [];
         for (var $row_index = 0; $row_index < this.grid.length; $row_index++) {
           for (var $col_index = 0; $col_index < this.grid[$row_index].length; $col_index++) {
             this.grid[$row_index][$col_index].answer = answers[$row_index][$col_index];
