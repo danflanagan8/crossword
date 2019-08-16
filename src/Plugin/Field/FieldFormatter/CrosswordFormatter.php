@@ -90,6 +90,7 @@ class CrosswordFormatter extends FileFormatterBase {
           'across' => $this->getAcross($data),
           'down' => $this->getDown($data),
           'grid' => $this->getGrid($data),
+          'controls' => $this->getControls(),
         ],
         '#attached' => [
           'library' => [
@@ -253,4 +254,97 @@ class CrosswordFormatter extends FileFormatterBase {
     return $render;
   }
 
+  protected function getControls() {
+    return [
+      '#theme' => 'crossword_controls',
+      '#content' => [
+        'errors' => [
+          '#type' => 'checkbox',
+          '#default_value' => FALSE,
+          '#attributes' => [
+            'class' => [
+              'show-errors',
+            ],
+            'name' => 'show-errors',
+            'id' => 'show-errors',
+          ],
+          '#children' => [
+            '#type' => 'label',
+            '#title' => 'Show Errors',
+            '#attributes' => [
+              'for' => 'show-errors',
+            ],
+          ],
+        ],
+        'references' => [
+          '#type' => 'checkbox',
+          '#default_value' => TRUE,
+          '#attributes' => [
+            'class' => [
+              'show-references',
+            ],
+            'name' => 'show-references',
+            'id' => 'show-references',
+          ],
+          '#children' => [
+            '#type' => 'label',
+            '#title' => 'Show References',
+            '#attributes' => [
+              'for' => 'show-references',
+            ],
+          ],
+        ],
+        'cheat' => [
+          '#type' => 'html_tag',
+          '#tag' => 'button',
+          '#value' => 'Cheat',
+          '#attributes' => [
+            'class' => [
+              'button-cheat',
+            ],
+          ],
+        ],
+        'solution' => [
+          '#type' => 'html_tag',
+          '#tag' => 'button',
+          '#value' => 'Solution',
+          '#attributes' => [
+            'class' => [
+              'button-solution',
+            ],
+          ],
+        ],
+        'clear' => [
+          '#type' => 'html_tag',
+          '#tag' => 'button',
+          '#value' => 'Clear',
+          '#attributes' => [
+            'class' => [
+              'button-clear',
+            ],
+          ],
+        ],
+        'undo' => [
+          '#type' => 'html_tag',
+          '#tag' => 'button',
+          '#value' => 'Undo',
+          '#attributes' => [
+            'class' => [
+              'button-undo',
+            ],
+          ],
+        ],
+        'redo' => [
+          '#type' => 'html_tag',
+          '#tag' => 'button',
+          '#value' => 'Redo',
+          '#attributes' => [
+            'class' => [
+              'button-redo',
+            ],
+          ],
+        ],
+      ],
+    ];
+  }
 }

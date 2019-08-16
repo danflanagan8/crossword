@@ -8,31 +8,7 @@
         {{ content.notepad }}
       </div>
     {% endif %}
-    <div class="crossword-buttons">
-      <div class="show-errors-wrapper">
-        <input type="checkbox" id="show-errors" name="show-errors">
-        <label for="show-errors">Show Incorrect Letters</label>
-      </div>
-      <div class="show-references-wrapper">
-        <input type="checkbox" id="show-references" name="show-references">
-        <label for="show-references">Highlight References</label>
-      </div>
-      <div class="show-solution-wrapper">
-        <button class="show-solution">Show Solution</button>
-      </div>
-      <div class="show-cheat-wrapper">
-        <button class="cheat">Cheat</button>
-      </div>
-      <div class="undo-wrapper">
-        <button class="undo">Undo</button>
-      </div>
-      <div class="redo-wrapper">
-        <button class="redo">Redo</button>
-      </div>
-      <div class="clear-wrapper">
-        <button class="clear">Clear</button>
-      </div>
-    </div>
+    {{ content.controls }}
   </div>
 
   <div id="active-clues" class="active-clues">

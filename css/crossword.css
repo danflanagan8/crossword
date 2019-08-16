@@ -2,23 +2,27 @@
   position: relative;
 }
 
-.crossword-header {
-  display: flex;
-  justify-content: space-between;
-
-}
-
 .crossword-title {
   margin-top: 0;
 }
 
-.crossword-buttons > div {
-  margin: 0.5em 0;
+.crossword-controls {
+  display: flex;
+  justify-content: space-between;
 }
 
-.crossword-buttons {
-  padding: 0.5em;
-  background-color: #CCF;
+.crossword-controls .form-item {
+  margin-top: 0;
+}
+
+.crossword-controls label {
+  display: inline;
+}
+
+.crossword-buttons > div {
+  margin-bottom: 1em;
+  display: flex;
+  flex-wrap: nowrap;
 }
 
 .crossword-grid {
