@@ -5,6 +5,8 @@ namespace Drupal\crossword\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\field\Entity\File;
 use Drupal\crossword\CrosswordFileParser;
+use Drupal\Core\Form\FormStateInterface;
+
 
 /**
  * Plugin implementation of the 'crossword_solution' formatter.
@@ -18,6 +20,28 @@ use Drupal\crossword\CrosswordFileParser;
  * )
  */
 class CrosswordSolutionFormatter extends CrosswordFormatter {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function defaultSettings() {
+    $options = parent::defaultSettings();
+    unset($options['buttons']);
+    unset($options['errors']);
+    unset($options['references']);
+    return $options;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    $form = parent::settingsForm($form, $form_state);
+    unset($form['buttons']);
+    unset($form['errors']);
+    unset($form['references']);
+    return $form;
+  }
 
   /**
    * {@inheritdoc}

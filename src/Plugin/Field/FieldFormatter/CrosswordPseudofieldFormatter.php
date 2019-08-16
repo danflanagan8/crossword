@@ -46,6 +46,7 @@ class CrosswordPseudofieldFormatter extends CrosswordFormatter {
       'across' => $this->getAcross($data),
       'down' => $this->getDown($data),
       'grid' => $this->getGrid($data),
+      'controls' => $this->getControls(),
       '#attached' => [
         'library' => [
           'crossword/crossword.default',
@@ -55,6 +56,12 @@ class CrosswordPseudofieldFormatter extends CrosswordFormatter {
             'data' => $data,
             'selector' => 'body',
           ],
+        ],
+      ],
+      '#attributes' => [
+        'class' => [
+          $this->getSetting('errors')['show'] && $this->getSetting('errors')['checked'] ? 'show-errors' : '',
+          $this->getSetting('references')['show'] && $this->getSetting('references')['checked'] ? 'show-references' : '',
         ],
       ],
     ];
@@ -81,8 +88,9 @@ class CrosswordPseudofieldFormatter extends CrosswordFormatter {
     $referencing_type = $this->fieldDefinition->getTargetEntityTypeId();
     return ["Use content.$field_name.title, content.$field_name.author,
            content.$field_name.notepad, content.$field_name.grid,
-           content.$field_name.across, and content.$field_name.down in the
-           template for this $referencing_type."];
+           content.$field_name.across, content.$field_name.down , and
+           content.$field_name.controls in the template for this
+           $referencing_type."];
   }
 
 }

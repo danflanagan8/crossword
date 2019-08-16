@@ -25,9 +25,26 @@ class CrosswordFormatter extends FileFormatterBase {
    * {@inheritdoc}
    */
   public static function defaultSettings() {
-    $options['title_tag'] = 'h1';
-    $options['author_tag'] = 'h2';
-    $options['notepad_tag'] = 'p';
+    $options['details'] = [
+      'title_tag' => 'h1',
+      'author_tag' => 'h2',
+      'notepad_tag' => 'p',
+    ];
+    $options['buttons']['buttons'] = [
+      'cheat',
+      'solution',
+      'clear',
+      'undo',
+      'redo',
+    ];
+    $options['errors'] = [
+      'show' => TRUE,
+      'checked' => FALSE,
+    ];
+    $options['references'] = [
+      'show' => TRUE,
+      'checked' => TRUE,
+    ];
     return $options;
   }
 
@@ -35,6 +52,8 @@ class CrosswordFormatter extends FileFormatterBase {
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
+
+    $field_name = $this->fieldDefinition->getName();
 
     $tag_options = [
       'h1' => 'h1',
@@ -46,27 +65,94 @@ class CrosswordFormatter extends FileFormatterBase {
       'span' => 'span',
     ];
 
-    $form['title_tag'] = [
+    $form['details'] = [
+      '#type' => 'fieldset',
+      '#title' => 'Crossword Details',
+      '#tree' => TRUE,
+    ];
+    $form['details']['title_tag'] = [
       '#type' => 'select',
       '#title' => 'Title',
-      '#default_value' => $this->getSetting('title_tag'),
+      '#default_value' => $this->getSetting('details')['title_tag'],
       '#options' => $tag_options,
       '#empty_option' => $this->t("Do not render the title"),
+      '#prefix' => '<p>Select the html tag to usee for rendering these details.</p>',
     ];
-    $form['author_tag'] = [
+    $form['details']['author_tag'] = [
       '#type' => 'select',
       '#title' => 'Author',
-      '#default_value' => $this->getSetting('author_tag'),
+      '#default_value' => $this->getSetting('details')['author_tag'],
       '#options' => $tag_options,
       '#empty_option' => $this->t("Do not render the author"),
     ];
-    $form['notepad_tag'] = [
+    $form['details']['notepad_tag'] = [
       '#type' => 'select',
       '#title' => 'Notepad',
-      '#default_value' => $this->getSetting('notepad_tag'),
+      '#default_value' => $this->getSetting('details')['notepad_tag'],
       '#options' => $tag_options,
       '#empty_option' => $this->t("Do not render the notepad"),
     ];
+
+    $form['buttons'] = [
+      '#type' => 'fieldset',
+      '#title' => 'Buttons',
+      '#tree' => TRUE,
+    ];
+
+    $form['buttons']['buttons'] = [
+      '#type' => 'checkboxes',
+      '#title' => 'Buttons',
+      '#prefix' => '<p>Check all the buttons that should be available</p>',
+      '#options' => [
+        'cheat' => 'Cheat',
+        'solution' => 'Solution',
+        'clear' => 'Clear',
+        'undo' => 'Undo',
+        'redo' => 'Redo',
+      ],
+      '#default_value' => $this->getSetting('buttons')['buttons'],
+    ];
+    $form['errors'] = [
+      '#type' => 'fieldset',
+      '#title' => 'Show Errors checkbox',
+      '#tree' => TRUE,
+      'show' => [
+        '#type' => 'checkbox',
+        '#title' => 'Display',
+        '#default_value' => $this->getSetting('errors')['show'],
+      ],
+      'checked' => [
+        '#type' => 'checkbox',
+        '#title' => 'Check by default',
+        '#default_value' => $this->getSetting('errors')['checked'],
+        '#states' => array(
+          'visible' => array(
+            ":input[name='fields[$field_name][settings_edit_form][settings][errors][show]']" => array('checked' => TRUE),
+          ),
+        ),
+      ],
+    ];
+    $form['references'] = [
+      '#type' => 'fieldset',
+      '#title' => 'Show References checkbox',
+      '#tree' => TRUE,
+      'show' => [
+        '#type' => 'checkbox',
+        '#title' => 'Display',
+        '#default_value' => $this->getSetting('references')['show'],
+      ],
+      'checked' => [
+        '#type' => 'checkbox',
+        '#title' => 'Check by default',
+        '#default_value' => $this->getSetting('references')['checked'],
+        '#states' => array(
+          'visible' => array(
+            ":input[name='fields[$field_name][settings_edit_form][settings][references][show]']" => array('checked' => TRUE),
+          ),
+        ),
+      ],
+    ];
+
     return $form;
   }
 
@@ -104,7 +190,10 @@ class CrosswordFormatter extends FileFormatterBase {
           ],
         ],
         '#attributes' => [
-          'class' => [],
+          'class' => [
+            $this->getSetting('errors')['show'] && $this->getSetting('errors')['checked'] ? 'show-errors' : '',
+            $this->getSetting('references')['show'] && $this->getSetting('references')['checked'] ? 'show-references' : '',
+          ],
         ],
         '#cache' => [
           'tags' => $file->getCacheTags(),
@@ -115,10 +204,10 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   protected function getTitle($data) {
-    if ($this->getSetting('title_tag')) {
+    if ($this->getSetting('details')['title_tag']) {
       return [
         '#type' => 'html_tag',
-        '#tag' => $this->getSetting('title_tag'),
+        '#tag' => $this->getSetting('details')['title_tag'],
         '#value' => $data['title'],
         '#attributes' => [
           'class' => [
@@ -130,10 +219,10 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   protected function getAuthor($data) {
-    if ($this->getSetting('author_tag') && isset($data['author'])) {
+    if ($this->getSetting('details')['author_tag'] && isset($data['author'])) {
       return [
         '#type' => 'html_tag',
-        '#tag' => $this->getSetting('author_tag'),
+        '#tag' => $this->getSetting('details')['author_tag'],
         '#value' => $data['author'],
         '#attributes' => [
           'class' => [
@@ -145,10 +234,10 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   protected function getNotepad($data) {
-    if ($this->getSetting('notepad_tag') && isset($data['notepad'])) {
+    if ($this->getSetting('details')['notepad_tag'] && isset($data['notepad'])) {
       return [
         '#type' => 'html_tag',
-        '#tag' => $this->getSetting('notepad_tag'),
+        '#tag' => $this->getSetting('details')['notepad_tag'],
         '#value' => nl2br($data['notepad']),
         '#attributes' => [
           'class' => [
@@ -258,93 +347,75 @@ class CrosswordFormatter extends FileFormatterBase {
     return [
       '#theme' => 'crossword_controls',
       '#content' => [
-        'errors' => [
-          '#type' => 'checkbox',
-          '#default_value' => FALSE,
-          '#attributes' => [
-            'class' => [
-              'show-errors',
-            ],
-            'name' => 'show-errors',
-            'id' => 'show-errors',
-          ],
-          '#children' => [
-            '#type' => 'label',
-            '#title' => 'Show Errors',
-            '#attributes' => [
-              'for' => 'show-errors',
-            ],
-          ],
-        ],
-        'references' => [
-          '#type' => 'checkbox',
-          '#default_value' => TRUE,
-          '#attributes' => [
-            'class' => [
-              'show-references',
-            ],
-            'name' => 'show-references',
-            'id' => 'show-references',
-          ],
-          '#children' => [
-            '#type' => 'label',
-            '#title' => 'Show References',
-            '#attributes' => [
-              'for' => 'show-references',
-            ],
-          ],
-        ],
-        'cheat' => [
-          '#type' => 'html_tag',
-          '#tag' => 'button',
-          '#value' => 'Cheat',
-          '#attributes' => [
-            'class' => [
-              'button-cheat',
-            ],
-          ],
-        ],
-        'solution' => [
-          '#type' => 'html_tag',
-          '#tag' => 'button',
-          '#value' => 'Solution',
-          '#attributes' => [
-            'class' => [
-              'button-solution',
-            ],
-          ],
-        ],
-        'clear' => [
-          '#type' => 'html_tag',
-          '#tag' => 'button',
-          '#value' => 'Clear',
-          '#attributes' => [
-            'class' => [
-              'button-clear',
-            ],
-          ],
-        ],
-        'undo' => [
-          '#type' => 'html_tag',
-          '#tag' => 'button',
-          '#value' => 'Undo',
-          '#attributes' => [
-            'class' => [
-              'button-undo',
-            ],
-          ],
-        ],
-        'redo' => [
-          '#type' => 'html_tag',
-          '#tag' => 'button',
-          '#value' => 'Redo',
-          '#attributes' => [
-            'class' => [
-              'button-redo',
-            ],
-          ],
-        ],
+        'errors' => $this->getShowErrorsCheckbox(),
+        'references' => $this->getShowReferencesCheckbox(),
+        'cheat' => $this->getButton('cheat'),
+        'solution' => $this->getButton('solution'),
+        'clear' => $this->getButton('clear'),
+        'undo' => $this->getButton('undo'),
+        'redo' => $this->getButton('redo'),
       ],
     ];
+  }
+
+  protected function getShowErrorsCheckbox() {
+    if ($this->getSetting('errors')['show']) {
+      return [
+        '#type' => 'checkbox',
+        '#attributes' => [
+          'class' => [
+            'show-errors',
+          ],
+          'checked' => $this->getSetting('errors')['checked'] ? "checked" : NULL,
+          'name' => 'show-errors',
+          'id' => 'show-errors',
+        ],
+        '#children' => [
+          '#type' => 'label',
+          '#title' => 'Show Errors',
+          '#attributes' => [
+            'for' => 'show-errors',
+          ],
+        ],
+      ];
+    }
+  }
+
+  protected function getShowReferencesCheckbox() {
+    if ($this->getSetting('references')['show']) {
+      return [
+        '#type' => 'checkbox',
+        '#attributes' => [
+          'class' => [
+            'show-references',
+          ],
+          'checked' => $this->getSetting('references')['checked'] ? "checked" : NULL,
+          'name' => 'show-references',
+          'id' => 'show-references',
+        ],
+        '#children' => [
+          '#type' => 'label',
+          '#title' => 'Show References',
+          '#attributes' => [
+            'for' => 'show-references',
+          ],
+        ],
+      ];
+    }
+  }
+
+  protected function getButton($name) {
+    if ($this->getSetting('buttons')['buttons'][$name]) {
+      return [
+        '#type' => 'html_tag',
+        '#tag' => 'button',
+        '#value' => $name,
+        '#attributes' => [
+          'class' => [
+            "button-$name",
+          ],
+        ],
+      ];
+    }
   }
 }

@@ -1,17 +1,25 @@
 <div class="crossword-controls">
-  <div class="crossword-options">
-    {{ content.errors }}
-    {{ content.references }}
-  </div>
-  <div class="crossword-buttons">
-    <div class="solution-buttons">
-      {{ content.cheat }}
-      {{ content.solution }}
-      {{ content.clear }}
+  {% if content.errors is not empty or content.references is not empty %}
+    <div class="crossword-options">
+      {{ content.errors }}
+      {{ content.references }}
     </div>
-    <div class="undo-redo">
-      {{ content.undo }}
-      {{ content.redo }}
+  {% endif %}
+  {% if content.cheat is not empty or content.solution is not empty or content.clear is not empty or content.undo is not empty or content.redo is not empty%}
+    <div class="crossword-buttons">
+      {% if content.cheat is not empty or content.solution is not empty or content.clear is not empty %}
+        <div class="solution-buttons">
+          {{ content.cheat }}
+          {{ content.solution }}
+          {{ content.clear }}
+        </div>
+      {% endif %}
+      {% if content.undo is not empty or content.redo is not empty %}
+        <div class="undo-redo">
+          {{ content.undo }}
+          {{ content.redo }}
+        </div>
+      {% endif %}
     </div>
-  </div>
+  {% endif %}
 </div>

@@ -15,6 +15,11 @@
   margin-top: 0;
 }
 
+.crossword-controls button{
+  padding: 0.25em;
+  text-transform: capitalize;
+}
+
 .crossword-controls label {
   display: inline;
 }
