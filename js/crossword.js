@@ -23,13 +23,13 @@
         Crossword.setActiveClue(Crossword.activeClue);
 
         // Some stuff for the checkboxes that might as well be here.
-        $('#show-errors').once('crossword-show-errors-change').on('change', function(){
-          $('.crossword').toggleClass('show-errors');
+        $('#show-errors', $crossword).once('crossword-show-errors-change').on('change', function(){
+          $crossword.toggleClass('show-errors');
         });
 
-        $('#show-references').once('crossword-show-references-change').on('change', function(){
-          $('.crossword').toggleClass('show-references');
-        }).prop('checked', true);
+        $('#show-references', $crossword).once('crossword-show-references-change').on('change', function(){
+          $crossword.toggleClass('show-references');
+        })
 
       });
     },
