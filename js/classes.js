@@ -200,6 +200,20 @@
         return answers;
       }
 
+      // most likely for clearing
+      this.clear = function() {
+        this.setAnswers(emptyAnswers());
+      }
+
+      this.setAnswers = function(answers) {
+        for (var $row_index = 0; $row_index < this.grid.length; $row_index++) {
+          for (var $col_index = 0; $col_index < this.grid[$row_index].length; $col_index++) {
+            this.grid[$row_index][$col_index].answer = answers[$row_index][$col_index];
+            this.sendAnswerEvents(this.grid[$row_index][$col_index]);
+          }
+        }
+      }
+
       /**
        * Functions that trigger events on dom elements.
        */
@@ -246,9 +260,8 @@
 
       this.sendAnswerEvents = function(Square){
         if (Square && Square['$square']) {
-          console.log('send: ' + Square.answer);
           Square['$square'].trigger('crossword-answer', [Square.answer]);
-          if (Square.answer.toUpperCase() !== Square.fill.toUpperCase()) {
+          if (Square.answer && Square.answer.toUpperCase() !== Square.fill.toUpperCase()) {
             Square['$square'].trigger('crossword-error');
           }
           else {
@@ -284,7 +297,7 @@
         for (var row_index = 0; row_index < grid.length; row_index++) {
           answers.push([]);
           for (var col_index = 0; col_index < grid[row_index].length; col_index++) {
-            answers[row_index].push(null);
+            answers[row_index].push('');
           }
         }
         return answers;

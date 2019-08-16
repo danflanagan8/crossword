@@ -177,7 +177,16 @@
 
       $('.show-solution').once('crossword-show-solution-click').click(function(e){
         e.preventDefault();
-        Crossword.reveal();
+        if (confirm('Do you really want to give up?')) {
+          Crossword.reveal();
+        }
+      });
+
+      $('.clear').once('crossword-clear-click').click(function(e){
+        e.preventDefault();
+        if (confirm('Do you really want to clear? This action cannot be undone.')){
+          Crossword.clear();
+        }
       });
 
     },
