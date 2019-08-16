@@ -13,8 +13,8 @@
         $crossword.data("Crossword", Crossword);
 
         Drupal.behaviors.crossword.addCrosswordEventHandlers($crossword);
-        Drupal.behaviors.crossword.connectSquares($crossword);
         Drupal.behaviors.crossword.connectClues($crossword);
+        Drupal.behaviors.crossword.connectSquares($crossword);
         Drupal.behaviors.crossword.addKeydownHandlers($crossword);
         Drupal.behaviors.crossword.addKeypressHandlers($crossword);
         Drupal.behaviors.crossword.addClickHandlers($crossword);
@@ -201,6 +201,12 @@
         .on('crossword-reference', function(){
           $(this).addClass('reference');
         })
+        .on('crossword-error', function(){
+          $(this).addClass('error');
+        })
+        .on('crossword-ok', function(){
+          $(this).removeClass('error');
+        })
         .on('crossword-off', function(){
           $(this)
             .removeClass('active')
@@ -218,12 +224,6 @@
           $(this).find('.square-fill').text(answer.toUpperCase());
           var Crossword = $crossword.data("Crossword");
           localStorage.setItem(Crossword.id, JSON.stringify(Crossword.getAnswers()));
-        })
-        .on('crossword-error', function(){
-          $(this).addClass('error');
-        })
-        .on('crossword-ok', function(){
-          $(this).removeClass('error');
         })
         .on('crossword-rebus', function(){
           $(this).addClass('rebus');

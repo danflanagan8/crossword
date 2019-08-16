@@ -225,7 +225,8 @@ input.phantom {
   content: "D";
 }
 
-.crossword.show-errors .crossword-square.error .square-fill {
+.crossword.show-errors .crossword-square.error .square-fill,
+.crossword.show-errors .crossword-clue.error {
   color: red;
 }
 

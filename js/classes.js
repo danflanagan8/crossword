@@ -15,7 +15,7 @@
           this.fill = data.fill.toLowerCase();
         }
       }
-      this.answer = answer ? answer : "";
+      this.answer = answer ? answer : ""; // the user input
       this.numeral = data.numeral;
       this.across = data.across ? data.across.index : null;
       this.down = data.down ? data.down.index : null;
@@ -31,6 +31,10 @@
         this.$square = $square;
         Crossword.sendAnswerEvents(this);
       }
+
+      this.hasError = function() {
+        return this.answer && this.answer.toUpperCase() !== this.fill.toUpperCase();
+      }
     },
 
     Clue: function(data) {
@@ -44,6 +48,15 @@
 
       this.connect = function($clue) {
         this.$clue = $clue;
+      }
+
+      this.hasError = function() {
+        for (var i = 0; i < this.squares.length; i++) {
+          if (this.squares[i].hasError()) {
+            return true;
+          }
+        }
+        return false;
       }
     },
 
@@ -261,7 +274,7 @@
       this.sendAnswerEvents = function(Square){
         if (Square && Square['$square']) {
           Square['$square'].trigger('crossword-answer', [Square.answer]);
-          if (Square.answer && Square.answer.toUpperCase() !== Square.fill.toUpperCase()) {
+          if (Square.hasError()) {
             Square['$square'].trigger('crossword-error');
           }
           else {
@@ -272,6 +285,24 @@
           }
           else {
             Square['$square'].trigger('crossword-not-rebus');
+          }
+
+          // now the clues
+          if (Square.down) {
+            if (Square.down.hasError()) {
+              Square.down['$clue'].trigger('crossword-error');
+            }
+            else {
+              Square.down['$clue'].trigger('crossword-ok');
+            }
+          }
+          if (Square.across) {
+            if (Square.across.hasError()) {
+              Square.across['$clue'].trigger('crossword-error');
+            }
+            else {
+              Square.across['$clue'].trigger('crossword-ok');
+            }
           }
         }
       }
