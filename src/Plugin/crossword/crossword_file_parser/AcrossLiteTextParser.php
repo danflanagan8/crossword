@@ -97,6 +97,7 @@ class AcrossLiteTextParser extends CrosswordFileParserBase {
     $lines = explode("\n", $this->contents);
 
     $data = [
+      'id' => $this->file->id(), 
       'title' => $this->getTitle($lines),
       'author' => $this->getAuthor($lines),
       'notepad' => $this->getNotepad($lines),

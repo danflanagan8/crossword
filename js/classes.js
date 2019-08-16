@@ -2,7 +2,8 @@
 
   Drupal.Crossword = {
 
-    Square: function(data) {
+    Square: function(data, answer, Crossword) {
+      this.Crossword = Crossword;
       this.row = data.row;
       this.column = data.col;
       this.fill = "";
@@ -14,7 +15,7 @@
           this.fill = data.fill.toLowerCase();
         }
       }
-      this.answer = "";
+      this.answer = answer ? answer : "";
       this.numeral = data.numeral;
       this.across = data.across ? data.across.index : null;
       this.down = data.down ? data.down.index : null;
@@ -25,6 +26,11 @@
         'right' : false,
       };
       this.$square = null;
+
+      this.connect = function($square) {
+        this.$square = $square;
+        Crossword.sendAnswerEvents(this);
+      }
     },
 
     Clue: function(data) {
@@ -35,18 +41,23 @@
       this.references = data.references; //starts as contstants. objects get added later
       this.squares = [];
       this.$clue = null;
+
+      this.connect = function($clue) {
+        this.$clue = $clue;
+      }
     },
 
-    Crossword: function(data) {
+    Crossword: function(data, answers) {
       var Crossword = this;
       this.data = data;
 
+      this.id = data.id;
       this.dir = 'across';
       this.activeSquare = {'row' : null, 'col': null};
       this.activeClue = null;
       this.activeReferences = [];
-      this.answers = emptyAnswers();
-      this.grid = makeGrid();
+      this.answers = answers ? answers : emptyAnswers(); //the initial answers
+      this.grid = makeGrid(this.answers);
       this.clues = makeClues();
       connectCluesAndSquares();
 
@@ -178,6 +189,17 @@
         }
       }
 
+      this.getAnswers = function() {
+        var answers = [];
+        for (var $row_index = 0; $row_index < this.grid.length; $row_index++) {
+          answers[$row_index] = [];
+          for (var $col_index = 0; $col_index < this.grid[$row_index].length; $col_index++) {
+            answers[$row_index][$col_index] = this.grid[$row_index][$col_index].answer;
+          }
+        }
+        return answers;
+      }
+
       /**
        * Functions that trigger events on dom elements.
        */
@@ -224,6 +246,7 @@
 
       this.sendAnswerEvents = function(Square){
         if (Square && Square['$square']) {
+          console.log('send: ' + Square.answer);
           Square['$square'].trigger('crossword-answer', [Square.answer]);
           if (Square.answer.toUpperCase() !== Square.fill.toUpperCase()) {
             Square['$square'].trigger('crossword-error');
@@ -267,7 +290,7 @@
         return answers;
       }
 
-      function makeGrid() {
+      function makeGrid(answers) {
         var grid = [];
         var data_grid = Crossword.data.puzzle.grid;
 
@@ -275,7 +298,7 @@
         for (var row_index = 0; row_index < data_grid.length; row_index++) {
           var row = [];
           for (var col_index = 0; col_index < data_grid[row_index].length; col_index++) {
-            row[col_index] = new Drupal.Crossword.Square(data_grid[row_index][col_index]);
+            row[col_index] = new Drupal.Crossword.Square(data_grid[row_index][col_index], answers[row_index][col_index], Crossword);
           }
           grid.push(row);
         }

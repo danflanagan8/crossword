@@ -101,6 +101,7 @@ class AcrossLitePuzParser extends CrosswordFileParserBase {
     ];
 
     $data = [
+      'id' => $this->file->id(), 
       'title' => $this->getTitle($pre_parse),
       'author' => $this->getAuthor($pre_parse),
       'notepad' => $this->getNotepad($pre_parse),
