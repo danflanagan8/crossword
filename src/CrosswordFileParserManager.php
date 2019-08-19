@@ -6,6 +6,7 @@ use Drupal\Component\Plugin\Mapper\MapperInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
+use Drupal\file\FileInterface;
 
 /**
  * Gathers the crossword file parser plugins.
@@ -22,7 +23,7 @@ class CrosswordFileParserManager extends DefaultPluginManager implements Crosswo
   /**
    * {@inheritdoc}
    */
-  public function filterApplicableDefinitions(array $definitions, $file) {
+  public function filterApplicableDefinitions(array $definitions, FileInterface $file) {
     foreach ($definitions as $definition) {
       $is_applicable = $definition['class']::isApplicable($file);
       if ($is_applicable) {
@@ -35,7 +36,7 @@ class CrosswordFileParserManager extends DefaultPluginManager implements Crosswo
   /**
    * {@inheritdoc}
    */
-  public function loadCrosswordFileParserFromInput($file) {
+  public function loadCrosswordFileParserFromInput(FileInterface $file) {
     $definition = $this->loadDefinitionFromInput($file);
     return $definition ? $this->createInstance($definition['id'], ['fid' => $file->id()]) : FALSE;
   }
@@ -43,7 +44,7 @@ class CrosswordFileParserManager extends DefaultPluginManager implements Crosswo
   /**
    * {@inheritdoc}
    */
-  public function loadDefinitionFromInput($file) {
+  public function loadDefinitionFromInput(FileInterface $file) {
     return $this->filterApplicableDefinitions($this->getDefinitions(), $file);
   }
 

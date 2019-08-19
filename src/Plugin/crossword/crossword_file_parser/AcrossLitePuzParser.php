@@ -3,9 +3,8 @@
 namespace Drupal\crossword\Plugin\crossword\crossword_file_parser;
 
 use Drupal\Core\Plugin\PluginBase;
-use Drupal\crossword\CrosswordFileParserPluginInterface;
 use Drupal\file\Entity\File;
-use Drupal\crossword\CrosswordFileParserBase;
+use Drupal\crossword\CrosswordFileParserPluginBase;
 
 /**
  * @CrosswordFileParser(
@@ -13,7 +12,7 @@ use Drupal\crossword\CrosswordFileParserBase;
  *   title = @Translation("Across Lite Puz")
  * )
  */
-class AcrossLitePuzParser extends CrosswordFileParserBase {
+class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
 
 
   /**
@@ -101,7 +100,7 @@ class AcrossLitePuzParser extends CrosswordFileParserBase {
     ];
 
     $data = [
-      'id' => $this->file->id(), 
+      'id' => $this->file->id(),
       'title' => $this->getTitle($pre_parse),
       'author' => $this->getAuthor($pre_parse),
       'notepad' => $this->getNotepad($pre_parse),

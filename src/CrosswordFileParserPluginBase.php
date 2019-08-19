@@ -10,7 +10,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
-abstract class CrosswordFileParserBase extends PluginBase implements CrosswordFileParserPluginInterface, ContainerFactoryPluginInterface {
+abstract class CrosswordFileParserPluginBase extends PluginBase implements CrosswordFileParserPluginInterface, ContainerFactoryPluginInterface {
 
   /**
    * cache
