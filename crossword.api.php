@@ -16,7 +16,7 @@
  * @param string $contents
  *   The contents of the text file representing the crossword.
  */
-function hook_crossword_parse_alter(&$data, $contents) {
+function hook_crossword_data_alter(&$data, $contents) {
   // Take credit for other people's work
   $data['title'] = 'Dan';
 
