@@ -18,7 +18,7 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
   /**
    * {@inheritdoc}
    *
-   * Checks for missing tags, extra tags, oout of order tags.
+   * Checks for right mimetype and file extension.
    */
   public static function isApplicable($file) {
 
@@ -40,8 +40,11 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
 
   }
 
-  protected function getData() {
 
+  /**
+   * {@inheritdoc}
+   */
+  protected function getData() {
     $hex = bin2hex($this->contents);
     $hex_arr = [];
     for($i = 0; $i < strlen($hex); $i = $i + 2){
@@ -106,6 +109,9 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
       'notepad' => $this->getNotepad($pre_parse),
       'puzzle' => $this->getGridAndClues($pre_parse),
     ];
+
+    $this->addIndexToClueReferences($data['puzzle']['clues']);
+    $this->addSquareMoves($data['puzzle']['grid']);
 
     return $data;
   }
@@ -248,9 +254,6 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
       }
       $grid[] = $row;
     }
-
-    $this->addIndexToClueReferences($clues);
-    $this->addSquareMoves($grid, $clues);
 
     return [
       'grid' => $grid,

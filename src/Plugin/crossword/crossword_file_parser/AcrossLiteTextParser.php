@@ -105,6 +105,9 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
       'puzzle' => $this->getGridAndClues($lines),
     ];
 
+    $this->addIndexToClueReferences($data['puzzle']['clues']);
+    $this->addSquareMoves($data['puzzle']['grid']);
+
     return $data;
   }
 
@@ -231,20 +234,15 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
           }
         }
 
-        //is it a rebus square?
+        // Is it a rebus square?
         if (is_numeric($square['fill']) && !empty($rebus_array) && isset($rebus_array[$square['fill'] - 1])) {
           $square['fill'] = $rebus_array[$square['fill'] - 1];
-          $square['rebus'] = TRUE;
         }
 
         $row[] = $square;
       }
       $grid[] = $row;
     }
-
-    $this->addIndexToClueReferences($clues);
-
-    $this->addSquareMoves($grid, $clues);
 
     return [
       'grid' => $grid,

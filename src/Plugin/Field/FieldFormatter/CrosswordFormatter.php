@@ -265,7 +265,6 @@ class CrosswordFormatter extends FileFormatterBase {
         '#attributes' => [
           'data-clue-index-across' => (string) $across_index,
           'data-clue-numeral-across' => $across['numeral'],
-          'data-clue-references' => json_encode($across['references']),
         ],
       ];
     }
@@ -289,7 +288,6 @@ class CrosswordFormatter extends FileFormatterBase {
         '#attributes' => [
           'data-clue-index-down' => (string) $down_index,
           'data-clue-numeral-down' => $down['numeral'],
-          'data-clue-references' => json_encode($down['references']),
         ],
       ];
     }
@@ -331,8 +329,7 @@ class CrosswordFormatter extends FileFormatterBase {
               'data-clue-index-down' => (string) $square['down']['index'],
               'data-numeral' => isset($square['numeral']) ? $square['numeral'] : NULL,
               'data-fill' => $square['fill'],
-              'data-circle' => $square['fill'] != strtoupper($square['fill']),
-              'data-rebus' => isset($square['numeral']) ? $square['numeral'] : NULL,
+              'data-circle' => $square['fill'] != strtoupper($square['fill']), // lowercase indicates there should be a cricle
             ],
           ];
         }

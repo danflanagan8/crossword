@@ -79,8 +79,8 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
   }
 
   /**
-   * Plugins that extend this base should have their own getData function.
-   * The parse function is final so that caching and the crossword_alter hook
+   * Plugins that extend this base should have their own getData() function.
+   * The parse function is final so that caching and the data alter hook
    * are standardized.
    */
   final public function parse() {
@@ -127,14 +127,20 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
    *  'down' => [
    *    'index' => index of down clue
    *  ],
-   *  'rebus' => bool,
+   *  'moves' => [
+   *    'up' => ['row': number, 'col': number] or NULL
+   *    'down' => ['row': number, 'col': number] or NULL
+   *    'left' => ['row': number, 'col': number] or NULL
+   *    'right' => ['row': number, 'col': number] or NULL
+   *  ],
    * )
+   *
+   * Further, note that a lowercase fill indicates the square should be circled.
    *
    * A clue looks like this...
    * array(
    *  'text' => string,
    *  'numeral' => number,
-   *  'index' => number,
    *  'references' => array(
    *    [
    *      'dir' => 'down' or 'across',
@@ -156,7 +162,7 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
   }
 
   /**
-   * If the text of a clue is something like "Common feature of 12-Across and
+   * If the text of a clue is something like "Common feature of 12- and 57-Across and
    * 34-Down", the return value will be
    *
    * array(
@@ -165,13 +171,17 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
    *   'numeral' => 12,
    *  ],
    *  [
+   *   'dir' => 'across',
+   *   'numeral' => 57,
+   *  ],
+   *  [
    *   'dir' => 'down',
    *   'numeral' => 34,
    *  ],
    * )
    *
    */
-  private function findReferences($text) {
+  protected function findReferences($text) {
     //find references
     $refRegex = '/(\d+\-)|(Down)|(Across)/';
     if( preg_match('/(\d+\-)/', $text) === 1 && preg_match('/(Across)|(Down)/', $text) === 1 ){
@@ -239,7 +249,7 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
    *  function. The clues should be fully created other than the index
    *  element of any references.
    */
-  private function addIndexToClueReferences(&$clues) {
+  protected function addIndexToClueReferences(&$clues) {
     foreach ($clues['down'] as &$down_clue) {
       if (!empty($down_clue['references'])) {
         foreach ($down_clue['references'] as &$reference) {
@@ -266,7 +276,13 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
     }
   }
 
-  private function addSquareMoves(&$grid, $clues) {
+  /**
+   * This tells the arrow keys what to do when the puzzle is rendered.
+   * By default, arrow keys won't move through black squares they get stopped
+   * by the edges of the puzzle. If you want to modify this UX, the best
+   * way may be to leverage hook_crossword_data_alter().
+   */
+  protected function addSquareMoves(&$grid) {
     foreach ($grid as $row_index => $row) {
       foreach ($row as $col_index => $square) {
         $grid[$row_index][$col_index]['moves'] = [
@@ -306,6 +322,5 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
       }
     }
   }
-
 
 }
