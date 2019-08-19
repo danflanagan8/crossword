@@ -48,4 +48,34 @@ class CrosswordFileParserManager extends DefaultPluginManager implements Crosswo
     return $this->filterApplicableDefinitions($this->getDefinitions(), $file);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getInstalledParsersOptionList() {
+    $options = [];
+    foreach ($this->getDefinitions() as $definition) {
+      $options[$definition['id']] = $definition['title'];
+    }
+    return $options;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function loadDefinitionsFromOptionList($options) {
+    $definitions = [];
+    // When no options are selected, all plugins are applicable.
+    if (count(array_keys($options, '0')) == count($options) || empty($options)) {
+      return $this->getDefinitions();
+    }
+    else {
+      foreach ($options as $parser_id => $enabled) {
+        if ($enabled) {
+          $definitions[$parser_id] = $this->getDefinition($parser_id);
+        }
+      }
+    }
+    return $definitions;
+  }
+
 }

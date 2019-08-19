@@ -3,11 +3,11 @@
 namespace Drupal\crossword\Plugin\Field\FieldType;
 
 use Drupal\file\Plugin\Field\FieldType\FileItem;
+use Drupal\Core\Form\FormStateInterface;
+
 
 /**
  * Plugin implementation of the 'crossword' field type.
- * This is just like the FileItem but with extra validation
- * and restricted to one item.
  *
  * @FieldType(
  *   id = "crossword",
@@ -28,8 +28,24 @@ class CrosswordItem extends FileItem {
    */
   public static function defaultFieldSettings() {
     return [
-      'file_extensions' => 'txt',
+      'file_extensions' => 'txt puz',
+      'allowed_parsers' => [],
     ] + parent::defaultFieldSettings();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
+    $form = parent::fieldSettingsForm($form, $form_state);
+    $form['allowed_parsers'] = [
+      '#title' => $this->t('Allowed Crossword File Parsers'),
+      '#description' => $this->t('Make only selected parsers available. If none are selected any crossword file parser can be used.'),
+      '#type' => 'checkboxes',
+      '#default_value' => $this->getSetting('allowed_parsers'),
+      '#options' => \Drupal::service('crossword.manager.parser')->getInstalledParsersOptionList(),
+    ];
+    return $form;
   }
 
 }

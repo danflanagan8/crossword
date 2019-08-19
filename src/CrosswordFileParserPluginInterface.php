@@ -5,7 +5,7 @@ namespace Drupal\crossword;
 use Drupal\file\FileInterface;
 
 /**
- * Providers an interface for crossword file parser.
+ * Provides an interface for crossword file parser.
  */
 interface CrosswordFileParserPluginInterface {
 

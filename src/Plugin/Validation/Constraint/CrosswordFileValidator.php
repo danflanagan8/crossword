@@ -16,20 +16,20 @@ use Drupal\file\Entity\File;
 class CrosswordFileValidator extends ConstraintValidator implements ContainerInjectionInterface {
 
   /**
-   * Video embed provider manager service.
+   * Crossword Parser manager service.
    *
    * @var \Drupal\crossword\CrosswordFileParserManagerInterface
    */
-  protected $providerManager;
+  protected $parserManager;
 
   /**
    * Create an instance of the validator.
    *
-   * @param \Drupal\crossword\CrosswordFileParserManagerInterface $provider_manager
-   *   The provider manager service.
+   * @param \Drupal\crossword\CrosswordFileParserManagerInterface $parser_manager
+   *   The parser manager service.
    */
-  public function __construct(CrosswordFileParserManagerInterface $provider_manager) {
-    $this->providerManager = $provider_manager;
+  public function __construct(CrosswordFileParserManagerInterface $parser_manager) {
+    $this->parserManager = $parser_manager;
   }
 
   /**
@@ -45,10 +45,14 @@ class CrosswordFileValidator extends ConstraintValidator implements ContainerInj
    * {@inheritdoc}
    */
   public function validate($items, Constraint $constraint) {
+
+    $allowed_parsers = $items->getFieldDefinition()->getSetting('allowed_parsers');
+    $allowed_parser_definitions = $this->parserManager->loadDefinitionsFromOptionList($allowed_parsers);
+
     foreach ($items as $item) {
       if (get_class($item) == "Drupal\Core\TypedData\Plugin\DataType\IntegerData") {
         $file = File::load($item->getCastedValue());
-        if(FALSE === $this->providerManager->loadDefinitionFromInput($file)){
+        if(FALSE === $this->parserManager->filterApplicableDefinitions($allowed_parser_definitions, $file)){
           $this->context->addViolation($constraint->no_parser);
         }
       }

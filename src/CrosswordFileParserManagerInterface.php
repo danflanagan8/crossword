@@ -8,7 +8,7 @@ interface CrosswordFileParserManagerInterface {
 
 
   /**
-   * Get the provider applicable to the given user input.
+   * Get a parser applicable to the given user input.
    *
    * @param array $definitions
    *   A list of definitions to test against.
@@ -42,5 +42,24 @@ interface CrosswordFileParserManagerInterface {
    *   A plugin definition.
    */
   public function loadDefinitionFromInput(FileInterface $file);
+
+  /**
+   * Get an options list suitable for form elements for parser selection.
+   *
+   * @return array
+   *   An array of options keyed by plugin ID with label values.
+   */
+  public function getInstalledParsersOptionList();
+
+  /**
+   * Load the parser plugin definitions from a FAPI options list value.
+   *
+   * @param array $options
+   *   An array of options from a form API submission.
+   *
+   * @return array
+   *   An array of plugin definitions.
+   */
+  public function loadDefinitionsFromOptionList($options);
 
 }
