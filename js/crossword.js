@@ -119,6 +119,12 @@
             Crossword.changeDir();
             Crossword.focus();
             break;
+          case 13:
+            //spacebar
+            event.preventDefault();
+            Crossword.advanceActiveSquare();
+            Crossword.focus();
+            break;
           case 9:
             //tab
             event.preventDefault();
@@ -180,11 +186,13 @@
       $('.button-undo').once('crossword-undo-click').click(function(e){
         e.preventDefault();
         Crossword.undo();
+        Crossword.focus();
       });
 
       $('.button-redo').once('crossword-redo-click').click(function(e){
         e.preventDefault();
         Crossword.redo();
+        Crossword.focus();
       });
 
       $('.button-solution').once('crossword-solution-click').click(function(e){
