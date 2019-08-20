@@ -17,7 +17,6 @@
         Drupal.behaviors.crossword.connectSquares($crossword);
         Drupal.behaviors.crossword.addInputHandlers($crossword);
         Drupal.behaviors.crossword.addKeydownHandlers($crossword);
-        //Drupal.behaviors.crossword.addKeypressHandlers($crossword);
         Drupal.behaviors.crossword.addClickHandlers($crossword);
 
         // Trick the display into updating now that everything is connected.
@@ -137,19 +136,6 @@
           case 8:
             Crossword.setAnswer("");
             Crossword.focus();
-        }
-      });
-    },
-    addKeypressHandlers: function($crossword) {
-      var Crossword = $crossword.data("Crossword");
-
-      $(document).on("keypress", function(event) {
-        //printable characters
-        if(event.which){
-          //letter key
-          event.preventDefault();
-          Crossword.setAnswer(String.fromCharCode(event.which));
-          Crossword.focus();
         }
       });
     },
