@@ -34,7 +34,7 @@
       });
     },
     loadAnswers: function (data) {
-      if (localStorage.getItem(data.title) !== null) {
+      if (localStorage.getItem(data.id) !== null) {
         return JSON.parse(localStorage.getItem(data.id));
       }
       else {
