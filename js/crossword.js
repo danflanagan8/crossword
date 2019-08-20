@@ -258,10 +258,20 @@
 
       $('.crossword-clue', $crossword)
         .on('crossword-active', function(){
-          $('.active-clues', $crossword).html('<div class="active ' + $(this).data("Clue").dir + '">' + $(this).html() + '</div>');
+          var $clue_copy = $('<div class="active ' + $(this).data("Clue").dir + '">' + $(this).html() + '</div>');
+          $clue_copy.data("real-clue", $(this));
+          $clue_copy.click(function(){
+            $(this).data("real-clue").trigger("click");
+          });
+          $('.active-clues', $crossword).html($clue_copy);
         })
         .on('crossword-reference', function(){
-          $('.active-clues', $crossword).append('<div class="reference ' + $(this).data("Clue").dir + '">' + $(this).html() + '</div>');
+          var $clue_copy = $('<div class="reference ' + $(this).data("Clue").dir + '">' + $(this).html() + '</div>');
+          $clue_copy.data("real-clue", $(this));
+          $clue_copy.click(function(){
+            $(this).data("real-clue").trigger("click");
+          });
+          $('.active-clues', $crossword).append($clue_copy);
         })
         .on('crossword-off', function(){
           $('.active-clues', $crossword).html(null);
