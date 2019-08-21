@@ -9,7 +9,7 @@
         var data = drupalSettings.crossword.data;
         var answers = Drupal.behaviors.crossword.loadAnswers(data);
         var Crossword = new Drupal.Crossword.Crossword(data, answers);
-
+        Crossword.$crossword = $crossword;
         $crossword.data("Crossword", Crossword);
 
         Drupal.behaviors.crossword.addCrosswordEventHandlers($crossword);
@@ -276,6 +276,10 @@
         .on('crossword-off', function(){
           $('.active-clues', $crossword).html(null);
         });
+
+      $crossword.on('crossword-solved', function() {
+        console.log('The crossword puzzle has been solved.');
+      });
     },
   }
 })(jQuery, Drupal, drupalSettings);

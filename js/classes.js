@@ -35,6 +35,10 @@
       this.hasError = function() {
         return this.answer && this.answer.toUpperCase() !== this.fill.toUpperCase();
       }
+
+      this.isCorrect = function() {
+        return !this.fill || (this.answer && this.answer.toUpperCase() === this.fill.toUpperCase());
+      }
     },
 
     Clue: function(data) {
@@ -58,6 +62,15 @@
         }
         return false;
       }
+
+      this.isCorrect = function() {
+        for (var i = 0; i < this.squares.length; i++) {
+          if (!this.squares[i].isCorrect()) {
+            return false;
+          }
+        }
+        return true;
+      }
     },
 
     Crossword: function(data, answers) {
@@ -77,6 +90,8 @@
         'undo' : [],
         'redo' : [],
       };
+      this.$crossword = null;
+      this.solved = false;
 
       this.setActiveSquare = function(Square) {
         if (Square.fill !== "") {
@@ -244,7 +259,6 @@
         return answers;
       }
 
-      // most likely for clearing
       this.clear = function() {
         this.setAnswers(emptyAnswers());
       }
@@ -257,6 +271,18 @@
             this.sendAnswerEvents(this.grid[$row_index][$col_index]);
           }
         }
+      }
+
+      this.isSolved = function() {
+        for (var $row_index = 0; $row_index < this.grid.length; $row_index++) {
+          for (var $col_index = 0; $col_index < this.grid[$row_index].length; $col_index++) {
+            if (!this.grid[$row_index][$col_index].isCorrect()) {
+              return false;
+            }
+          }
+        }
+        this.solved = true;
+        return true;
       }
 
       /**
@@ -335,6 +361,11 @@
             else {
               Square.across['$clue'].trigger('crossword-ok');
             }
+          }
+        }
+        if (!this.solved && this.isSolved()) {
+          if (this.$crossword) {
+            this.$crossword.trigger('crossword-solved');
           }
         }
       }
