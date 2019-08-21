@@ -286,7 +286,6 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
 
     // search hex for 5254424c
     $hex_contents = bin2hex($this->contents);
-    dpm($hex_contents);
     if (strpos($hex_contents, '5254424c') > -1) {
       $rebus_grid_end_index = strpos($hex_contents, '5254424c');
       // The previous 2 * $pre_parse['rows'] * $pre_parse['cols'] values represent squares.
