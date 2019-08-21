@@ -69,20 +69,14 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
 
     // Concatonate the chars into meaningful lines
     // A line break is indicated by 0.
-
     $lines = [];
-    $dec_lines = [];
     $line = '';
-    $dec_line = '';
     foreach ($dec_array as $i => $dec) {
       if ($dec == 0) {
-        $dec_lines[] = $dec_line;
-        $dec_line = '';
         $lines[] = $line;
         $line = '';
       }
       else {
-        $dec_line .= $dec;
         try {
           $char = chr($dec);
           $line .= $char;
@@ -91,7 +85,6 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
         }
       }
     }
-    $dec_lines[] = $dec_line;
     $lines[] = $line; // There's an un-added line at this point.
 
     $pre_parse = [
@@ -99,7 +92,6 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
      'cols' => $cols,
      'num_clues' => $num_clues,
      'lines' => $lines,
-     'dec_lines' => $dec_lines,
     ];
 
     $data = [
