@@ -150,20 +150,25 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
     ];
 
     $rebus_grid = $this->getRebusGrid($pre_parse);
+    $circle_grid = $this->getCircleGrid($pre_parse);
 
     foreach ($raw_grid as $row_index => $raw_row) {
       $row = [];
       for ($col_index = 0; $col_index < count($raw_row); $col_index++) {
 
-        if (!empty($rebus_grid) && $rebus_grid[$row_index][$col_index] !== 0) {
+        if (!empty($rebus_grid) && $rebus_grid[$row_index][$col_index]) {
           $fill = $rebus_grid[$row_index][$col_index];
         }
         else {
           $fill = $raw_row[$col_index];
         }
+
+        $circle = !empty($circle_grid) && $circle_grid[$row_index][$col_index];
+
         $square = [
           'row' => $row_index,
           'col' => $col_index,
+          'circle' => $circle,
         ];
         if ($fill === NULL) {
           $square['fill'] = NULL;
@@ -286,64 +291,81 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
   // Returns a grid that has zeros or rebus entries.
   // This was really hard to write and may seem magical.
   private function getRebusGrid($pre_parse) {
-    // If there's anything after the notepad, it's for the rebus.
-    if (!isset($pre_parse['lines'][3 + $pre_parse['num_clues'] + 1])) {
-      return [];
-    }
-    //the next line indicates the number of rebus squares, but we don't actually need it.
-    // Now the next rows * cols lines are representative of squares.
-    // 0 means the square is not a rebus
-    // Something like 9 indicates that the square contains the letters that correspond to rebus #8.
-    // I have no idea why the numbers are offset like that.
-    // For these rebus grid lines, they are decimal values, not chars.
-    $rebus_grid_lines = array_slice($pre_parse['dec_lines'], 3 + $pre_parse['num_clues'] + 3, $pre_parse['rows'] * $pre_parse['cols']);
-    $i = 0;
-    $rebus_grid_lines_processed = [];
-    // We have to do this processing because the 0 following a rebus entry gets stipped in the pre_parse function.
-    // Also, if it starts with a zero, a sero got stripped off the beginning.
-    if ($rebus_grid_lines[0] == '') {
-      array_unshift($rebus_grid_lines, '');
-    }
-    while (count($rebus_grid_lines_processed) < $pre_parse['rows'] * $pre_parse['cols']) {
-      if (strlen($rebus_grid_lines[$i]) > 1) {
-        // in here indicates multiple consecutive rebus entries
-        $rebus_grid_lines_processed[] = $rebus_grid_lines[$i][0];
-        $rebus_grid_lines[$i] = substr($rebus_grid_lines[$i], 1);
-      }
-      else if (strlen($rebus_grid_lines[$i]) == 1){
-        // in here means a rebus entry not followed by a rebus.
-        // The 0 after this got stripped in the pre_parse function.
-        $rebus_grid_lines_processed[] = $rebus_grid_lines[$i];
-        $rebus_grid_lines_processed[] = 0;
-        $i++;
-      }
-      else {
-        $rebus_grid_lines_processed[] = 0;
-        $i++;
-      }
-    }
 
-    $rebus_code_line = $pre_parse['lines'][count($pre_parse['lines']) - 1];
-    // The first three chars are worthless
-    $rebus_code_line = substr($rebus_code_line, 3);
-    $rebus_code_line_array = explode(";", $rebus_code_line);
-    foreach($rebus_code_line_array as &$val) {
-      $val = trim(strtoupper($val)); //The module always wants rebus to be in caps.
-    }
-    $rebus_key_val_array = [];
-    foreach($rebus_code_line_array as $val) {
-      $exploded = explode(":", $val);
-      $rebus_key_val_array[$exploded[0]] = $exploded[1];
-    }
-
-    foreach($rebus_grid_lines_processed as &$square) {
-      if ($square != 0) {
-        $square = $rebus_key_val_array[$square - 1];
+    // search hex for 5254424c
+    $hex_contents = bin2hex($this->contents);
+    dpm($hex_contents);
+    if (strpos($hex_contents, '5254424c') > -1) {
+      $rebus_grid_end_index = strpos($hex_contents, '5254424c');
+      // The previous 2 * $pre_parse['rows'] * $pre_parse['cols'] values represent squares.
+      // 00 indicates no rebus. Anything else indicates rebus. 07 indicates rebus #6, for example.
+      $rebus_grid_string = substr($hex_contents, $rebus_grid_end_index - 2 * $pre_parse['rows'] * $pre_parse['cols'] - 2, 2 * $pre_parse['rows'] * $pre_parse['cols']);
+      $rebus_grid_lines = str_split($rebus_grid_string, 2 * $pre_parse['cols']);
+      $rebus_grid = [];
+      foreach($rebus_grid_lines as $line) {
+        $row = str_split($line, 2);
+        foreach ($row as &$hex){
+          $hex = hexdec($hex);
+        }
+        $rebus_grid[] = $row;
       }
-    }
-    $rebus_grid_array = array_chunk($rebus_grid_lines_processed, $pre_parse['cols']);
-    return $rebus_grid_array;
 
+      // the rebus code starts at index $rebus_grid_end_index + 18 and goes until there's a 00.
+      $rebus_code_string = '';
+      $i = $rebus_grid_end_index + 18;
+      while (isset($hex_contents[$i]) && substr($hex_contents, $i, 2) !== '00') {
+        $dec = hexdec(substr($hex_contents, $i, 2));
+        $char = chr($dec);
+        $rebus_code_string .= $char;
+        $i += 2;
+      }
+      $rebus_code_array = explode(";", $rebus_code_string);
+      foreach ($rebus_code_array as &$elem) {
+        $elem = trim($elem);
+      }
+      $rebus_key_val_array = [];
+      foreach ($rebus_code_array as $val) {
+        $exploded = explode(":", $val);
+        $rebus_key_val_array[$exploded[0]] = $exploded[1];
+      }
+
+      foreach ($rebus_grid as $row_index => $rebus_row) {
+        foreach ($rebus_row as $col_index => $rebus_square) {
+          if ($rebus_square != 0) {
+            $rebus_grid[$row_index][$col_index] = $rebus_key_val_array[$rebus_square - 1];
+          }
+          else {
+            $rebus_grid[$row_index][$col_index] = 0;
+          }
+        }
+      }
+
+      return $rebus_grid;
+    }
+  }
+
+  // Returns a grid that has zeros or not zeros
+  // Not zeros means it's a circle
+  protected function getCircleGrid($pre_parse) {
+    $hex = bin2hex($this->contents);
+
+    //we look for 47455854
+    if (strpos($hex, '47455854') > -1) {
+      $cricle_grid_start_index = strpos($hex, '47455854') + 16; //16 is the length of 47455854 plus 4 more hex "doublets"
+      // The next 2 * $pre_parse['rows'] * $pre_parse['cols'] value represent squares.
+      // 00 indicates no circle. 80 indicates circle.
+      $circle_grid_string = substr($hex, $cricle_grid_start_index, 2 * $pre_parse['rows'] * $pre_parse['cols']);
+      $circle_grid_lines = str_split($circle_grid_string, 2 * $pre_parse['cols']);
+      $circle_grid = [];
+      foreach($circle_grid_lines as $line) {
+        $row = str_split($line, 2);
+        foreach ($row as &$hex){
+          $hex = hexdec($hex);
+        }
+        $circle_grid[] = $row;
+      }
+      return $circle_grid;
+    }
   }
 
 }

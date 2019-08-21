@@ -148,9 +148,11 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
       $row = [];
       for ($col_index = 0; $col_index < count($raw_row); $col_index++) {
         $fill = $raw_row[$col_index];
+        $circle = $fill && strtoupper($fill) != $fill; //in text, lowercase letters inidcate a circle.
         $square = [
           'row' => $row_index,
           'col' => $col_index,
+          'circle' => $circle,
         ];
         if ($fill === NULL) {
           $square['fill'] = NULL;
@@ -235,8 +237,8 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
         }
 
         // Is it a rebus square?
-        if (is_numeric($square['fill']) && !empty($rebus_array) && isset($rebus_array[$square['fill'] - 1])) {
-          $square['fill'] = $rebus_array[$square['fill'] - 1];
+        if (is_numeric($square['fill']) && !empty($rebus_array) && isset($rebus_array[$square['fill']])) {
+          $square['fill'] = $rebus_array[$square['fill']];
         }
 
         $row[] = $square;
@@ -294,8 +296,8 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
       $i = $rebus_start_index;
       while ($lines[$i] != "<ACROSS>") {
         $line = explode(':', $lines[$i]);
-        if (isset($line[1])) {
-          $rebus_array[] = $line[1];
+        if (is_numeric($line[0]) && isset($line[1])) {
+          $rebus_array[$line[0]] = $line[1];
         }
         $i++;
       }

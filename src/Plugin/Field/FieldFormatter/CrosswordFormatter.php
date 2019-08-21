@@ -329,7 +329,7 @@ class CrosswordFormatter extends FileFormatterBase {
               'data-clue-index-down' => (string) $square['down']['index'],
               'data-numeral' => isset($square['numeral']) ? $square['numeral'] : NULL,
               'data-fill' => $square['fill'],
-              'data-circle' => $square['fill'] != strtoupper($square['fill']), // lowercase indicates there should be a cricle
+              'data-circle' => $square['circle'],
             ],
           ];
         }
