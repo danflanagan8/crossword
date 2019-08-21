@@ -236,12 +236,13 @@ input.phantom {
 
 .crossword.show-errors .crossword-square.error .square-fill,
 .crossword.show-errors .crossword-clue.error {
-  color: red;
+  color: #A00;
+  text-decoration: underline;
 }
 
 .crossword-clue.cheat,
 .crossword-square.cheat .square-fill {
-  color: #0A0;
+  font-style: italic;
 }
 
 .crossword-buttons label {
