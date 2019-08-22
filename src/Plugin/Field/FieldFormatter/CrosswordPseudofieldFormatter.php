@@ -82,6 +82,9 @@ class CrosswordPseudofieldFormatter extends CrosswordFormatter {
           $this->getSetting('references')['show'] && $this->getSetting('references')['checked'] ? 'show-references' : '',
         ],
       ],
+      '#cache' => [
+        'tags' => $file->getCacheTags(),
+      ],
     ];
     return $elements;
   }
