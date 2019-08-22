@@ -112,17 +112,20 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
   }
 
   public function getTitle($lines) {
-    return $lines[array_search("<TITLE>", $lines) + 1];
+    $title = $lines[array_search("<TITLE>", $lines) + 1];
+    return trim($title);
   }
 
   public function getAuthor($lines) {
-    return $lines[array_search("<AUTHOR>", $lines) + 1];
+    $author = $lines[array_search("<AUTHOR>", $lines) + 1];
+    return trim($author);
   }
 
   public function getNotepad($lines) {
     $notepad_index = strpos($this->contents, "<NOTEPAD>");
     if ($notepad_index > -1) {
-      return substr($this->contents, $notepad_index + 10);
+      $notepad = substr($this->contents, $notepad_index + 10);
+      return trim($notepad);
     }
   }
 
@@ -154,11 +157,9 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
           'col' => $col_index,
           'circle' => $circle,
           'rebus' => FALSE,
+          'fill' => $fill === NULL ? NULL :strtoupper($fill),
         ];
-        if ($fill === NULL) {
-          $square['fill'] = NULL;
-        }
-        else {
+        if ($fill !== NULL) {
           // init some things to NULL
           $numeral_incremented = FALSE;
           $numeral = NULL;
@@ -180,7 +181,6 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
               ];
               $numeral_incremented = TRUE;
 
-              $square['fill'] = $fill;
               $square['across'] = [
                 'index' => $iterator['index_across'],
               ];
@@ -188,12 +188,10 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
             }
             else {
               // In here? It's an uncrosswed square. No across clue. No numeral.
-              $square['fill'] = $fill;
             }
           }
           else {
             // In here? No numeral.
-            $square['fill'] = $fill;
             $square['across'] = [
               'index' => $iterator['index_across'],
             ];
@@ -219,7 +217,6 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
               ];
               $numeral_incremented = TRUE;
 
-              $square['fill'] = $fill;
               $square['down'] = [
                 'index' => $iterator['index_down'],
               ];
@@ -227,12 +224,10 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
             }
             else {
               // In here? It's an uncrosswed square. No down clue. No numeral.
-              $square['fill'] = $fill;
             }
           }
           else {
             // In here? No numeral. Take the down value from the square above.
-            $square['fill'] = $fill;
             $square['down'] = $grid[$row_index - 1][$col_index]['down'];
           }
         }

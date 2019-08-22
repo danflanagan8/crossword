@@ -110,18 +110,21 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
 
   public function getTitle($pre_parse) {
     // The first line has the solution grid, the saved answer grid, and then the title.
-    return substr($pre_parse['lines'][0], 2 * $pre_parse['rows'] * $pre_parse['cols']);
+    $title = substr($pre_parse['lines'][0], 2 * $pre_parse['rows'] * $pre_parse['cols']);
+    return trim($title);
   }
 
   public function getAuthor($pre_parse) {
     // It's the second line.
-    return $pre_parse['lines'][1];
+    $author = $pre_parse['lines'][1];
+    return trim($author);
   }
 
   public function getNotepad($pre_parse) {
     // The clues start at line index 3.
     // The notepad comes right after the last clue.
-    return $pre_parse['lines'][3 + $pre_parse['num_clues']];
+    $notepad = $pre_parse['lines'][3 + $pre_parse['num_clues']];
+    return trim($notepad);
   }
 
   public function getGridAndClues($pre_parse) {
@@ -148,7 +151,7 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
       $row = [];
       for ($col_index = 0; $col_index < count($raw_row); $col_index++) {
 
-        $circle = !empty($circle_grid) && $circle_grid[$row_index][$col_index];
+        $circle = isset($circle_grid[$row_index][$col_index]) && !empty($circle_grid[$row_index][$col_index]);
 
         $square = [
           'row' => $row_index,
@@ -320,7 +323,9 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
       $rebus_key_val_array = [];
       foreach ($rebus_code_array as $val) {
         $exploded = explode(":", $val);
-        $rebus_key_val_array[$exploded[0]] = $exploded[1];
+        if (isset($exploded[1])) {
+          $rebus_key_val_array[$exploded[0]] = $exploded[1];
+        }
       }
 
       foreach ($rebus_grid as $row_index => $rebus_row) {
