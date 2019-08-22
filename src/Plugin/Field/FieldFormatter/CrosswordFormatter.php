@@ -368,6 +368,7 @@ class CrosswordFormatter extends FileFormatterBase {
     if ($this->getSetting('errors')['show']) {
       return [
         '#type' => 'checkbox',
+        '#title_display' => 'none',
         '#attributes' => [
           'class' => [
             'show-errors',
@@ -379,6 +380,7 @@ class CrosswordFormatter extends FileFormatterBase {
         '#children' => [
           '#type' => 'label',
           '#title' => 'Show Errors',
+          '#title_display' => 'inline',
           '#attributes' => [
             'for' => 'show-errors',
           ],
@@ -391,6 +393,7 @@ class CrosswordFormatter extends FileFormatterBase {
     if ($this->getSetting('references')['show']) {
       return [
         '#type' => 'checkbox',
+        '#title_display' => 'none',
         '#attributes' => [
           'class' => [
             'show-references',
@@ -402,6 +405,7 @@ class CrosswordFormatter extends FileFormatterBase {
         '#children' => [
           '#type' => 'label',
           '#title' => 'Show References',
+          '#title_display' => 'inline',
           '#attributes' => [
             'for' => 'show-references',
           ],
