@@ -1,0 +1,26 @@
+<ACROSS PUZZLE>
+<TITLE>
+Test Puzzle
+<AUTHOR>
+Test Author
+<COPYRIGHT>
+2019
+<SIZE>
+3x3
+<GRID>
+A.1
+BcD
+2EF
+<REBUS>
+MARK;
+1:ONE:O
+2:TWO:T
+<ACROSS>
+3A Second square has a circle
+5A Has a reference to 3-Across and 1-Down
+<DOWN>
+1D is AB2
+2D is 1DF
+4D Starts with a circle
+<NOTEPAD>
+This is a test.
