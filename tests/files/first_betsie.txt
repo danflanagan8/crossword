@@ -1,0 +1,85 @@
+<ACROSS PUZZLE>
+<TITLE>
+Our First Crossword
+<AUTHOR>
+Dan Flanagan and Eliza Prager
+<COPYRIGHT>
+2017
+<SIZE>
+14x13
+<GRID>
+ETCHES..STEPS.
+GHOULS.SCORES.
+GOLLUM.ORNATE.
+..ALDI.BUS....
+TSN.END.FIRST.
+ROD.SNOWFLAKE.
+ILE..OVA..IIX.
+BORROWERS.NET.
+ESSEX.STP.CSS.
+...OFF.HILL...
+HIPPOS.ORIOLE.
+INTERN.GAMUTS.
+STAND..SLEDGE.
+<ACROSS>
+Engraves
+There are often 12 of them
+Evil spirits
+Many, many
+“My precious” speaker
+Embellished
+German supermarket chain
+Get from here to there on the Benzie ______
+Where Canadians watch sports
+Land’s ______
+Cabrera’s bag
+Rocker Stewart
+Unique example?
+“Island” to Pierre
+Eggs
+Eight, to a Roman (occasionally)
+They who take out loans
+After taxes
+English county
+1 atm, 0° C
+Used in tandem with HTML
+It keeps the bugs away
+Hank, for one
+Most dangerous animals in Africa
+Cal Ripkin Jr. was one
+Monica Lewinski made this position famous
+Complete ranges or extents
+R.E.M. hit
+Paralympic hockey gear
+<DOWN>
+Try one of these over-easy at the Lighthouse Café
+Informal conjunction
+They can be used to rinse pasta
+Former Red Wing Brett
+Evades
+Gilligan’s ship
+Canine McGruff’s nephew
+Lump in your throat?
+Laundry detergent brand
+Off-duty service animal
+Direction from Leland to Traverse City
+Bawl
+A _______ Called Quest
+Jimi Hendrix trademarks
+“When ____ Cry”
+Pooh pretended to be one
+Spielberg cable drama “Falling ____”
+Don’t read or write these while you drive
+Pumba’s kin
+What a detective might do to a cold case
+Prestigious university
+Like some staircases
+Where Americans watch sports
+Green fruit
+Possessive pronoun
+QB statistic
+Harper Valley org.
+Army rank immediately preceding Gen.
+Language suffix
+<NOTEPAD>
+This was our very first puzzle and <script>alert('ahhh!')</script><strong>lots</strong> of fun!
