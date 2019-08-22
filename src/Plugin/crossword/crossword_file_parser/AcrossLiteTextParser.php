@@ -122,7 +122,7 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
   public function getNotepad($lines) {
     $notepad_index = strpos($this->contents, "<NOTEPAD>");
     if ($notepad_index > -1) {
-      return substr($this->contents, $notepad_index + 9);
+      return substr($this->contents, $notepad_index + 10);
     }
   }
 
