@@ -153,6 +153,7 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
           'row' => $row_index,
           'col' => $col_index,
           'circle' => $circle,
+          'rebus' => FALSE,
         ];
         if ($fill === NULL) {
           $square['fill'] = NULL;
@@ -239,6 +240,7 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
         // Is it a rebus square?
         if (is_numeric($square['fill']) && !empty($rebus_array) && isset($rebus_array[$square['fill']])) {
           $square['fill'] = $rebus_array[$square['fill']];
+          $square['rebus'] = TRUE;
         }
 
         $row[] = $square;

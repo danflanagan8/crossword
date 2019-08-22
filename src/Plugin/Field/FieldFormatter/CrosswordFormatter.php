@@ -25,6 +25,7 @@ class CrosswordFormatter extends FileFormatterBase {
    * {@inheritdoc}
    */
   public static function defaultSettings() {
+    $options['print'] = TRUE;
     $options['details'] = [
       'title_tag' => 'h1',
       'author_tag' => 'h2',
@@ -65,6 +66,12 @@ class CrosswordFormatter extends FileFormatterBase {
       'span' => 'span',
     ];
 
+    $form['print'] = [
+      '#type' => 'checkbox',
+      '#title' => 'Print Styles',
+      '#default_value' => $this->getSetting('print'),
+      '#description' => 'Include the print stylesheet from the Crossword module.',
+    ];
     $form['details'] = [
       '#type' => 'fieldset',
       '#title' => 'Crossword Details',
@@ -181,6 +188,7 @@ class CrosswordFormatter extends FileFormatterBase {
         '#attached' => [
           'library' => [
             'crossword/crossword.default',
+            $this->getSetting('print') ? 'crossword/crossword.print' : '',
           ],
           'drupalSettings' => [
             'crossword' => [
@@ -294,7 +302,7 @@ class CrosswordFormatter extends FileFormatterBase {
     return $render;
   }
 
-  protected function getGrid($data) {
+  protected function getGrid($data, $show_fill = FALSE) {
     $render = [
       '#theme' => 'crossword_grid',
       '#content' => [],
@@ -320,7 +328,7 @@ class CrosswordFormatter extends FileFormatterBase {
         else {
           $render_row['#content'][] = [
             '#theme' => 'crossword_square',
-            '#fill' => NULL,
+            '#fill' => $show_fill ? strtoupper($square['fill']) : NULL,
             '#numeral' => isset($square['numeral']) ? $square['numeral'] : NULL,
             '#attributes' => [
               'data-col' => (string) $col_index,
@@ -330,6 +338,7 @@ class CrosswordFormatter extends FileFormatterBase {
               'data-numeral' => isset($square['numeral']) ? $square['numeral'] : NULL,
               'data-fill' => $square['fill'],
               'data-circle' => $square['circle'],
+              'data-rebus' => $square['rebus'],
             ],
           ];
         }

@@ -60,7 +60,7 @@ class CrosswordSolutionFormatter extends CrosswordFormatter {
           'title' => $this->getTitle($data),
           'author' => $this->getAuthor($data),
           'notepad' => $this->getNotepad($data),
-          'grid' => $this->getGrid($data),
+          'grid' => $this->getGrid($data, TRUE),
         ],
         '#attached' => [
           'library' => [
@@ -77,42 +77,5 @@ class CrosswordSolutionFormatter extends CrosswordFormatter {
     }
     return $elements;
   }
-
-  protected function getGrid($data) {
-    $render = [
-      '#theme' => 'crossword_grid',
-      '#content' => [],
-    ];
-    foreach ($data['puzzle']['grid'] as $row_index => $grid_row) {
-      $render_row = [
-        '#theme' => 'crossword_grid_row',
-        '#content' => [],
-      ];
-      foreach ($grid_row as $col_index => $square) {
-        if ($square['fill'] === NULL ){
-          $render_row['#content'][] = [
-            '#theme' => 'crossword_square',
-            '#attributes' => [
-              'class' => [
-                'black',
-              ],
-            ],
-          ];
-        }
-        else {
-          $render_row['#content'][] = [
-            '#theme' => 'crossword_square',
-            '#fill' => strip_tags($square['fill']),
-            '#numeral' => isset($square['numeral']) ? $square['numeral'] : NULL,
-            '#attributes' => [],
-          ];
-        }
-      }
-      $render['#content'][] = $render_row;
-    }
-
-    return $render;
-  }
-
 
 }

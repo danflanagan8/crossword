@@ -148,24 +148,29 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
       $row = [];
       for ($col_index = 0; $col_index < count($raw_row); $col_index++) {
 
-        if (!empty($rebus_grid) && $rebus_grid[$row_index][$col_index]) {
-          $fill = $rebus_grid[$row_index][$col_index];
-        }
-        else {
-          $fill = $raw_row[$col_index];
-        }
-
         $circle = !empty($circle_grid) && $circle_grid[$row_index][$col_index];
 
         $square = [
           'row' => $row_index,
           'col' => $col_index,
           'circle' => $circle,
+          'rebus' => FALSE,
         ];
+
+        if (!empty($rebus_grid) && $rebus_grid[$row_index][$col_index]) {
+          $fill = $rebus_grid[$row_index][$col_index];
+          $square['rebus'] = TRUE;
+        }
+        else {
+          $fill = $raw_row[$col_index];
+        }
+
         if ($fill === NULL) {
           $square['fill'] = NULL;
         }
         else {
+          $square['fill'] = $fill;
+
           // init some things to NULL
           $numeral_incremented = FALSE;
           $numeral = NULL;
@@ -196,12 +201,10 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
             }
             else {
               // In here? It's an uncrosswed square. No across clue. No numeral.
-              $square['fill'] = $fill;
             }
           }
           else {
             // In here? No numeral.
-            $square['fill'] = $fill;
             $square['across'] = [
               'index' => $iterator['index_across'],
             ];

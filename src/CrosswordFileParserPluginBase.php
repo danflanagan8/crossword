@@ -133,9 +133,9 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
    *    'left' => ['row': number, 'col': number] or NULL
    *    'right' => ['row': number, 'col': number] or NULL
    *  ],
+   *  'circle' => bool,
+   *  'rebus' => bool,
    * )
-   *
-   * Further, note that a lowercase fill indicates the square should be circled.
    *
    * A clue looks like this...
    * array(

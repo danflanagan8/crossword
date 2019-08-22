@@ -27,6 +27,7 @@ class CrosswordBookFormatter extends CrosswordFormatter {
     $elements = parent::viewElements($items, $langcode);
     foreach ($elements as $delta => $element) {
       $elements[$delta]['#attributes']['class'][] = 'crossword-book';
+      $elements[$delta]['#attached']['library'][] = 'crossword/crossword.book';
     }
     return $elements;
   }

@@ -26,6 +26,24 @@ class CrosswordPseudofieldFormatter extends CrosswordFormatter {
   /**
    * {@inheritdoc}
    */
+  public static function defaultSettings() {
+    $options = parent::defaultSettings();
+    unset($options['print']);
+    return $options;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    $form = parent::settingsForm($form, $form_state);
+    unset($form['print']);
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
 

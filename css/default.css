@@ -1,0 +1,170 @@
+.crossword {
+  position: relative;
+}
+
+.crossword-title {
+  margin-top: 0;
+}
+
+.crossword-controls {
+  display: flex;
+  justify-content: space-between;
+}
+
+.crossword-controls .form-item {
+  margin-top: 0;
+}
+
+.crossword-controls button{
+  padding: 0.25em;
+  text-transform: capitalize;
+}
+
+.crossword-controls label {
+  display: inline;
+}
+
+.crossword-buttons > div {
+  margin-bottom: 1em;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.show-references .crossword-square.reference,
+.show-references .crossword-clue.reference {
+  background-color: #CCF;
+}
+.crossword-square.highlight,
+.crossword-clue.active {
+  background-color: #8CF;
+}
+
+.crossword-square.active {
+  background-color: #1892ef;
+}
+
+.crossword .crossword-clues {
+  box-sizing: border-box;
+  width: 50%;
+  float: left;
+  padding: 1em;
+}
+
+.crossword-clues-header {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+  text-transform: uppercase;
+}
+
+.crossword-clues-header button {
+  background: transparent;
+  border: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  overflow: hidden;
+  text-transform: uppercase;
+}
+
+.crossword-clue-change {
+  width: 40px;
+  height: 40px;
+  position: relative;
+}
+
+.crossword-clue-change:after{
+  content: "";
+  height: 50%;
+  width: 50%;
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  transform-origin: 50% 50%;
+}
+.crossword-clue-change.next:after {
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
+  -webkit-transform: translateX(-30%) rotate(-45deg);
+  -ms-transform: translateX(-30%) rotate(-45deg);
+  transform: translateX(-30%) rotate(-45deg);
+}
+.crossword-clue-change.prev:after {
+  border-left: 2px solid black;
+  border-top: 2px solid black;
+  -webkit-transform: translateX(30%) rotate(-45deg);
+  -ms-transform: translateX(30%) rotate(-45deg);
+  transform: translateX(30%) rotate(-45deg);
+}
+
+.crossword-clues-wrapper {
+  margin: 0 -1em;
+}
+
+.crossword-clues ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.crossword-clue {
+  padding-left: 1.5em;
+}
+
+.crossword-clue .numeral {
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 1em;
+  margin-left: -1.5em;
+  width: 1.5em;
+  float: left;
+}
+
+#active-clues {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  padding: 1em;
+  margin: 1em -1em;
+  -webkit-box-shadow: 0px 3px 3px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 3px 3px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 3px 3px 0px rgba(0,0,0,0.75);
+  border-top: 1px solid black;
+  z-index: 999;
+}
+
+.active-clues .reference {
+  display: none;
+}
+
+.show-references .active-clues .reference {
+  display: block;
+  color: #88C;
+}
+.active-clues .across .numeral:after {
+  content: "A";
+}
+.active-clues .down .numeral:after {
+  content: "D";
+}
+
+.show-errors .crossword-square.error .square-fill,
+.show-errors .crossword-clue.error {
+  color: #A00;
+  text-decoration: underline;
+}
+
+.crossword-clue.cheat,
+.crossword-square.cheat .square-fill {
+  font-style: italic;
+}
+
+.crossword-buttons label {
+  font-weight: normal;
+  display: inline;
+}

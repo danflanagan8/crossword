@@ -1,7 +1,8 @@
 crossword.default:
   css:
     layout:
-      css/crossword.css: {}
+      css/crossword-grid.css: {}
+      css/default.css: {}
   js:
     js/classes.js: {}
     js/crossword.js: {}
@@ -14,4 +15,14 @@ crossword.default:
 crossword.solution:
   css:
     layout:
-      css/crossword.css: {}
+      css/crossword-grid.css: {}
+
+crossword.print:
+  css:
+    layout:
+      css/print.css: {}
+
+crossword.book:
+  css:
+    layout:
+      css/book.css: {}

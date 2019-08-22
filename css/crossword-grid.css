@@ -1,0 +1,86 @@
+.crossword-grid {
+  border: 1px solid black;
+  max-width: 500px;
+  margin: auto;
+}
+
+.crossword-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.crossword-square {
+  flex: 1 1 100%;
+  border: 1px solid black;
+  position: relative;
+  font-family: sans-serif;
+}
+
+.crossword-square.black {
+  background-color: black;
+}
+
+.crossword-square {
+  background-color: white;
+}
+
+.crossword-square .numeral {
+  font-size: 8px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: inherit;
+  padding: 1px;
+  z-index: 1;
+}
+
+.crossword-square[data-circle]:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+  border-radius: 50%;
+}
+
+.square-bulk {
+  height: 0;
+  padding-top: 100%;
+}
+
+.square-fill {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  font-size: 16px;
+  z-index: 2;
+}
+
+.rebus .square-fill {
+  transform: translate3d(-50%, -50%, 0) rotate(45deg);
+  font-size: 12px;
+}
+
+input.phantom {
+  height: 1px;
+  width: 1px;
+  border: none;
+  background: none;
+  font-size: 100px;
+  color: transparent;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.crossword-solution .crossword-square[data-rebus] .square-fill {
+  transform: translate3d(-50%, -50%, 0) rotate(45deg);
+  font-size: 12px;
+}

@@ -1,0 +1,54 @@
+/* Make it look like a classic book layout */
+.crossword.crossword-book {
+  max-width: 768px;
+  margin: auto;
+}
+
+.crossword-book .crossword-puzzle {
+  font-size: 1vw;
+}
+
+@media only screen and (min-width: 768px) {
+  .crossword-book .crossword-puzzle {
+    font-size: 7.68px
+  }
+}
+
+.crossword.crossword-book .crossword-grid {
+  float: right;
+  width: 60%;
+  margin-right: 7%;
+  margin-top: 2%;
+}
+
+.crossword.crossword-book .crossword-clues {
+  font-size: 1.5em;
+}
+
+.crossword.crossword-book .crossword-clues.across {
+  width: 25%;
+  padding: 0;
+}
+
+.crossword.crossword-book .crossword-clues.down {
+  width: 75%;
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3;
+}
+
+.crossword.crossword-book #active-clues {
+  display: none;
+}
+
+.crossword.crossword-book .crossword-square .numeral {
+  font-size: 0.6em;
+}
+
+.crossword.crossword-book .crossword-square .square-fill {
+  font-size: 2em;
+}
+
+.crossword.crossword-book .crossword-square.rebus .square-fill {
+  font-size: 1em;
+}
