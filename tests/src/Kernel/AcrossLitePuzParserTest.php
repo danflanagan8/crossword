@@ -11,6 +11,9 @@ class AcrossLitePuzParserTest extends CrosswordFileParserPluginTestBase {
 
   public $plugin_id = 'across_lite_puz';
   public $class = 'Drupal\crossword\Plugin\crossword\crossword_file_parser\AcrossLitePuzParser';
-  public $filename = 'test.puz';
+  public $filename = [
+    'success' => 'test.puz',
+    'failure' => 'failure.txt',
+  ];
 
 }

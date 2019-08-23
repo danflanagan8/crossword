@@ -5,6 +5,7 @@ namespace Drupal\crossword\Plugin\crossword\crossword_file_parser;
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\file\Entity\File;
 use Drupal\crossword\CrosswordFileParserPluginBase;
+use Drupal\file\FileInterface;
 
 /**
  * @CrosswordFileParser(
@@ -19,7 +20,7 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
    *
    * Checks for missing tags, extra tags, oout of order tags.
    */
-  public static function isApplicable($file) {
+  public static function isApplicable(FileInterface $file) {
 
     if ($file->getMimeType() !== "text/plain") {
       return FALSE;
@@ -50,6 +51,7 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
 
     $matches = [];
     preg_match_all("/<[A-Z]+?>/", $contents, $matches);
+    // Note this does not match <ACROSS PUZZLE>, a worthless tag really
     $actual_tags = $matches[0];
 
     foreach ($required_tags as $tag) {

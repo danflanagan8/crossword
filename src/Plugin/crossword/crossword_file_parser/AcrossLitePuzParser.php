@@ -5,6 +5,7 @@ namespace Drupal\crossword\Plugin\crossword\crossword_file_parser;
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\file\Entity\File;
 use Drupal\crossword\CrosswordFileParserPluginBase;
+use Drupal\file\FileInterface;
 
 /**
  * @CrosswordFileParser(
@@ -20,7 +21,7 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
    *
    * Checks for right mimetype and file extension.
    */
-  public static function isApplicable($file) {
+  public static function isApplicable(FileInterface $file) {
 
     if ($file->getMimeType() !== 'application/octet-stream') {
       return FALSE;
