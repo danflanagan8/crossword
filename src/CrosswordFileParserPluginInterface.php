@@ -10,7 +10,7 @@ use Drupal\file\FileInterface;
 interface CrosswordFileParserPluginInterface {
 
   /**
-   * Determine whether the parser works for the input file
+   * Determine whether the parser works for the input file.
    *
    * @param \Drupal\file\FileInterface $file
    *   The user input file to test against the plugins.

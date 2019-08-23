@@ -82,7 +82,7 @@ class CrosswordFileDownloadLink extends FileFormatterBase {
 
     foreach ($this->getEntitiesToView($items, $langcode) as $delta => $file) {
 
-      //options for the link, like classes
+      // Options for the link, like classes.
       $file_type_explosion = explode("/", $file->getMimeType());
       $file_type = end($file_type_explosion);
       $options = [
@@ -91,7 +91,7 @@ class CrosswordFileDownloadLink extends FileFormatterBase {
             'file-download',
             'file-download-' . $file_type,
           ],
-        ]
+        ],
       ];
       if ($this->getSetting('new_tab')) {
         $options['attributes']['target'] = '_blank';
@@ -100,7 +100,7 @@ class CrosswordFileDownloadLink extends FileFormatterBase {
         $options['attributes']['download'] = TRUE;
       }
 
-      //make the render array
+      // Make the render array.
       $elements[$delta] = [
         '#type' => 'link',
         '#title' => $this->getSetting('link_text'),

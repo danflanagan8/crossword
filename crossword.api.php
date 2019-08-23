@@ -17,7 +17,7 @@
  *   The contents of the text file representing the crossword.
  */
 function hook_crossword_data_alter(&$data, $contents) {
-  // Take credit for other people's work
+  // Take credit for other people's work.
   $data['title'] = 'Dan';
 
   /*

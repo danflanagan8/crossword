@@ -4,8 +4,6 @@ namespace Drupal\crossword\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\file\Plugin\Field\FieldFormatter\FileFormatterBase;
-use Drupal\field\Entity\File;
-use Drupal\crossword\CrosswordFileParser;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -132,11 +130,11 @@ class CrosswordFormatter extends FileFormatterBase {
         '#type' => 'checkbox',
         '#title' => 'Check by default',
         '#default_value' => $this->getSetting('errors')['checked'],
-        '#states' => array(
-          'visible' => array(
-            ":input[name='fields[$field_name][settings_edit_form][settings][errors][show]']" => array('checked' => TRUE),
-          ),
-        ),
+        '#states' => [
+          'visible' => [
+            ":input[name='fields[$field_name][settings_edit_form][settings][errors][show]']" => ['checked' => TRUE],
+          ],
+        ],
       ],
     ];
     $form['references'] = [
@@ -152,11 +150,11 @@ class CrosswordFormatter extends FileFormatterBase {
         '#type' => 'checkbox',
         '#title' => 'Check by default',
         '#default_value' => $this->getSetting('references')['checked'],
-        '#states' => array(
-          'visible' => array(
-            ":input[name='fields[$field_name][settings_edit_form][settings][references][show]']" => array('checked' => TRUE),
-          ),
-        ),
+        '#states' => [
+          'visible' => [
+            ":input[name='fields[$field_name][settings_edit_form][settings][references][show]']" => ['checked' => TRUE],
+          ],
+        ],
       ],
     ];
 
@@ -211,6 +209,9 @@ class CrosswordFormatter extends FileFormatterBase {
     return $elements;
   }
 
+  /**
+   *
+   */
   protected function getTitle($data) {
     if ($this->getSetting('details')['title_tag']) {
       return [
@@ -226,6 +227,9 @@ class CrosswordFormatter extends FileFormatterBase {
     }
   }
 
+  /**
+   *
+   */
   protected function getAuthor($data) {
     if ($this->getSetting('details')['author_tag'] && isset($data['author'])) {
       return [
@@ -241,6 +245,9 @@ class CrosswordFormatter extends FileFormatterBase {
     }
   }
 
+  /**
+   *
+   */
   protected function getNotepad($data) {
     if ($this->getSetting('details')['notepad_tag'] && isset($data['notepad'])) {
       return [
@@ -256,6 +263,9 @@ class CrosswordFormatter extends FileFormatterBase {
     }
   }
 
+  /**
+   *
+   */
   protected function getAcross($data) {
     $render = [
       '#theme' => 'crossword_clues',
@@ -279,6 +289,9 @@ class CrosswordFormatter extends FileFormatterBase {
     return $render;
   }
 
+  /**
+   *
+   */
   protected function getDown($data) {
     $render = [
       '#theme' => 'crossword_clues',
@@ -302,6 +315,9 @@ class CrosswordFormatter extends FileFormatterBase {
     return $render;
   }
 
+  /**
+   *
+   */
   protected function getGrid($data, $show_fill = FALSE) {
     $render = [
       '#theme' => 'crossword_grid',
@@ -313,7 +329,7 @@ class CrosswordFormatter extends FileFormatterBase {
         '#content' => [],
       ];
       foreach ($grid_row as $col_index => $square) {
-        if ($square['fill'] === NULL ){
+        if ($square['fill'] === NULL) {
           $render_row['#content'][] = [
             '#theme' => 'crossword_square',
             '#attributes' => [
@@ -349,6 +365,9 @@ class CrosswordFormatter extends FileFormatterBase {
     return $render;
   }
 
+  /**
+   *
+   */
   protected function getControls() {
     return [
       '#theme' => 'crossword_controls',
@@ -364,6 +383,9 @@ class CrosswordFormatter extends FileFormatterBase {
     ];
   }
 
+  /**
+   *
+   */
   protected function getShowErrorsCheckbox() {
     if ($this->getSetting('errors')['show']) {
       return [
@@ -389,6 +411,9 @@ class CrosswordFormatter extends FileFormatterBase {
     }
   }
 
+  /**
+   *
+   */
   protected function getShowReferencesCheckbox() {
     if ($this->getSetting('references')['show']) {
       return [
@@ -414,6 +439,9 @@ class CrosswordFormatter extends FileFormatterBase {
     }
   }
 
+  /**
+   *
+   */
   protected function getButton($name) {
     if ($this->getSetting('buttons')['buttons'][$name]) {
       return [
@@ -428,4 +456,5 @@ class CrosswordFormatter extends FileFormatterBase {
       ];
     }
   }
+
 }

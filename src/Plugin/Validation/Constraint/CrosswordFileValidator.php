@@ -6,12 +6,11 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\crossword\CrosswordFileParser;
 use Drupal\crossword\CrosswordFileParserManagerInterface;
 use Drupal\file\Entity\File;
 
 /**
- * Validates the crossword file
+ * Validates the crossword file.
  */
 class CrosswordFileValidator extends ConstraintValidator implements ContainerInjectionInterface {
 
@@ -52,10 +51,11 @@ class CrosswordFileValidator extends ConstraintValidator implements ContainerInj
     foreach ($items as $item) {
       if (get_class($item) == "Drupal\Core\TypedData\Plugin\DataType\IntegerData") {
         $file = File::load($item->getCastedValue());
-        if(FALSE === $this->parserManager->filterApplicableDefinitions($allowed_parser_definitions, $file)){
+        if (FALSE === $this->parserManager->filterApplicableDefinitions($allowed_parser_definitions, $file)) {
           $this->context->addViolation($constraint->no_parser);
         }
       }
     }
   }
+
 }

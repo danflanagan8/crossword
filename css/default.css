@@ -15,7 +15,7 @@
   margin-top: 0;
 }
 
-.crossword-controls button{
+.crossword-controls button {
   padding: 0.25em;
   text-transform: capitalize;
 }
@@ -32,11 +32,11 @@
 
 .show-references .crossword-square.reference,
 .show-references .crossword-clue.reference {
-  background-color: #CCF;
+  background-color: #ccf;
 }
 .crossword-square.highlight,
 .crossword-clue.active {
-  background-color: #8CF;
+  background-color: #8cf;
 }
 
 .crossword-square.active {
@@ -75,7 +75,7 @@
   position: relative;
 }
 
-.crossword-clue-change:after{
+.crossword-clue-change:after {
   content: "";
   height: 50%;
   width: 50%;
@@ -144,7 +144,7 @@
 
 .show-references .active-clues .reference {
   display: block;
-  color: #88C;
+  color: #88c;
 }
 .active-clues .across .numeral:after {
   content: "A";
@@ -155,7 +155,7 @@
 
 .show-errors .crossword-square.error .square-fill,
 .show-errors .crossword-clue.error {
-  color: #A00;
+  color: #a00;
   text-decoration: underline;
 }
 

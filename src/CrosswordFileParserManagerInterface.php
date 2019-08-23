@@ -4,8 +4,10 @@ namespace Drupal\crossword;
 
 use Drupal\file\FileInterface;
 
+/**
+ *
+ */
 interface CrosswordFileParserManagerInterface {
-
 
   /**
    * Get a parser applicable to the given user input.
@@ -19,7 +21,6 @@ interface CrosswordFileParserManagerInterface {
    *   The relevant plugin or FALSE on failure.
    */
   public function filterApplicableDefinitions(array $definitions, FileInterface $file);
-
 
   /**
    * Load a crossword file parser from user input file.

@@ -4,6 +4,9 @@ namespace Drupal\Tests\crossword\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
 
+/**
+ *
+ */
 abstract class CrosswordFileParserPluginTestBase extends KernelTestBase {
 
   /**
@@ -18,28 +21,28 @@ abstract class CrosswordFileParserPluginTestBase extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = ['system','crossword','file','user'];
+  public static $modules = ['system', 'crossword', 'file', 'user'];
 
   /**
-   *  @var string
+   * @var string
    */
   public $plugin_id;
 
   /**
-   *  Class of the plugin.
+   * Class of the plugin.
    *
-   *  @var string
+   * @var string
    */
   public $class;
 
   /**
-   *  Filenames used for tests. Should look something like...
+   * Filenames used for tests. Should look something like...
    *  array(
    *   'success' => 'test.ext',
    *   'failure' => 'not-a-puzzle.ext',
    *  )
    *
-   *  @var array
+   * @var array
    */
   public $filename;
 
@@ -64,7 +67,7 @@ abstract class CrosswordFileParserPluginTestBase extends KernelTestBase {
   public function testParserFailure() {
     $file = $this->getTestFile($this->filename['failure']);
 
-    // Check that the parser is not applicable
+    // Check that the parser is not applicable.
     $applicable = $this->class::isApplicable($file);
     $this->assertFalse($applicable);
 
@@ -80,22 +83,22 @@ abstract class CrosswordFileParserPluginTestBase extends KernelTestBase {
   }
 
   /**
-   *  We test that an applicable file returns an expected array.
+   * We test that an applicable file returns an expected array.
    */
   public function testParserSuccess() {
     $file = $this->getTestFile($this->filename['success']);
 
-    // Check that the parser is applicable
+    // Check that the parser is applicable.
     $applicable = $this->class::isApplicable($file);
     $this->assertTrue($applicable == TRUE, $applicable);
 
     // This is the expected json for the test file.
     $expected_json = $this->getTestJSON();
-    // Turn it into an expected array
+    // Turn it into an expected array.
     $expected_data = json_decode($expected_json, TRUE);
     $expected_data['id'] = $file->id();
 
-    // Get the real output of the parser
+    // Get the real output of the parser.
     $parser = $this->parserManager->createInstance($this->plugin_id, ['fid' => $file->id()]);
     $data = $parser->parse();
 
@@ -103,6 +106,9 @@ abstract class CrosswordFileParserPluginTestBase extends KernelTestBase {
 
   }
 
+  /**
+   *
+   */
   public function getTestFile($filename) {
     $contents = file_get_contents(drupal_get_path('module', 'crossword') . "/tests/files/" . $filename);
     $file = file_save_data($contents, "public://$filename");
@@ -116,4 +122,5 @@ abstract class CrosswordFileParserPluginTestBase extends KernelTestBase {
     $json = file_get_contents(drupal_get_path('module', 'crossword') . "/tests/files/test.json");
     return $json;
   }
+
 }

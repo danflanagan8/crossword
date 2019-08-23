@@ -3,7 +3,7 @@
 namespace Drupal\Tests\crossword\Kernel;
 
 /**
- * Tests the Across Lite Puz parser plugin
+ * Tests the Across Lite Puz parser plugin.
  *
  * @group crossword
  */

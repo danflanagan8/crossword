@@ -5,68 +5,67 @@
  * Register some themes and theme suggestions for the crossword module.
  */
 
-
 /**
  * Implements hook_theme().
  */
 function crossword_theme($existing, $type, $theme, $path) {
-  return array (
-    'crossword' => array(
-      'variables' => array(
+  return [
+    'crossword' => [
+      'variables' => [
         'content' => NULL,
         'attributes' => [],
-      ),
-    ),
-    'crossword_solution' => array(
-      'variables' => array(
+      ],
+    ],
+    'crossword_solution' => [
+      'variables' => [
         'content' => NULL,
         'attributes' => [],
-      ),
-    ),
-    'crossword_controls' => array(
-      'variables' => array(
+      ],
+    ],
+    'crossword_controls' => [
+      'variables' => [
         'content' => NULL,
         'attributes' => [],
-      ),
-    ),
-    'crossword_grid' => array(
-      'variables' => array(
+      ],
+    ],
+    'crossword_grid' => [
+      'variables' => [
         'content' => NULL,
-      ),
-    ),
-    'crossword_grid_row' => array(
-      'variables' => array(
+      ],
+    ],
+    'crossword_grid_row' => [
+      'variables' => [
         'content' => NULL,
-      ),
-    ),
-    'crossword_square' => array(
-      'variables' => array(
+      ],
+    ],
+    'crossword_square' => [
+      'variables' => [
         'fill' => NULL,
         'numeral' => NULL,
         'attributes' => [],
-      ),
-    ),
-    'crossword_clue' => array(
-      'variables' => array(
+      ],
+    ],
+    'crossword_clue' => [
+      'variables' => [
         'text' => NULL,
         'numeral' => NULL,
         'attributes' => [],
-      ),
-    ),
-    'crossword_clues' => array(
-      'variables' => array(
+      ],
+    ],
+    'crossword_clues' => [
+      'variables' => [
         'content' => NULL,
         'direction' => NULL,
         'attributes' => [],
-      ),
-    ),
-  );
+      ],
+    ],
+  ];
 }
 
- /**
-  *  Implements hook_theme_suggestions_hook_alter().
-  *  Makes it easier to theme across clues and down clues separately.
-  */
+/**
+ * Implements hook_theme_suggestions_hook_alter().
+ *  Makes it easier to theme across clues and down clues separately.
+ */
 function crossword_theme_suggestions_crossword_clues_alter(array &$suggestions, array $variables) {
- $suggestions[] = 'crossword_clues__' . $variables['direction'];
+  $suggestions[] = 'crossword_clues__' . $variables['direction'];
 }

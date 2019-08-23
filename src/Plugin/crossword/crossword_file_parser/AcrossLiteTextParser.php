@@ -2,7 +2,6 @@
 
 namespace Drupal\crossword\Plugin\crossword\crossword_file_parser;
 
-use Drupal\Core\Plugin\PluginBase;
 use Drupal\file\Entity\File;
 use Drupal\crossword\CrosswordFileParserPluginBase;
 use Drupal\file\FileInterface;
@@ -51,18 +50,18 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
 
     $matches = [];
     preg_match_all("/<[A-Z]+?>/", $contents, $matches);
-    // Note this does not match <ACROSS PUZZLE>, a worthless tag really
+    // Note this does not match <ACROSS PUZZLE>, a worthless tag really.
     $actual_tags = $matches[0];
 
     foreach ($required_tags as $tag) {
       if (array_search($tag, $actual_tags) === FALSE) {
-        //$missing_tags[] = $tag;
+        // $missing_tags[] = $tag;.
         return FALSE;
       }
     }
     foreach ($actual_tags as $tag) {
       if (array_search($tag, $expected_order) === FALSE) {
-        //$extra_tags[] = $tag;
+        // $extra_tags[] = $tag;.
         return FALSE;
       }
     }
@@ -79,18 +78,17 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
         $relevant_tags[] = $tag;
       }
     }
-    foreach($relevant_tags as $index => $tag) {
+    foreach ($relevant_tags as $index => $tag) {
       if ($relevant_tags[$index] != $actual_tags[$index]) {
-        //return [
+        // Return [
         //  'out_of_order' => TRUE,
-        //];
+        // ];.
         return FALSE;
       }
     }
     return TRUE;
-    //return [];
+    // Return [];.
   }
-
 
   /**
    * {@inheritdoc}
@@ -113,16 +111,25 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
     return $data;
   }
 
+  /**
+   *
+   */
   public function getTitle($lines) {
     $title = $lines[array_search("<TITLE>", $lines) + 1];
     return trim($title);
   }
 
+  /**
+   *
+   */
   public function getAuthor($lines) {
     $author = $lines[array_search("<AUTHOR>", $lines) + 1];
     return trim($author);
   }
 
+  /**
+   *
+   */
   public function getNotepad($lines) {
     $notepad_index = strpos($this->contents, "<NOTEPAD>");
     if ($notepad_index > -1) {
@@ -131,6 +138,9 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
     }
   }
 
+  /**
+   *
+   */
   public function getGridAndClues($lines) {
     $grid = [];
     $clues = [
@@ -153,16 +163,17 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
       $row = [];
       for ($col_index = 0; $col_index < count($raw_row); $col_index++) {
         $fill = $raw_row[$col_index];
-        $circle = $fill && strtoupper($fill) != $fill; //in text, lowercase letters inidcate a circle.
+        // In text, lowercase letters inidcate a circle.
+        $circle = $fill && strtoupper($fill) != $fill;
         $square = [
           'row' => $row_index,
           'col' => $col_index,
           'circle' => $circle,
           'rebus' => FALSE,
-          'fill' => $fill === NULL ? NULL :strtoupper($fill),
+          'fill' => $fill === NULL ? NULL : strtoupper($fill),
         ];
         if ($fill !== NULL) {
-          // init some things to NULL
+          // Init some things to NULL.
           $numeral_incremented = FALSE;
           $numeral = NULL;
           /**
@@ -251,6 +262,9 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
     ];
   }
 
+  /**
+   *
+   */
   public function getRawClues($lines) {
     $across_clues_start_index = array_search("<ACROSS>", $lines) + 1;
     $down_clues_start_index = array_search("<DOWN>", $lines) + 1;
@@ -272,6 +286,9 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
     ];
   }
 
+  /**
+   *
+   */
   public function getRawGrid($lines) {
     $raw_grid = [];
 
@@ -288,6 +305,9 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
     return $raw_grid;
   }
 
+  /**
+   *
+   */
   private function getRebusArray($lines) {
     if (array_search("<REBUS>", $lines) > -1) {
       $rebus_start_index = array_search("<REBUS>", $lines) + 1;

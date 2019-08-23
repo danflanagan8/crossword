@@ -3,7 +3,6 @@
 namespace Drupal\crossword;
 
 use Drupal\Core\Plugin\PluginBase;
-use Drupal\crossword\CrosswordFileParserPluginInterface;
 use Drupal\file\Entity\File;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -14,11 +13,10 @@ use Drupal\file\FileInterface;
  * If there's a crossword file format that no existing Crossword File Parser
  * Plugin can figure out, extend this class to write your own.
  */
-
 abstract class CrosswordFileParserPluginBase extends PluginBase implements CrosswordFileParserPluginInterface, ContainerFactoryPluginInterface {
 
   /**
-   * Cache for the result of the parse function
+   * Cache for the result of the parse function.
    *
    * @var \Drupal\Core\Cache\CacheBackendInterface
    */
@@ -26,14 +24,14 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
 
 
   /**
-   * The file entity that hopefully represents a crossword
+   * The file entity that hopefully represents a crossword.
    *
    * @var \Drupal\file\FileInterface
    */
   protected $file;
 
   /**
-   * The contents of the file
+   * The contents of the file.
    *
    * @var string
    */
@@ -62,6 +60,9 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
     $this->contents = trim($this->contents);
   }
 
+  /**
+   *
+   */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
       $configuration,
@@ -103,7 +104,7 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
    * The "data" array is what the field formatter ends up using. If you extend
    * this base class, you definitely need to override this function.
    *
-   * array(
+   * Array(
    *   'id' => $this->file->id(),
    *   'title' => 'Awesome Puzzle',
    *   'author' => 'Dan',
@@ -149,7 +150,6 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
    *    ],
    *   )
    * )
-   *
    */
   protected function getData() {
     return [
@@ -163,9 +163,9 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
 
   /**
    * If the text of a clue is something like "Common feature of 12- and 57-Across and
-   * 34-Down", the return value will be
+   * 34-Down", the return value will be.
    *
-   * array(
+   * Array(
    *  [
    *   'dir' => 'across',
    *   'numeral' => 12,
@@ -179,24 +179,24 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
    *   'numeral' => 34,
    *  ],
    * )
-   *
    */
   protected function findReferences($text) {
-    //find references
+    // Find references.
     $refRegex = '/(\d+\-)|(Down)|(Across)/';
-    if( preg_match('/(\d+\-)/', $text) === 1 && preg_match('/(Across)|(Down)/', $text) === 1 ){
-      //there's likely a reference
+    if (preg_match('/(\d+\-)/', $text) === 1 && preg_match('/(Across)|(Down)/', $text) === 1) {
+      // there's likely a reference.
       $matches = [];
       $references = [];
       preg_match_all($refRegex, $text, $matches);
-      $matches = $matches[0]; //something like [13- , 23- , Across, 45-, Down]
+      // Something like [13- , 23- , Across, 45-, Down].
+      $matches = $matches[0];
       $across_index = array_search("Across", $matches);
       $down_index = array_search("Down", $matches);
 
-      if( $across_index === FALSE ){
-        //just down references
+      if ($across_index === FALSE) {
+        // Just down references.
         $i = 0;
-        while( $i < $down_index ){
+        while ($i < $down_index) {
           $ref_num = str_replace("-", "", $matches[$i]);
           $references[] = [
             'dir' => 'down',
@@ -205,10 +205,10 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
           $i++;
         }
       }
-      if( $down_index === FALSE ){
-        //just across references
+      if ($down_index === FALSE) {
+        // Just across references.
         $i = 0;
-        while( $i < $across_index ){
+        while ($i < $across_index) {
           $ref_num = str_replace("-", "", $matches[$i]);
           $references[] = [
             'dir' => 'across',
@@ -217,11 +217,11 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
           $i++;
         }
       }
-      if( $across_index > -1 && $down_index > -1 ){
-        //assume Across references are first, as they should be
-        //across
+      if ($across_index > -1 && $down_index > -1) {
+        // Assume Across references are first, as they should be
+        // across.
         $i = 0;
-        while( $i < $across_index ){
+        while ($i < $across_index) {
           $ref_num = str_replace("-", "", $matches[$i]);
           $references[] = [
             'dir' => 'across',
@@ -229,9 +229,9 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
           ];
           $i++;
         }
-        //now down. We have to move past the acrossIndex
+        // Now down. We have to move past the acrossIndex.
         $i = $across_index + 1;
-        while( $i < $down_index ){
+        while ($i < $down_index) {
           $ref_num = str_replace("-", "", $matches[$i]);
           $references[] = [
             'dir' => 'down',
@@ -245,7 +245,7 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
   }
 
   /**
-   *  $clues is the 'clues' element of $data, as described above the detData
+   * $clues is the 'clues' element of $data, as described above the detData
    *  function. The clues should be fully created other than the index
    *  element of any references.
    */
@@ -253,7 +253,7 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
     foreach ($clues['down'] as &$down_clue) {
       if (!empty($down_clue['references'])) {
         foreach ($down_clue['references'] as &$reference) {
-          foreach($clues[$reference['dir']] as $index => $clue) {
+          foreach ($clues[$reference['dir']] as $index => $clue) {
             if ($clue['numeral'] == $reference['numeral']) {
               $reference['index'] = $index;
               break;
@@ -265,7 +265,7 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
     foreach ($clues['across'] as &$across_clue) {
       if (!empty($across_clue['references'])) {
         foreach ($across_clue['references'] as &$reference) {
-          foreach($clues[$reference['dir']] as $index => $clue) {
+          foreach ($clues[$reference['dir']] as $index => $clue) {
             if ($clue['numeral'] == $reference['numeral']) {
               $reference['index'] = $index;
               break;
@@ -291,28 +291,28 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
           'left' => NULL,
           'right' => NULL,
         ];
-        //up
+        // Up.
         if (isset($grid[$row_index - 1][$col_index]['fill'])) {
           $grid[$row_index][$col_index]['moves']['up'] = [
             'row' => $row_index - 1,
             'col' => $col_index,
           ];
         }
-        //down
+        // Down.
         if (isset($grid[$row_index + 1][$col_index]['fill'])) {
           $grid[$row_index][$col_index]['moves']['down'] = [
             'row' => $row_index + 1,
             'col' => $col_index,
           ];
         }
-        //left
+        // Left.
         if (isset($grid[$row_index][$col_index - 1]['fill'])) {
           $grid[$row_index][$col_index]['moves']['left'] = [
             'row' => $row_index,
             'col' => $col_index - 1,
           ];
         }
-        //right
+        // Right.
         if (isset($grid[$row_index][$col_index + 1]['fill'])) {
           $grid[$row_index][$col_index]['moves']['right'] = [
             'row' => $row_index,

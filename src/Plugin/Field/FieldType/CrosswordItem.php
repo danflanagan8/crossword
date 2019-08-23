@@ -5,7 +5,6 @@ namespace Drupal\crossword\Plugin\Field\FieldType;
 use Drupal\file\Plugin\Field\FieldType\FileItem;
 use Drupal\Core\Form\FormStateInterface;
 
-
 /**
  * Plugin implementation of the 'crossword' field type.
  *

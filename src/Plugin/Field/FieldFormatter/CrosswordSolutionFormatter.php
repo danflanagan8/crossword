@@ -3,10 +3,7 @@
 namespace Drupal\crossword\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\field\Entity\File;
-use Drupal\crossword\CrosswordFileParser;
 use Drupal\Core\Form\FormStateInterface;
-
 
 /**
  * Plugin implementation of the 'crossword_solution' formatter.
