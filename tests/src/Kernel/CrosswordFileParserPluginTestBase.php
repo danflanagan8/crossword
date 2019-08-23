@@ -114,6 +114,13 @@ abstract class CrosswordFileParserPluginTestBase extends KernelTestBase {
 
   /**
    * Returns a $file entity created from a test file in this module.
+   *
+   * @param string $filename
+   *   The filename of the file stored at tests/files within this module that
+   *   is to be used for this test.
+   *
+   * @return \Drupal\file\Entity\FileInterface
+   *   A loaded file entity.
    */
   protected function getTestFile($filename) {
     $contents = file_get_contents(drupal_get_path('module', 'crossword') . "/tests/files/" . $filename);
@@ -123,6 +130,10 @@ abstract class CrosswordFileParserPluginTestBase extends KernelTestBase {
 
   /**
    * Loads the expected json for the success file.
+   *
+   * @return string
+   *   A string loaded from test.json stored in tests/files within this module.
+   *   This string is well formatted json.
    */
   protected function getTestJson() {
     $json = file_get_contents(drupal_get_path('module', 'crossword') . "/tests/files/test.json");
