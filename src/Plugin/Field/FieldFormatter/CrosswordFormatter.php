@@ -70,7 +70,7 @@ class CrosswordFormatter extends FileFormatterBase {
       '#type' => 'checkbox',
       '#title' => 'Print Styles',
       '#default_value' => $this->getSetting('print'),
-      '#description' => 'Include the print stylesheet from the Crossword module.',
+      '#description' => $this->t('Include the print stylesheet from the Crossword module.'),
     ];
     $form['details'] = [
       '#type' => 'fieldset',
@@ -83,7 +83,7 @@ class CrosswordFormatter extends FileFormatterBase {
       '#default_value' => $this->getSetting('details')['title_tag'],
       '#options' => $tag_options,
       '#empty_option' => $this->t("Do not render the title"),
-      '#prefix' => '<p>Select the html tag to usee for rendering these details.</p>',
+      '#prefix' => '<p>Select the html tag to use for rendering these details.</p>',
     ];
     $form['details']['author_tag'] = [
       '#type' => 'select',

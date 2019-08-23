@@ -86,7 +86,8 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
         }
       }
     }
-    $lines[] = $line; // There's an un-added line at this point.
+    // There's an un-added line at this point.
+    $lines[] = $line;
 
     $pre_parse = [
      'rows' => $rows,

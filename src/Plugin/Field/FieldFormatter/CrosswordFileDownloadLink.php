@@ -43,7 +43,7 @@ class CrosswordFileDownloadLink extends FileFormatterBase {
       '#type' => 'textfield',
       '#title' => 'Link Text',
       '#default_value' => $this->getSetting('link_text'),
-      '#description' => 'This text is linked to the file',
+      '#description' => $this->t('This text is linked to the file'),
       '#required' => TRUE,
     ];
     $element['new_tab'] = [
@@ -55,7 +55,7 @@ class CrosswordFileDownloadLink extends FileFormatterBase {
       '#type' => 'checkbox',
       '#title' => 'Force Download',
       '#default_value' => $this->getSetting('force_download'),
-      '#description' => 'This adds the <i>download</i> attribute to the link, which works in many modern browsers.',
+      '#description' => $this->t('This adds the <i>download</i> attribute to the link, which works in many modern browsers.'),
     ];
     return $element;
   }
