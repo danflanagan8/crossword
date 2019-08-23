@@ -2,19 +2,19 @@
 
 namespace Drupal\crossword\Plugin\crossword\crossword_file_parser;
 
-use Drupal\Core\Plugin\PluginBase;
 use Drupal\file\Entity\File;
 use Drupal\crossword\CrosswordFileParserPluginBase;
 use Drupal\file\FileInterface;
 
 /**
+ * Crossword File Parser Plugin for .puz files.
+ *
  * @CrosswordFileParser(
  *   id = "across_lite_puz",
  *   title = @Translation("Across Lite Puz")
  * )
  */
 class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
-
 
   /**
    * {@inheritdoc}
@@ -41,34 +41,35 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
 
   }
 
-
   /**
    * {@inheritdoc}
    */
   protected function getData() {
     $hex = bin2hex($this->contents);
     $hex_arr = [];
-    for($i = 0; $i < strlen($hex); $i = $i + 2){
+    for ($i = 0; $i < strlen($hex); $i = $i + 2) {
       $hex_arr[] = substr($hex, $i, 2);
     }
 
-    // Get dimensions. These are hex versions of numbers, not hex versinos of ASCII characters.
+    // Get dimensions.
+    // These are hex versions of numbers, not hex versinos of ASCII characters.
     $cols = hexdec($hex_arr[44]);
     $rows = hexdec($hex_arr[45]);
     $num_clues = hexdec($hex_arr[46]);
 
-    // Starting with element 52, everything (almost) is text
+    // Starting with element 52, everything (almost) is text.
     $dec_array = [];
     for ($i = 52; $i < count($hex_arr); $i++) {
       try {
         $dec = hexdec($hex_arr[$i]);
         $dec_array[] = $dec;
-      } catch(Exception $e) {
+      }
+      catch (Exception $e) {
         continue;
       }
     }
 
-    // Concatonate the chars into meaningful lines
+    // Concatonate the chars into meaningful lines.
     // A line break is indicated by 0.
     $lines = [];
     $line = '';
@@ -81,7 +82,8 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
         try {
           $char = chr($dec);
           $line .= $char;
-        } catch(Exception $e) {
+        }
+        catch (Exception $e) {
           continue;
         }
       }
@@ -90,10 +92,10 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
     $lines[] = $line;
 
     $pre_parse = [
-     'rows' => $rows,
-     'cols' => $cols,
-     'num_clues' => $num_clues,
-     'lines' => $lines,
+      'rows' => $rows,
+      'cols' => $cols,
+      'num_clues' => $num_clues,
+      'lines' => $lines,
     ];
 
     $data = [
@@ -110,18 +112,27 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
     return $data;
   }
 
+  /**
+   * Returns the crossword title.
+   */
   public function getTitle($pre_parse) {
-    // The first line has the solution grid, the saved answer grid, and then the title.
+    // First line has the solution grid, the saved answer grid, then the title.
     $title = substr($pre_parse['lines'][0], 2 * $pre_parse['rows'] * $pre_parse['cols']);
     return trim($title);
   }
 
+  /**
+   * Returns the crossword author.
+   */
   public function getAuthor($pre_parse) {
     // It's the second line.
     $author = $pre_parse['lines'][1];
     return trim($author);
   }
 
+  /**
+   * Returns the crossword notepad.
+   */
   public function getNotepad($pre_parse) {
     // The clues start at line index 3.
     // The notepad comes right after the last clue.
@@ -129,6 +140,12 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
     return trim($notepad);
   }
 
+  /**
+   * Returns grid and clues.
+   *
+   * When returns, the squares don't have moves and the references
+   * don't have the index added yet.
+   */
   public function getGridAndClues($pre_parse) {
     $grid = [];
     $clues = [
@@ -176,14 +193,14 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
         else {
           $square['fill'] = $fill;
 
-          // init some things to NULL
+          // Init some things to NULL.
           $numeral_incremented = FALSE;
           $numeral = NULL;
-          /**
-           * This will be the first square in an across clue if...
-           * 1. It's the left square or to the right of a black
-           * AND
-           * 2. It's not the right square and the square to its right is not black.
+          /*
+          This will be the first square in an across clue if...
+          1. It's the left square or to the right of a black
+          AND
+          2. It's not the right square and the square to its right is not black.
            */
           if ($col_index == 0 || $raw_row[$col_index - 1] === NULL) {
             if (isset($raw_row[$col_index + 1]) && $raw_row[$col_index + 1] !== NULL) {
@@ -215,11 +232,11 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
             ];
           }
 
-          /**
-           * This will be the first square in a down clue if...
-           * 1. It's the top square or the below a black
-           * AND
-           * 2. It's not the bottom square and the square below it is not black.
+          /*
+          This will be the first square in a down clue if...
+          1. It's the top square or the below a black
+          AND
+          2. It's not the bottom square and the square below it is not black.
            */
           if ($row_index == 0 || $raw_grid[$row_index - 1][$col_index] === NULL) {
             if (isset($raw_grid[$row_index + 1][$col_index]) && $raw_grid[$row_index + 1][$col_index] !== NULL) {
@@ -235,7 +252,6 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
                 'references' => $this->findReferences($raw_clues[$iterator['index_raw_clue']]),
               ];
               $numeral_incremented = TRUE;
-
 
               $square['fill'] = $fill;
               $square['down'] = [
@@ -266,11 +282,17 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
     ];
   }
 
+  /**
+   * Returns an array of arrays of clue text.
+   */
   public function getRawClues($pre_parse) {
     // Clues start at index 3.
     return array_slice($pre_parse['lines'], 3, $pre_parse['num_clues'] + 1);
   }
 
+  /**
+   * Returns a 2D array where each element is the text of a square.
+   */
   public function getRawGrid($pre_parse) {
     $grid_string = substr($pre_parse['lines'][0], 0, $pre_parse['rows'] * $pre_parse['cols']);
     $grid = [];
@@ -287,29 +309,38 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
     return $grid;
   }
 
+  /**
+   * Returns array used to handle rebus puzzles.
+   *
+   * It's a 2d array representing the grid where any non-zero value
+   * indicates the rebus fill for that square.
+   */
+  protected function getRebusGrid($pre_parse) {
 
-  // Returns a grid that has zeros or rebus entries.
-  // This was really hard to write and may seem magical.
-  private function getRebusGrid($pre_parse) {
-
-    // search hex for 5254424c
+    // Search hex for 5254424c.
     $hex_contents = bin2hex($this->contents);
     if (strpos($hex_contents, '5254424c') > -1) {
       $rebus_grid_end_index = strpos($hex_contents, '5254424c');
-      // The previous 2 * $pre_parse['rows'] * $pre_parse['cols'] values represent squares.
-      // 00 indicates no rebus. Anything else indicates rebus. 07 indicates rebus #6, for example.
+      /*
+      The previous 2 * $pre_parse['rows'] * $pre_parse['cols'] values represent
+      squares. 00 indicates no rebus. Anything else indicates rebus.
+      07 indicates rebus #6, for example.
+       */
       $rebus_grid_string = substr($hex_contents, $rebus_grid_end_index - 2 * $pre_parse['rows'] * $pre_parse['cols'] - 2, 2 * $pre_parse['rows'] * $pre_parse['cols']);
       $rebus_grid_lines = str_split($rebus_grid_string, 2 * $pre_parse['cols']);
       $rebus_grid = [];
-      foreach($rebus_grid_lines as $line) {
+      foreach ($rebus_grid_lines as $line) {
         $row = str_split($line, 2);
-        foreach ($row as &$hex){
+        foreach ($row as &$hex) {
           $hex = hexdec($hex);
         }
         $rebus_grid[] = $row;
       }
 
-      // the rebus code starts at index $rebus_grid_end_index + 18 and goes until there's a 00.
+      /*
+      The rebus code starts at index $rebus_grid_end_index + 18
+      and goes until there's a 00.
+       */
       $rebus_code_string = '';
       $i = $rebus_grid_end_index + 18;
       while (isset($hex_contents[$i]) && substr($hex_contents, $i, 2) !== '00') {
@@ -345,22 +376,30 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
     }
   }
 
-  // Returns a grid that has zeros or not zeros
-  // Not zeros means it's a circle
+  /**
+   * Returns array used to handle circles.
+   *
+   * It's a 2d array representing the grid where any non-zero value
+   * indicates the square should have a circle.
+   */
   protected function getCircleGrid($pre_parse) {
     $hex = bin2hex($this->contents);
 
-    //we look for 47455854
+    // We look for 47455854.
     if (strpos($hex, '47455854') > -1) {
-      $cricle_grid_start_index = strpos($hex, '47455854') + 16; //16 is the length of 47455854 plus 4 more hex "doublets"
-      // The next 2 * $pre_parse['rows'] * $pre_parse['cols'] value represent squares.
-      // 00 indicates no circle. 80 indicates circle.
+      // 16 is the length of 47455854 plus 4 more hex "doublets".
+      $cricle_grid_start_index = strpos($hex, '47455854') + 16;
+
+      /*
+      The next 2 * $pre_parse['rows'] * $pre_parse['cols'] value represent
+      squares. 00 indicates no circle. 80 indicates circle.
+       */
       $circle_grid_string = substr($hex, $cricle_grid_start_index, 2 * $pre_parse['rows'] * $pre_parse['cols']);
       $circle_grid_lines = str_split($circle_grid_string, 2 * $pre_parse['cols']);
       $circle_grid = [];
-      foreach($circle_grid_lines as $line) {
+      foreach ($circle_grid_lines as $line) {
         $row = str_split($line, 2);
-        foreach ($row as &$hex){
+        foreach ($row as &$hex) {
           $hex = hexdec($hex);
         }
         $circle_grid[] = $row;
