@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * @file
+ * Register some themes and theme suggestions for the crossword module.
+ */
+
+
+/**
+ * Implements hook_theme().
+ */
 function crossword_theme($existing, $type, $theme, $path) {
   return array (
     'crossword' => array(

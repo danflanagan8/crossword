@@ -1,3 +1,17 @@
+{#
+/**
+ * @file
+ * default theme implementation to display a crossword solution.
+ *
+ * Available variables:
+ * - content : all available pieces of the crossword which may include:
+ *   - title : The title of the crossword as contained in the parsed file.
+ *   - author : The author of the crossword as contained in the parsed file.
+ *   - notepad : Notes contained in the parsed file.
+ *   - grid : The crossword grid as contained in the parsed file.
+ * - attributes : HTML attributes for the containing element.
+ */
+#}
 <div{{ attributes.addClass('crossword').addClass('crossword-solution') }}>
 
   <div class="crossword-header">

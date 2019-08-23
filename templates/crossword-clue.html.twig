@@ -1,3 +1,14 @@
+{#
+/**
+ * @file
+ * default theme implementation to display a crossword clue.
+ *
+ * Available variables:
+ * - numeral : The number that should appear with the clue.
+ * - text : The text of the clue.
+ * - attributes : HTML attributes for the containing element.
+ */
+#}
 <li{{ attributes.addClass('crossword-clue') }}>
   <span class="numeral">{{ numeral }}</span> {{ text }}
 </li>

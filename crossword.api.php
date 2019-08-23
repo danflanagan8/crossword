@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Hooks specific to the crossword module.
+ * Hooks provided by the crossword module.
  */
 
 /**

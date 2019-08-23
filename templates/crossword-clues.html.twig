@@ -1,3 +1,14 @@
+{#
+/**
+ * @file
+ * default theme implementation to display a set of clues.
+ *
+ * Available variables:
+ * - content : All of the clues in this set
+ * - direction: 'across' or 'down'
+ * - attributes : HTML attributes for the containing element.
+ */
+#}
 <div{{ attributes.addClass('crossword-clues') }}>
   {% if direction %}
     <div class="crossword-clues-header">

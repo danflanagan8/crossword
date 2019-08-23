@@ -1,3 +1,19 @@
+{#
+/**
+ * @file
+ * default theme implementation to display crossword controls.
+ *
+ * Available variables:
+ * - content : all available controls which may include:
+ *   - errors : Control for showing/hiding errors
+ *   - references : Control for showing/hiding referenced clues.
+ *   - cheat : Control to cheat on the current square.
+ *   - solution : Control to reveal entire solution.
+ *   - clear : Control to clear all text from the grid.
+ *   - undo : Control to undo recent moves.
+ *   - redo : Control to redo recent moves.
+ */
+#}
 <div class="crossword-controls">
   {% if content.errors is not empty or content.references is not empty %}
     <div class="crossword-options">

@@ -3,3 +3,5 @@ description: "Adds Crossword field that turns uploaded Across Lite text files in
 package: Custom
 type: module
 core: 8.x
+dependencies:
+  - drupal:file
