@@ -9,6 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Plugin implementation of the 'crossword_file_download_link' formatter.
+ *
  * This may be useful for image and file fields too.
  *
  * @FieldFormatter(

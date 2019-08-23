@@ -52,7 +52,7 @@ class CrosswordFileValidator extends ConstraintValidator implements ContainerInj
       if (get_class($item) == "Drupal\Core\TypedData\Plugin\DataType\IntegerData") {
         $file = File::load($item->getCastedValue());
         if (FALSE === $this->parserManager->filterApplicableDefinitions($allowed_parser_definitions, $file)) {
-          $this->context->addViolation($constraint->no_parser);
+          $this->context->addViolation($constraint->noParser);
         }
       }
     }

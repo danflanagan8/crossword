@@ -210,7 +210,7 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   /**
-   *
+   * Return render array for crossword title.
    */
   protected function getTitle($data) {
     if ($this->getSetting('details')['title_tag']) {
@@ -228,7 +228,7 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   /**
-   *
+   * Return render array for crossword author.
    */
   protected function getAuthor($data) {
     if ($this->getSetting('details')['author_tag'] && isset($data['author'])) {
@@ -246,7 +246,7 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   /**
-   *
+   * Return render array for crossword notes.
    */
   protected function getNotepad($data) {
     if ($this->getSetting('details')['notepad_tag'] && isset($data['notepad'])) {
@@ -264,7 +264,7 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   /**
-   *
+   * Return render array for across clues.
    */
   protected function getAcross($data) {
     $render = [
@@ -290,7 +290,7 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   /**
-   *
+   * Return render array for down clues.
    */
   protected function getDown($data) {
     $render = [
@@ -316,7 +316,7 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   /**
-   *
+   * Return render array for crossword grid.
    */
   protected function getGrid($data, $show_fill = FALSE) {
     $render = [
@@ -366,7 +366,7 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   /**
-   *
+   * Return render array of crossword controls.
    */
   protected function getControls() {
     return [
@@ -384,7 +384,7 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   /**
-   *
+   * Return render array for show errors checkbox.
    */
   protected function getShowErrorsCheckbox() {
     if ($this->getSetting('errors')['show']) {
@@ -412,7 +412,7 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   /**
-   *
+   * Return render array for show references checkbox.
    */
   protected function getShowReferencesCheckbox() {
     if ($this->getSetting('references')['show']) {
@@ -440,7 +440,7 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   /**
-   *
+   * Return render array of various buttons.
    */
   protected function getButton($name) {
     if ($this->getSetting('buttons')['buttons'][$name]) {

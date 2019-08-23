@@ -3,12 +3,8 @@
 namespace Drupal\crossword\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\file\Plugin\Field\FieldFormatter\FileFormatterBase;
-use Drupal\field\Entity\File;
-use Drupal\crossword\CrosswordFileParser;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageInterface;
-
 
 /**
  * Plugin implementation of the 'crossword_pseudofield' formatter.
@@ -107,11 +103,16 @@ class CrosswordPseudofieldFormatter extends CrosswordFormatter {
   public function settingsSummary() {
     $field_name = $this->fieldDefinition->getName();
     $referencing_type = $this->fieldDefinition->getTargetEntityTypeId();
-    return ["Use content.$field_name.title, content.$field_name.author,
-           content.$field_name.notepad, content.$field_name.grid,
-           content.$field_name.across, content.$field_name.down , and
-           content.$field_name.controls in the template for this
-           $referencing_type."];
+    $return = [];
+    $return[] = "Use these variables in your $referencing_type template:";
+    $return[] = "content.$field_name.title";
+    $return[] = "content.$field_name.author";
+    $return[] = "content.$field_name.notepad";
+    $return[] = "content.$field_name.grid";
+    $return[] = "content.$field_name.across";
+    $return[] = "content.$field_name.down";
+    $return[] = "content.$field_name.controls";
+    return $return;
   }
 
 }
