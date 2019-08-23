@@ -86,6 +86,9 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
    * Plugins that extend this base should have their own getData() function.
    * The parse function is final so that caching and the data alter hook
    * are standardized.
+   *
+   * @return array
+   *   An associative array that represents the crossword.
    */
   final public function parse() {
 
@@ -160,6 +163,9 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
    *    ],
    *   )
    * )
+   *
+   * @return array
+   *   An associative array that represents the crossword.
    */
   protected function getData() {
     return [
@@ -191,6 +197,12 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
    *   'numeral' => 34,
    *  ],
    * )
+   *
+   * @param string $text
+   *   The text of the clue to be parsed for references.
+   *
+   * @return array
+   *   An array representing any clues to which a reference was found in $text.
    */
   protected function findReferences($text) {
     // Find references.
