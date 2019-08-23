@@ -10,8 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\file\FileInterface;
 
 /**
- * If there's a crossword file format that no existing Crossword File Parser
- * Plugin can figure out, extend this class to write your own.
+ * Base class for Crossword File Parser Plugins.
  */
 abstract class CrosswordFileParserPluginBase extends PluginBase implements CrosswordFileParserPluginInterface, ContainerFactoryPluginInterface {
 
@@ -46,10 +45,12 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
    *   The plugin id.
    * @param array $plugin_definition
    *   The plugin definition.
+   * @param Drupal\Core\Cache\CacheBackendInterface $cache
+   *   The cache service.
    *
    * @throws \Exception
    */
-  public function __construct($configuration, $plugin_id, $plugin_definition, CacheBackendInterface $cache) {
+  public function __construct($configuration, $plugin_id, array $plugin_definition, CacheBackendInterface $cache) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->file = File::load($configuration['fid']);
     if (!static::isApplicable($this->file)) {
@@ -61,7 +62,7 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
   }
 
   /**
-   *
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
@@ -80,6 +81,8 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
   }
 
   /**
+   * Returns the data array representing the parsed crossword file.
+   *
    * Plugins that extend this base should have their own getData() function.
    * The parse function is final so that caching and the data alter hook
    * are standardized.
@@ -101,8 +104,15 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
   }
 
   /**
+   * Returns the data array representing the parsed crossword file.
+   *
+   * This is different from the parse() function in that this function does
+   * not interact with the cache or invoke any hooks.
+   *
    * The "data" array is what the field formatter ends up using. If you extend
    * this base class, you definitely need to override this function.
+   *
+   * See crossword/tests/files/test.json for example json.
    *
    * Array(
    *   'id' => $this->file->id(),
@@ -162,8 +172,10 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
   }
 
   /**
-   * If the text of a clue is something like "Common feature of 12- and 57-Across and
-   * 34-Down", the return value will be.
+   * Returns an array representing clues referenced in the input text.
+   *
+   * If the text of a clue is something like "Common feature of 12- and
+   * 57-Across and 34-Down", the return value will be:
    *
    * Array(
    *  [
@@ -245,9 +257,11 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
   }
 
   /**
-   * $clues is the 'clues' element of $data, as described above the detData
-   *  function. The clues should be fully created other than the index
-   *  element of any references.
+   * Add index values to references contained in the clues array.
+   *
+   * $clues is the 'clues' element of $data, as described above the detData()
+   * function. When passed to this function the clues should be fully created
+   * other than the index element of any references.
    */
   protected function addIndexToClueReferences(&$clues) {
     foreach ($clues['down'] as &$down_clue) {
@@ -277,6 +291,8 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
   }
 
   /**
+   * Adds a 'moves' element to all the squares in the grid.
+   *
    * This tells the arrow keys what to do when the puzzle is rendered.
    * By default, arrow keys won't move through black squares they get stopped
    * by the edges of the puzzle. If you want to modify this UX, the best
