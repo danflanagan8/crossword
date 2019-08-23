@@ -110,24 +110,42 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
 
   /**
    * Returns title of crossword.
+   *
+   * @param array $lines
+   *   The contents of the file where each array element is a line of the file.
+   *
+   * @return string
+   *   The title of the puzzle
    */
-  public function getTitle($lines) {
+  public function getTitle(array $lines) {
     $title = $lines[array_search("<TITLE>", $lines) + 1];
     return trim($title);
   }
 
   /**
    * Returns author of crossword.
+   *
+   * @param array $lines
+   *   The contents of the file where each array element is a line of the file.
+   *
+   * @return string
+   *   The author of the puzzle
    */
-  public function getAuthor($lines) {
+  public function getAuthor(array $lines) {
     $author = $lines[array_search("<AUTHOR>", $lines) + 1];
     return trim($author);
   }
 
   /**
    * Returns notepad from crossword.
+   *
+   * @param array $lines
+   *   The contents of the file where each array element is a line of the file.
+   *
+   * @return string
+   *   The notepad of the puzzle
    */
-  public function getNotepad($lines) {
+  public function getNotepad(array $lines) {
     $notepad_index = strpos($this->contents, "<NOTEPAD>");
     if ($notepad_index > -1) {
       $notepad = substr($this->contents, $notepad_index + 10);
@@ -140,8 +158,14 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
    *
    * When returns, the squares don't have moves and the references
    * don't have the index added yet.
+   *
+   * @param array $lines
+   *   The contents of the file where each array element is a line of the file.
+   *
+   * @return array
+   *   Associative array containing nearly fully parsed grid and clues.
    */
-  public function getGridAndClues($lines) {
+  public function getGridAndClues(array $lines) {
     $grid = [];
     $clues = [
       'across' => [],
@@ -264,8 +288,15 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
 
   /**
    * Returns an array of arrays of clue text.
+   *
+   * @param array $lines
+   *   The contents of the file where each array element is a line of the file.
+   *
+   * @return array
+   *   Associative array containing an array of across clue text and an array
+   *   of down clue text.
    */
-  public function getRawClues($lines) {
+  public function getRawClues(array $lines) {
     $across_clues_start_index = array_search("<ACROSS>", $lines) + 1;
     $down_clues_start_index = array_search("<DOWN>", $lines) + 1;
 
@@ -288,8 +319,14 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
 
   /**
    * Returns a 2D array where each element is the text of a square.
+   *
+   * @param array $lines
+   *   The contents of the file where each array element is a line of the file.
+   *
+   * @return array
+   *   2D array where each element is the text of a square.
    */
-  public function getRawGrid($lines) {
+  public function getRawGrid(array $lines) {
     $raw_grid = [];
 
     $grid_start_index = array_search("<GRID>", $lines) + 1;
@@ -308,10 +345,15 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
   /**
    * Returns array used to handle rebus puzzles.
    *
-   * The key is a number. The corresponding value is the text that
-   * should replace the number any time it appears in the grid.
+   * @param array $lines
+   *   The contents of the file where each array element is a line of the file.
+   *
+   * @return array
+   *   An associative array. The key is a number. The corresponding value
+   *   is the text that should replace the number any time it appears in the
+   *   grid.
    */
-  private function getRebusArray($lines) {
+  private function getRebusArray(array $lines) {
     if (array_search("<REBUS>", $lines) > -1) {
       $rebus_start_index = array_search("<REBUS>", $lines) + 1;
       $rebus_array = [];
