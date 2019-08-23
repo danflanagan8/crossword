@@ -62,7 +62,7 @@ class CrosswordFileParserManager extends DefaultPluginManager implements Crosswo
   /**
    * {@inheritdoc}
    */
-  public function loadDefinitionsFromOptionList($options) {
+  public function loadDefinitionsFromOptionList(array $options) {
     $definitions = [];
     // When no options are selected, all plugins are applicable.
     if (count(array_keys($options, '0')) == count($options) || empty($options)) {

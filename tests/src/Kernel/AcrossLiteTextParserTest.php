@@ -9,7 +9,7 @@ namespace Drupal\Tests\crossword\Kernel;
  */
 class AcrossLiteTextParserTest extends CrosswordFileParserPluginTestBase {
 
-  public $plugin_id = 'across_lite_text';
+  public $pluginId = 'across_lite_text';
   public $class = 'Drupal\crossword\Plugin\crossword\crossword_file_parser\AcrossLiteTextParser';
   public $filename = [
     'success' => 'test.txt',

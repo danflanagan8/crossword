@@ -63,8 +63,9 @@ function crossword_theme($existing, $type, $theme, $path) {
 }
 
 /**
- * Implements hook_theme_suggestions_hook_alter().
- *  Makes it easier to theme across clues and down clues separately.
+ * Implements hook_theme_suggestions_HOOK_alter() for crossword clues.
+ *
+ * Makes it easier to theme across clues and down clues separately.
  */
 function crossword_theme_suggestions_crossword_clues_alter(array &$suggestions, array $variables) {
   $suggestions[] = 'crossword_clues__' . $variables['direction'];

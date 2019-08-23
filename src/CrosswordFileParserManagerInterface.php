@@ -5,7 +5,7 @@ namespace Drupal\crossword;
 use Drupal\file\FileInterface;
 
 /**
- *
+ * Interface for Crossword File Parser Manager.
  */
 interface CrosswordFileParserManagerInterface {
 
@@ -61,6 +61,6 @@ interface CrosswordFileParserManagerInterface {
    * @return array
    *   An array of plugin definitions.
    */
-  public function loadDefinitionsFromOptionList($options);
+  public function loadDefinitionsFromOptionList(array $options);
 
 }

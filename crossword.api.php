@@ -6,17 +6,17 @@
  */
 
 /**
- * Alter the object representing the crossword file as returned by
- * the parse() method of the CrosswordFileParser class.
+ * Alter the array representing the crossword.
+ *
+ * See \Drupal\crossword\CrosswordFileParserPluginBase::parse().
  *
  * @param array $data
  *   The parsed crossword file, ready to be used by formatters and/or
  *   passed to drupalSettings.
- *
  * @param string $contents
  *   The contents of the text file representing the crossword.
  */
-function hook_crossword_data_alter(&$data, $contents) {
+function hook_crossword_data_alter(array &$data, $contents) {
   // Take credit for other people's work.
   $data['title'] = 'Dan';
 
