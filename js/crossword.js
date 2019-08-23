@@ -78,8 +78,7 @@
     addInputHandlers: function($crossword) {
       var Crossword = $crossword.data("Crossword");
       $('.crossword-square input', $crossword).on('input', function(e){
-        Crossword.setAnswer(e.target.value);
-        Crossword.focus();
+        Crossword.setAnswer(e.target.value).focus();
         $(this).val("");
       });
     },
@@ -92,56 +91,47 @@
           case 38:
             //up
             event.preventDefault();
-            Crossword.moveActiveSquare('up');
-            Crossword.focus();
+            Crossword.moveActiveSquare('up').focus();
             break;
           case 37:
             //left
             event.preventDefault();
-            Crossword.moveActiveSquare('left');
-            Crossword.focus();
+            Crossword.moveActiveSquare('left').focus();
             break;
           case 39:
             //right
             event.preventDefault();
-            Crossword.moveActiveSquare('right');
-            Crossword.focus();
+            Crossword.moveActiveSquare('right').focus();
             break;
           case 40:
             //down
             event.preventDefault();
-            Crossword.moveActiveSquare('down');
-            Crossword.focus();
+            Crossword.moveActiveSquare('down').focus();
             break;
           case 32:
             //spacebar
             event.preventDefault();
-            Crossword.changeDir();
-            Crossword.focus();
+            Crossword.changeDir().focus();
             break;
           case 13:
             //spacebar
             event.preventDefault();
-            Crossword.advanceActiveSquare();
-            Crossword.focus();
+            Crossword.advanceActiveSquare().focus();
             break;
           case 9:
             //tab
             event.preventDefault();
             if (event.shiftKey) {
-              Crossword.retreatActiveClue();
-              Crossword.focus();
+              Crossword.retreatActiveClue().focus();
             }
             else {
-              Crossword.advanceActiveClue();
-              Crossword.focus();
+              Crossword.advanceActiveClue().focus();
             }
             break;
             //backspace
           case 46:
           case 8:
-            Crossword.setAnswer("");
-            Crossword.focus();
+            Crossword.setAnswer("").focus();
         }
       });
     },
@@ -159,8 +149,7 @@
       });
 
       $('.crossword-clue', $crossword).once('crossword-clue-click').click(function(){
-        Crossword.setActiveClue($(this).data("Clue"));
-        Crossword.focus();
+        Crossword.setActiveClue($(this).data("Clue")).focus();
       });
 
       $('.crossword-clue-change', $crossword).once('crossword-clue-change-click').click(function(e){
@@ -185,14 +174,12 @@
 
       $('.button-undo').once('crossword-undo-click').click(function(e){
         e.preventDefault();
-        Crossword.undo();
-        Crossword.focus();
+        Crossword.undo().focus();
       });
 
       $('.button-redo').once('crossword-redo-click').click(function(e){
         e.preventDefault();
-        Crossword.redo();
-        Crossword.focus();
+        Crossword.redo().focus();
       });
 
       $('.button-solution').once('crossword-solution-click').click(function(e){

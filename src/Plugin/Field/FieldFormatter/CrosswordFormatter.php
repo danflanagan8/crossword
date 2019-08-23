@@ -349,8 +349,8 @@ class CrosswordFormatter extends FileFormatterBase {
             '#attributes' => [
               'data-col' => (string) $col_index,
               'data-row' => (string) $row_index,
-              'data-clue-index-across' => (string) $square['across']['index'],
-              'data-clue-index-down' => (string) $square['down']['index'],
+              'data-clue-index-across' => isset($square['across']['index']) ? (string) $square['across']['index'] : NULL,
+              'data-clue-index-down' => isset($square['down']['index']) ? (string) $square['down']['index'] : NULL,
               'data-numeral' => isset($square['numeral']) ? $square['numeral'] : NULL,
               'data-fill' => $square['fill'],
               'data-circle' => $square['circle'],

@@ -148,15 +148,25 @@
       }
 
       this.advanceActiveClue = function() {
-        if (this.clues[this.dir][this.activeClue.index + 1]) {
-          this.setActiveClue(this.clues[this.dir][this.activeClue.index + 1]);
+        if (this.activeClue) {
+          if (this.clues[this.dir][this.activeClue.index + 1]) {
+            this.setActiveClue(this.clues[this.dir][this.activeClue.index + 1]);
+          }
+        }
+        else {
+          this.setActiveClue(this.clues[this.dir][0]);
         }
         return this;
       }
 
       this.retreatActiveClue = function() {
-        if (this.clues[this.dir][this.activeClue.index - 1]) {
-          this.setActiveClue(this.clues[this.dir][this.activeClue.index - 1]);
+        if (this.activeClue) {
+          if (this.clues[this.dir][this.activeClue.index - 1]) {
+            this.setActiveClue(this.clues[this.dir][this.activeClue.index - 1]);
+          }
+        }
+        else {
+          this.setActiveClue(this.clues[this.dir][0]);
         }
         return this;
       }
@@ -176,6 +186,7 @@
         if (this.activeSquare && this.activeSquare['$square']) {
           this.activeSquare['$square'].trigger('crossword-focus');
         }
+        return this;
       }
 
       this.setAnswer = function(letter, undo, redo) {
@@ -210,11 +221,13 @@
             }
           }
         }
+        return this;
       }
 
       this.cheat = function() {
         this.sendCheatEvents(this.activeSquare);
         this.setAnswer(this.activeSquare.fill);
+        return this;
       }
 
       this.undo = function() {
@@ -224,6 +237,7 @@
           this.setActiveSquare(oldState.square);
           this.setAnswer(oldState.letter, true);
         }
+        return this;
       }
 
       this.redo = function() {
@@ -233,6 +247,7 @@
           this.setActiveSquare(oldState.square);
           this.setAnswer(oldState.letter, false, true);
         }
+        return this;
       }
 
       this.reveal = function() {
@@ -246,6 +261,7 @@
             }
           }
         }
+        return this;
       }
 
       this.getAnswers = function() {
@@ -261,6 +277,7 @@
 
       this.clear = function() {
         this.setAnswers(emptyAnswers());
+        return this;
       }
 
       this.setAnswers = function(answers) {
@@ -271,6 +288,7 @@
             this.sendAnswerEvents(this.grid[$row_index][$col_index]);
           }
         }
+        return this;
       }
 
       this.isSolved = function() {
