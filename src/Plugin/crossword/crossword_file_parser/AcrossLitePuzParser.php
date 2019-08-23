@@ -114,8 +114,14 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
 
   /**
    * Returns the crossword title.
+   *
+   * @param array $pre_parse
+   *   An array containing a reudimentary parsing of the crossword.
+   *
+   * @return string
+   *   The title of the puzzle.
    */
-  public function getTitle($pre_parse) {
+  public function getTitle(array $pre_parse) {
     // First line has the solution grid, the saved answer grid, then the title.
     $title = substr($pre_parse['lines'][0], 2 * $pre_parse['rows'] * $pre_parse['cols']);
     return trim($title);
@@ -123,8 +129,14 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
 
   /**
    * Returns the crossword author.
+   *
+   * @param array $pre_parse
+   *   An array containing a reudimentary parsing of the crossword.
+   *
+   * @return string
+   *   The author of the puzzle.
    */
-  public function getAuthor($pre_parse) {
+  public function getAuthor(array $pre_parse) {
     // It's the second line.
     $author = $pre_parse['lines'][1];
     return trim($author);
@@ -132,8 +144,14 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
 
   /**
    * Returns the crossword notepad.
+   *
+   * @param array $pre_parse
+   *   An array containing a reudimentary parsing of the crossword.
+   *
+   * @return string
+   *   The notepad of the puzzle.
    */
-  public function getNotepad($pre_parse) {
+  public function getNotepad(array $pre_parse) {
     // The clues start at line index 3.
     // The notepad comes right after the last clue.
     $notepad = $pre_parse['lines'][3 + $pre_parse['num_clues']];
@@ -145,8 +163,14 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
    *
    * When returns, the squares don't have moves and the references
    * don't have the index added yet.
+   *
+   * @param array $pre_parse
+   *   An array containing a reudimentary parsing of the crossword.
+   *
+   * @return array
+   *   Associative array containing nearly fully parsed grid and clues.
    */
-  public function getGridAndClues($pre_parse) {
+  public function getGridAndClues(array $pre_parse) {
     $grid = [];
     $clues = [
       'across' => [],
@@ -284,16 +308,28 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
 
   /**
    * Returns an array of arrays of clue text.
+   *
+   * @param array $pre_parse
+   *   An array containing a reudimentary parsing of the crossword.
+   *
+   * @return array
+   *   An array of clue texts. This is not separated into across and down.
    */
-  public function getRawClues($pre_parse) {
+  public function getRawClues(array $pre_parse) {
     // Clues start at index 3.
     return array_slice($pre_parse['lines'], 3, $pre_parse['num_clues'] + 1);
   }
 
   /**
    * Returns a 2D array where each element is the text of a square.
+   *
+   * @param array $pre_parse
+   *   An array containing a reudimentary parsing of the crossword.
+   *
+   * @return array
+   *   A 2D array or square text values.
    */
-  public function getRawGrid($pre_parse) {
+  public function getRawGrid(array $pre_parse) {
     $grid_string = substr($pre_parse['lines'][0], 0, $pre_parse['rows'] * $pre_parse['cols']);
     $grid = [];
     $i = 0;
@@ -312,10 +348,14 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
   /**
    * Returns array used to handle rebus puzzles.
    *
-   * It's a 2d array representing the grid where any non-zero value
-   * indicates the rebus fill for that square.
+   * @param array $pre_parse
+   *   An array containing a reudimentary parsing of the crossword.
+   *
+   * @return string
+   *   A 2d array representing the grid where any non-zero value
+   *   indicates the rebus fill for that square.
    */
-  protected function getRebusGrid($pre_parse) {
+  protected function getRebusGrid(array $pre_parse) {
 
     // Search hex for 5254424c.
     $hex_contents = bin2hex($this->contents);
@@ -379,10 +419,14 @@ class AcrossLitePuzParser extends CrosswordFileParserPluginBase {
   /**
    * Returns array used to handle circles.
    *
-   * It's a 2d array representing the grid where any non-zero value
-   * indicates the square should have a circle.
+   * @param array $pre_parse
+   *   An array containing a reudimentary parsing of the crossword.
+   *
+   * @return string
+   *   A 2d array representing the grid where any non-zero value
+   *   indicates the square should have a circle.
    */
-  protected function getCircleGrid($pre_parse) {
+  protected function getCircleGrid(array $pre_parse) {
     $hex = bin2hex($this->contents);
 
     // We look for 47455854.
