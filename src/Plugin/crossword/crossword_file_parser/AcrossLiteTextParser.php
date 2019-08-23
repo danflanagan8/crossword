@@ -7,6 +7,8 @@ use Drupal\crossword\CrosswordFileParserPluginBase;
 use Drupal\file\FileInterface;
 
 /**
+ * Plugin for parsing files in the Across Lite Text format v1 or v2.
+ *
  * @CrosswordFileParser(
  *   id = "across_lite_text",
  *   title = @Translation("Across Lite Text")
@@ -17,7 +19,7 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
   /**
    * {@inheritdoc}
    *
-   * Checks for missing tags, extra tags, oout of order tags.
+   * Checks for missing tags, extra tags, out of order tags.
    */
   public static function isApplicable(FileInterface $file) {
 
@@ -61,7 +63,6 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
     }
     foreach ($actual_tags as $tag) {
       if (array_search($tag, $expected_order) === FALSE) {
-        // $extra_tags[] = $tag;.
         return FALSE;
       }
     }
@@ -80,14 +81,10 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
     }
     foreach ($relevant_tags as $index => $tag) {
       if ($relevant_tags[$index] != $actual_tags[$index]) {
-        // Return [
-        //  'out_of_order' => TRUE,
-        // ];.
         return FALSE;
       }
     }
     return TRUE;
-    // Return [];.
   }
 
   /**
@@ -112,7 +109,7 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
   }
 
   /**
-   *
+   * Returns title of crossword.
    */
   public function getTitle($lines) {
     $title = $lines[array_search("<TITLE>", $lines) + 1];
@@ -120,7 +117,7 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
   }
 
   /**
-   *
+   * Returns author of crossword.
    */
   public function getAuthor($lines) {
     $author = $lines[array_search("<AUTHOR>", $lines) + 1];
@@ -128,7 +125,7 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
   }
 
   /**
-   *
+   * Returns notepad from crossword.
    */
   public function getNotepad($lines) {
     $notepad_index = strpos($this->contents, "<NOTEPAD>");
@@ -139,7 +136,10 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
   }
 
   /**
+   * Returns grid and clues.
    *
+   * When returns, the squares don't have moves and the references
+   * don't have the index added yet.
    */
   public function getGridAndClues($lines) {
     $grid = [];
@@ -176,11 +176,11 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
           // Init some things to NULL.
           $numeral_incremented = FALSE;
           $numeral = NULL;
-          /**
-           * This will be the first square in an across clue if...
-           * 1. It's the left square or to the right of a black
-           * AND
-           * 2. It's not the right square and the square to its right is not black.
+          /*
+          This will be the first square in an across clue if it is...
+          1. the left square or to the right of a black
+          AND
+          2. not the right square and the square to its right is not black.
            */
           if ($col_index == 0 || $raw_row[$col_index - 1] === NULL) {
             if (isset($raw_row[$col_index + 1]) && $raw_row[$col_index + 1] !== NULL) {
@@ -210,11 +210,11 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
             ];
           }
 
-          /**
-           * This will be the first square in a down clue if...
-           * 1. It's the top square or the below a black
-           * AND
-           * 2. It's not the bottom square and the square below it is not black.
+          /*
+          This will be the first square in a down clue if...
+          1. It's the top square or the below a black
+          AND
+          2. It's not the bottom square and the square below it is not black.
            */
           if ($row_index == 0 || $raw_grid[$row_index - 1][$col_index] === NULL) {
             if (isset($raw_grid[$row_index + 1][$col_index]) && $raw_grid[$row_index + 1][$col_index] !== NULL) {
@@ -263,7 +263,7 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
   }
 
   /**
-   *
+   * Returns an array of arrays of clue text.
    */
   public function getRawClues($lines) {
     $across_clues_start_index = array_search("<ACROSS>", $lines) + 1;
@@ -287,7 +287,7 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
   }
 
   /**
-   *
+   * Returns a 2D array where each element is the text of a square.
    */
   public function getRawGrid($lines) {
     $raw_grid = [];
@@ -306,7 +306,10 @@ class AcrossLiteTextParser extends CrosswordFileParserPluginBase {
   }
 
   /**
+   * Returns array used to handle rebus puzzles.
    *
+   * The key is a number. The corresponding value is the text that
+   * should replace the number any time it appears in the grid.
    */
   private function getRebusArray($lines) {
     if (array_search("<REBUS>", $lines) > -1) {
