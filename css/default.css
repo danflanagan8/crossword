@@ -47,7 +47,21 @@
   box-sizing: border-box;
   width: 50%;
   float: left;
-  padding: 1em;
+  padding-top: 1em;
+}
+
+.crossword .crossword-clues.across {
+  padding-right: 0.5em;
+}
+
+.crossword .crossword-clues.down {
+  padding-left: 0.5em;
+}
+
+.crossword-clues ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
 .crossword-clues-header {
@@ -84,6 +98,7 @@
   left: 25%;
   transform-origin: 50% 50%;
 }
+
 .crossword-clue-change.next:after {
   border-right: 2px solid black;
   border-bottom: 2px solid black;
@@ -91,22 +106,13 @@
   -ms-transform: translateX(-30%) rotate(-45deg);
   transform: translateX(-30%) rotate(-45deg);
 }
+
 .crossword-clue-change.prev:after {
   border-left: 2px solid black;
   border-top: 2px solid black;
   -webkit-transform: translateX(30%) rotate(-45deg);
   -ms-transform: translateX(30%) rotate(-45deg);
   transform: translateX(30%) rotate(-45deg);
-}
-
-.crossword-clues-wrapper {
-  margin: 0 -1em;
-}
-
-.crossword-clues ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
 }
 
 .crossword-clue {
