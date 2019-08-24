@@ -4,8 +4,33 @@ This module makes it easy to add crossword puzzles that aremplayable in the
 browser to your Drupal site. It is not for authoring puzzles; rather, it allows
 you to upload crossword puzzle files that have been created elsewhere.
 
-The Crossword Field Type
-========================
+=How To Render a Playable Puzzle=
+1. Install the crossword module.
+2. Add a Crossword field to a content type (say Puzzle).
+3. On the Manage Display form for the Puzzle content type, select the "Crossword
+   Puzzle" formatter for the Crossword field.
+4. Create a new Puzzle node using a crossword file in a supported format (Across
+   Lite Text or Across Lite .puz).
+5. View the Puzzle node. You should see a fully functional puzzle.
+
+==Keyboard Controls==
+Arrow Keys: Move the active square around the grid
+Tab: Next clue
+Shift+Tab: Previous clue
+Spacebar: Toggle direction
+Enter/Return: Next square
+Backspace/Delete: Delete input from active square and move to previous square
+
+==Entering Text==
+If you type a lowercase letter, the letter will be added to the active square
+and it will be displayed as uppercase. Any text that was previously in the
+active square is deleted. Further, the next square will become active.
+
+If you enter an uppercase letter, the letter will be appended to the text in the
+active square. This allows you to put multiple letters in the same square,
+which is called a "rebus" puzzle. Hit Enter/Return to move to the next square.
+
+=The Crossword Field Type=
 This module provides a Crossword field type which is an extension of the
 core File field type. The main difference is that files uploaded to a
 crossword field must be able to be parsed by an installed Crossword File
@@ -15,8 +40,7 @@ Parser plugins included in this module: Across Lite Text (v1 and v2) and
 Across Lite .puz files. Crossword File Parser plugins could be added
 to support additional file types.
 
-Field Formatters
-================
+=Field Formatters=
 There is a suite of field formatter plugins for displaying a Crossword
 field. All of the field formatters produce markup that is highly
 themeable. Nearly all components of the puzzle can be configured or
@@ -31,15 +55,13 @@ necessary to make the puzzle fully playable in the browser. The remaining
 formatters (File Download Link and Generic File) are used to render the file as
 a link.
 
-Printing a Puzzle
-=================
+=Printing a Puzzle=
 There is a library provided by this module that can be used to make the
 puzzle look pretty good when it is printed. You may need to include additional
 css in your own theme/library that hides site components that you don't want
 printed with the puzzle, such as the header or footer, for example.
 
-Enhancing the Playable Puzzle
-=============================
+=Enhancing the Playable Puzzle=
 When the puzzle is played in the browser, events in the browser cause methods
 to be called on a Crossword object. The Crossword object then triggers events
 on various DOM elements. There is a "crossword-solved" event that is triggered
