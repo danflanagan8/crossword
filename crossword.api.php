@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\file\FileInterface;
+
 /**
  * @file
  * Hooks provided by the crossword module.
@@ -13,10 +15,10 @@
  * @param array $data
  *   The parsed crossword file, ready to be used by formatters and/or
  *   passed to drupalSettings.
- * @param string $contents
- *   The contents of the text file representing the crossword.
+ * @param Drupal\file\FileInterface $file
+ *   The crossword file.
  */
-function hook_crossword_data_alter(array &$data, $contents) {
+function hook_crossword_data_alter(array &$data, FileInterface $file) {
   // Take credit for other people's work.
   $data['title'] = 'Dan';
 

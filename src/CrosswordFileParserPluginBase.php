@@ -101,7 +101,7 @@ abstract class CrosswordFileParserPluginBase extends PluginBase implements Cross
       $this->cache->set($this->file->id(), ["data" => $data], CacheBackendInterface::CACHE_PERMANENT, $this->file->getCacheTags());
     }
 
-    \Drupal::moduleHandler()->alter('crossword_data', $data, $this->contents);
+    \Drupal::moduleHandler()->alter('crossword_data', $data, $this->file);
 
     return $data;
   }
