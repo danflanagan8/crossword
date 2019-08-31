@@ -1,6 +1,6 @@
 name: Crossword
 description: "Adds Crossword field that turns uploaded Across Lite text files into playable puzzles."
-package: Custom
+package: Crossword
 type: module
 core: 8.x
 dependencies:
