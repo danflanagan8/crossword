@@ -4,14 +4,18 @@ This module makes it easy to add crossword puzzles that aremplayable in the
 browser to your Drupal site. It is not for authoring puzzles; rather, it allows
 you to upload crossword puzzle files that have been created elsewhere.
 
+=Media Integration=
+Install the submodule crossword_media to integrate with core media.
+
 =How To Render a Playable Puzzle=
 1. Install the crossword module.
-2. Add a Crossword field to a content type (say Puzzle).
-3. On the Manage Display form for the Puzzle content type, select the "Crossword
+2. Add a Crossword field to an entity (say a node type or media type
+   called Puzzle).
+3. On the Manage Display form for the Puzzle, select the "Crossword
    Puzzle" formatter for the Crossword field.
-4. Create a new Puzzle node using a crossword file in a supported format (Across
+4. Create a new Puzzle using a crossword file in a supported format (Across
    Lite Text or Across Lite .puz).
-5. View the Puzzle node. You should see a fully functional puzzle.
+5. View the Puzzle. You should see a fully functional puzzle.
 
 ==Keyboard Controls==
 Arrow Keys: Move the active square around the grid
@@ -52,8 +56,9 @@ puzzle can easily intermingle with other fields on the node (or other entity)
 to which the Crossword field is attached. Of the formatters mentioned so far,
 all except for the Crossword Solution formatter handle provide all of the js
 necessary to make the puzzle fully playable in the browser. The remaining
-formatters (File Download Link and Generic File) are used to render the file as
-a link.
+formatters are used to render the file as a link (File Download Link and
+Generic File) or an image (Crossword Thumbnail).
+
 
 =Printing a Puzzle=
 There is a library provided by this module that can be used to make the
