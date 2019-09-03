@@ -1,11 +1,11 @@
 <?php
 
-use Drupal\file\FileInterface;
-
 /**
  * @file
  * Hooks provided by the crossword module.
  */
+
+use Drupal\file\FileInterface;
 
 /**
  * Alter the array representing the crossword.

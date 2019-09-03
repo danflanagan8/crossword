@@ -24,6 +24,9 @@ class CrosswordImageFactory {
    */
   protected $parserManager;
 
+  /**
+   * Construct the Crossword Image Factory.
+   */
   public function __construct(FileSystem $file_system, CrosswordFileParserManager $parser_manager) {
     $this->fileSystem = $file_system;
     $this->parserManager = $parser_manager;
@@ -32,14 +35,14 @@ class CrosswordImageFactory {
   /**
    * Returns the uri to a thumbanil preview for the crossword file.
    *
-   * @param FileInterface $file
+   * @param Drupal\file\FileInterface $file
    *   The file representing the crossword puzzle.
    *
    * @return resource
    *   An image resource to be used as a thumbnail.
    */
   public function getThumbnailUri(FileInterface $file) {
-    $destination_uri = $this->getDestinationURI($file);
+    $destination_uri = $this->getDestinationUri($file);
     if (file_exists($destination_uri)) {
       // Check if the existing thumbnail is older than the file itself.
       if (filemtime($file->getFileUri()) <= filemtime($destination_uri)) {
@@ -65,10 +68,10 @@ class CrosswordImageFactory {
    * @param string $destination_uri
    *   The destination of the new file.
    *
-   * @return boolean
+   * @return bool
    *   Returns TRUE upon success, FALSE upon failure.
    */
-  protected function createThumbnail($file, $destination_uri) {
+  protected function createThumbnail(FileInterface $file, $destination_uri) {
     $parser = $this->parserManager->loadCrosswordFileParserFromInput($file);
     if (!$parser) {
       return NULL;
@@ -92,7 +95,7 @@ class CrosswordImageFactory {
    * @return resource
    *   An image resource to be used as a thumbnail.
    */
-  protected function getNewThumbnailImage($data) {
+  protected function getNewThumbnailImage(array $data) {
     $grid = $data['puzzle']['grid'];
     $square_size = 20;
     $width = count($grid[0]) * $square_size + 1;
@@ -120,7 +123,7 @@ class CrosswordImageFactory {
    * @return string
    *   The destination URI.
    */
-  protected function getDestinationURI($file) {
+  protected function getDestinationUri(FileInterface $file) {
     $output_path = file_default_scheme() . '://crossword';
     $filename = "{$file->id()}-thumbnail.jpg";
     return $output_path . '/' . $filename;

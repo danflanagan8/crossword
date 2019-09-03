@@ -31,7 +31,7 @@ class Crossword extends File implements ContainerFactoryPluginInterface {
    *
    * @var \Drupal\crossword\CrosswordImageFactory
    */
-   protected $crosswordImageFactory;
+  protected $crosswordImageFactory;
 
   /**
    * Constructs a new class instance.
