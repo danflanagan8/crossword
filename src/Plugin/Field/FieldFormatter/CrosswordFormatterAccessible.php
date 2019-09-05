@@ -7,17 +7,17 @@ use Drupal\file\Plugin\Field\FieldFormatter\FileFormatterBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Plugin implementation of the 'crossword' formatter.
+ * Plugin implementation of the 'crossword_accessible' formatter.
  *
  * @FieldFormatter(
- *   id = "crossword",
- *   label = @Translation("Crossword Puzzle"),
+ *   id = "crossword_accessible",
+ *   label = @Translation("Crossword Puzzle (accessible)"),
  *   field_types = {
  *     "crossword"
  *   }
  * )
  */
-class CrosswordFormatter extends FileFormatterBase {
+class CrosswordFormatterAccessible extends CrosswordFormatter {
 
   /**
    * {@inheritdoc}
@@ -178,14 +178,14 @@ class CrosswordFormatter extends FileFormatterBase {
           'title' => $this->getTitle($data),
           'author' => $this->getAuthor($data),
           'notepad' => $this->getNotepad($data),
+          'grid' => $this->getGrid($data),
           'across' => $this->getAcross($data),
           'down' => $this->getDown($data),
-          'grid' => $this->getGrid($data),
           'controls' => $this->getControls(),
         ],
         '#attached' => [
           'library' => [
-            'crossword/crossword.default',
+            'crossword/crossword.accessible',
             $this->getSetting('print') ? 'crossword/crossword.print' : '',
           ],
           'drupalSettings' => [
@@ -210,60 +210,6 @@ class CrosswordFormatter extends FileFormatterBase {
   }
 
   /**
-   * Return render array for crossword title.
-   */
-  protected function getTitle($data) {
-    if ($this->getSetting('details')['title_tag']) {
-      return [
-        '#type' => 'html_tag',
-        '#tag' => $this->getSetting('details')['title_tag'],
-        '#value' => $data['title'],
-        '#attributes' => [
-          'class' => [
-            'crossword-title',
-          ],
-        ],
-      ];
-    }
-  }
-
-  /**
-   * Return render array for crossword author.
-   */
-  protected function getAuthor($data) {
-    if ($this->getSetting('details')['author_tag'] && isset($data['author'])) {
-      return [
-        '#type' => 'html_tag',
-        '#tag' => $this->getSetting('details')['author_tag'],
-        '#value' => $data['author'],
-        '#attributes' => [
-          'class' => [
-            'crossword-author',
-          ],
-        ],
-      ];
-    }
-  }
-
-  /**
-   * Return render array for crossword notes.
-   */
-  protected function getNotepad($data) {
-    if ($this->getSetting('details')['notepad_tag'] && isset($data['notepad'])) {
-      return [
-        '#type' => 'html_tag',
-        '#tag' => $this->getSetting('details')['notepad_tag'],
-        '#value' => nl2br($data['notepad']),
-        '#attributes' => [
-          'class' => [
-            'crossword-notepad',
-          ],
-        ],
-      ];
-    }
-  }
-
-  /**
    * Return render array for across clues.
    */
   protected function getAcross($data) {
@@ -277,7 +223,7 @@ class CrosswordFormatter extends FileFormatterBase {
     ];
     foreach ($data['puzzle']['clues']['across'] as $across_index => $across) {
       $render['#content'][] = [
-        '#theme' => 'crossword_clue',
+        '#theme' => 'crossword_clue__accessible',
         '#text' => $across['text'],
         '#numeral' => $across['numeral'],
         '#direction' => 'across',
@@ -304,7 +250,7 @@ class CrosswordFormatter extends FileFormatterBase {
     ];
     foreach ($data['puzzle']['clues']['down'] as $down_index => $down) {
       $render['#content'][] = [
-        '#theme' => 'crossword_clue',
+        '#theme' => 'crossword_clue__accessible',
         '#text' => $down['text'],
         '#numeral' => $down['numeral'],
         '#direction' => 'down',
@@ -333,7 +279,7 @@ class CrosswordFormatter extends FileFormatterBase {
       foreach ($grid_row as $col_index => $square) {
         if ($square['fill'] === NULL) {
           $render_row['#content'][] = [
-            '#theme' => 'crossword_square',
+            '#theme' => 'crossword_square__accessible',
             '#attributes' => [
               'data-col' => (string) $col_index,
               'data-row' => (string) $row_index,
@@ -345,7 +291,7 @@ class CrosswordFormatter extends FileFormatterBase {
         }
         else {
           $render_row['#content'][] = [
-            '#theme' => 'crossword_square',
+            '#theme' => 'crossword_square__accessible',
             '#fill' => $show_fill ? strtoupper($square['fill']) : NULL,
             '#numeral' => isset($square['numeral']) ? $square['numeral'] : NULL,
             '#attributes' => [
@@ -365,98 +311,6 @@ class CrosswordFormatter extends FileFormatterBase {
     }
 
     return $render;
-  }
-
-  /**
-   * Return render array of crossword controls.
-   */
-  protected function getControls() {
-    return [
-      '#theme' => 'crossword_controls',
-      '#content' => [
-        'errors' => $this->getShowErrorsCheckbox(),
-        'references' => $this->getShowReferencesCheckbox(),
-        'cheat' => $this->getButton('cheat'),
-        'solution' => $this->getButton('solution'),
-        'clear' => $this->getButton('clear'),
-        'undo' => $this->getButton('undo'),
-        'redo' => $this->getButton('redo'),
-      ],
-    ];
-  }
-
-  /**
-   * Return render array for show errors checkbox.
-   */
-  protected function getShowErrorsCheckbox() {
-    if ($this->getSetting('errors')['show']) {
-      return [
-        '#type' => 'checkbox',
-        '#title_display' => 'none',
-        '#attributes' => [
-          'class' => [
-            'show-errors',
-          ],
-          'checked' => $this->getSetting('errors')['checked'] ? "checked" : NULL,
-          'name' => 'show-errors',
-          'id' => 'show-errors',
-        ],
-        '#children' => [
-          '#type' => 'label',
-          '#title' => 'Show Errors',
-          '#title_display' => 'inline',
-          '#attributes' => [
-            'for' => 'show-errors',
-          ],
-        ],
-      ];
-    }
-  }
-
-  /**
-   * Return render array for show references checkbox.
-   */
-  protected function getShowReferencesCheckbox() {
-    if ($this->getSetting('references')['show']) {
-      return [
-        '#type' => 'checkbox',
-        '#title_display' => 'none',
-        '#attributes' => [
-          'class' => [
-            'show-references',
-          ],
-          'checked' => $this->getSetting('references')['checked'] ? "checked" : NULL,
-          'name' => 'show-references',
-          'id' => 'show-references',
-        ],
-        '#children' => [
-          '#type' => 'label',
-          '#title' => 'Show References',
-          '#title_display' => 'inline',
-          '#attributes' => [
-            'for' => 'show-references',
-          ],
-        ],
-      ];
-    }
-  }
-
-  /**
-   * Return render array of various buttons.
-   */
-  protected function getButton($name) {
-    if ($this->getSetting('buttons')['buttons'][$name]) {
-      return [
-        '#type' => 'html_tag',
-        '#tag' => 'button',
-        '#value' => $name,
-        '#attributes' => [
-          'class' => [
-            "button-$name",
-          ],
-        ],
-      ];
-    }
   }
 
 }

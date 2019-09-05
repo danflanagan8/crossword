@@ -1,0 +1,20 @@
+{#
+/**
+ * @file
+ * default theme implementation to display a crossword clue.
+ *
+ * Available variables:
+ * - numeral : The number that should appear with the clue.
+ * - text : The text of the clue.
+ * - attributes : HTML attributes for the containing element.
+ */
+#}
+<li>
+  <form {{ attributes.addClass('crossword-clue') }}>
+    <label id="for-{{ numeral }}-{{ direction }}" for="{{ numeral }}-{{ direction }}" aria-label="{{ numeral }} {{ direction }}. {{ text }}. Current response:">
+      <span class="numeral">{{ numeral }} {{ direction }}</span> {{ text }}
+    </label>
+    <input type="text" name="{{ numeral }}-{{ direction }}" id="{{ numeral }}-{{ direction }}">
+    <input type="submit" aria-visible="false" hidden/>
+  </form>
+</li>

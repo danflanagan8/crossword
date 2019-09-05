@@ -45,10 +45,26 @@ function crossword_theme($existing, $type, $theme, $path) {
         'attributes' => [],
       ],
     ],
+    'crossword_square__accessible' => [
+      'variables' => [
+        'fill' => NULL,
+        'numeral' => NULL,
+        'attributes' => [],
+      ],
+    ],
     'crossword_clue' => [
       'variables' => [
         'text' => NULL,
         'numeral' => NULL,
+        'direction' => NULL,
+        'attributes' => [],
+      ],
+    ],
+    'crossword_clue__accessible' => [
+      'variables' => [
+        'text' => NULL,
+        'numeral' => NULL,
+        'direction' => NULL,
         'attributes' => [],
       ],
     ],

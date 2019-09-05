@@ -1,0 +1,18 @@
+{#
+/**
+ * @file
+ * default theme implementation to display a crossword square.
+ *
+ * Available variables:
+ * - numeral : The number that should appear in the top-left of this square.
+ * - fill : The text that should be initially rendered in this square.
+ * - attributes : HTML attributes for the containing element.
+ */
+#}
+<div{{ attributes.addClass('crossword-square') }}>
+  {% if numeral is not empty %}
+    <span class="numeral">{{ numeral }}</span>
+  {% endif %}
+  <div class="square-bulk"></div>
+  <div class="square-fill">{{ fill }}</div>
+</div>

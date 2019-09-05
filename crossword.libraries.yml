@@ -26,3 +26,17 @@ crossword.book:
   css:
     layout:
       css/book.css: {}
+
+crossword.accessible:
+  css:
+    layout:
+      css/crossword-grid.css: {}
+      css/default.css: {}
+  js:
+    js/accessible/classes.js: {}
+    js/accessible/crossword.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/drupal
+    - core/drupalSettings
