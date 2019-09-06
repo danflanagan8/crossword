@@ -17,6 +17,10 @@ function crossword_theme($existing, $type, $theme, $path) {
         'attributes' => [],
       ],
     ],
+    'crossword__screenreader' => [
+      'template' => 'crossword--screenreader',
+      'base hook' => 'crossword',
+    ],
     'crossword_solution' => [
       'variables' => [
         'content' => NULL,

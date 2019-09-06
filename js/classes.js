@@ -39,6 +39,10 @@
       this.isCorrect = function() {
         return !this.fill || (this.answer && this.answer.toUpperCase() === this.fill.toUpperCase());
       }
+
+      this.isEmpty = function() {
+        return this.fill && this.answer === "";
+      }
     },
 
     Clue: function(data) {
@@ -96,7 +100,7 @@
       }
 
       this.getAriaClueText = function() {
-        return this.numeral + " " + this.dir + " " + this.text.replace(/_{2,}/, "blank");
+        return this.numeral + " " + this.dir + ". " + this.text.replace(/_{2,}/, "blank");
       }
 
       this.getAnswerLength = function() {
@@ -332,6 +336,18 @@
         }
         this.solved = true;
         return true;
+      }
+
+      this.countBlankSquares = function() {
+        var count = 0;
+        for (var $row_index = 0; $row_index < this.grid.length; $row_index++) {
+          for (var $col_index = 0; $col_index < this.grid[$row_index].length; $col_index++) {
+            if (this.grid[$row_index][$col_index].isEmpty()) {
+              count++;
+            }
+          }
+        }
+        return count;
       }
 
       this.setClueResponse = function(Clue, response) {

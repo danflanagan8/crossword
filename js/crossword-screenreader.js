@@ -80,6 +80,13 @@
         e.preventDefault();
         $(this).val("");
       });
+
+      $('#crossword-blank-count', $crossword).on('focus', function(){
+        $(this).attr('aria-label', "There are " + Crossword.countBlankSquares() + " blank squares. Hit return to go back to the first clue.");
+      })
+      .click(function(){
+        $('.crossword-clues.across input[type="text"]', $crossword).first().focus();
+      });
     },
     addClickHandlers: function ($crossword) {
       var Crossword = $crossword.data("Crossword");

@@ -28,14 +28,17 @@
     {{ content.controls }}
   </div>
 
-  <div id="active-clues" class="active-clues">
-  {# This gets populated by js #}
+  <div id="solution-message" aria-hidden="true" hidden tabindex="1">
+    {% trans %}Congratulations! You have solved the crossword puzzle.{% endtrans %}
   </div>
 
   <div class="crossword-puzzle clearfix">
     {{ content.grid }}
     {{ content.across }}
     {{ content.down }}
+    <div>
+      <button id="crossword-blank-count">Go to first clue</button>
+    </div>
   </div>
 
 </div>
