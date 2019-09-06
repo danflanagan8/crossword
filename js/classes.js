@@ -334,9 +334,9 @@
         return true;
       }
 
-      this.setClueResponse = function(response) {
+      this.setClueResponse = function(Clue, response) {
         var responseIndex = 0;
-        this.activeClue.squares.forEach(function(square, index){
+        Clue.squares.forEach(function(square, index){
           if (index >= response.length || responseIndex >= response.length) {
             square.answer = "";
           }
@@ -355,7 +355,7 @@
             square.answer = answer;
           }
         });
-        this.sendClueResponseEvents(this.activeClue);
+        this.sendClueResponseEvents(Clue);
       }
 
       /**

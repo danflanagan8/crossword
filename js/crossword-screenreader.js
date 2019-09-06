@@ -67,7 +67,9 @@
       $('.crossword-clue', $crossword).on('submit', function(e){
         e.preventDefault();
         var $input = $(this).find("input[type='text']");
-        Crossword.setClueResponse($input.val());
+        var Clue = $(this).data("Clue");
+        Crossword.setActiveClue(Clue);
+        Crossword.setClueResponse(Clue, $input.val());
       });
 
       $('.crossword-clue input[type="text"]', $crossword).on('blur', function(e){
@@ -77,7 +79,6 @@
       .on('focus', function(e){
         e.preventDefault();
         $(this).val("");
-        Crossword.setActiveClue($(this).closest('.crossword-clue').data("Clue"));
       });
     },
     addClickHandlers: function ($crossword) {
@@ -95,21 +96,6 @@
 
     },
     addCrosswordEventHandlers: function ($crossword) {
-      $('.crossword-clue, .crossword-square', $crossword)
-        .on('crossword-active', function(){
-          $(this).addClass('active');
-        })
-        .on('crossword-highlight', function(){
-          $(this).addClass('highlight');
-        })
-        .on('crossword-off', function(){
-          $(this)
-            .removeClass('active')
-            .removeClass('highlight')
-            .removeClass('reference')
-            .removeClass('focus')
-            .find('input').blur();
-        });
 
       $('.crossword-square', $crossword)
         .on('crossword-answer', function(e, answer){

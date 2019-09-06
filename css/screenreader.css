@@ -30,19 +30,6 @@
   flex-wrap: nowrap;
 }
 
-.show-references .crossword-square.reference,
-.show-references .crossword-clue.reference {
-  background-color: #ccf;
-}
-.crossword-square.highlight,
-.crossword-clue.active {
-  background-color: #8cf;
-}
-
-.crossword-square.active {
-  background-color: #1892ef;
-}
-
 .crossword-clues ul {
   list-style-type: none;
   padding: 0;
@@ -68,20 +55,10 @@
   text-transform: uppercase;
 }
 
-.crossword-clue {
-  padding-left: 1.5em;
-}
-
 .crossword-clue .numeral {
   font-family: sans-serif;
   font-weight: bold;
   font-size: 1em;
-}
-
-.show-errors .crossword-square.error .square-fill,
-.show-errors .crossword-clue.error {
-  color: #a00;
-  text-decoration: underline;
 }
 
 .crossword-clue.cheat,
