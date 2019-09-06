@@ -28,9 +28,11 @@
     {{ content.controls }}
   </div>
 
-  <div id="active-clues" class="active-clues">
-  {# This gets populated by js #}
-  </div>
+  {% if screenreader is empty %}
+    <div id="active-clues" class="active-clues">
+    {# This gets populated by js #}
+    </div>
+  {% endif %}
 
   <div class="crossword-puzzle clearfix">
     {{ content.grid }}

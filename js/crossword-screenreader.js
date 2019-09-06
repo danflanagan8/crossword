@@ -1,34 +1,22 @@
 (function ($, Drupal, drupalSettings) {
 
-  Drupal.behaviors.crossword = {
+  Drupal.behaviors.crosswordScreenreader = {
     attach: function (context, settings) {
       var selector = drupalSettings.crossword.selector;
       $(selector).once('crossword-init').each(function(){
         var $crossword = $(this);
 
         var data = drupalSettings.crossword.data;
-        var answers = Drupal.behaviors.crossword.loadAnswers(data);
+        var answers = Drupal.behaviors.crosswordScreenreader.loadAnswers(data);
         var Crossword = new Drupal.Crossword.Crossword(data, answers);
         Crossword.$crossword = $crossword;
         $crossword.data("Crossword", Crossword);
 
-        Drupal.behaviors.crossword.addCrosswordEventHandlers($crossword);
-        Drupal.behaviors.crossword.connectClues($crossword);
-        Drupal.behaviors.crossword.connectSquares($crossword);
-        Drupal.behaviors.crossword.addInputHandlers($crossword);
-        Drupal.behaviors.crossword.addClickHandlers($crossword);
-
-        // Trick the display into updating now that everything is connected.
-        Crossword.setActiveClue(Crossword.activeClue);
-
-        // Some stuff for the checkboxes that might as well be here.
-        $('#show-errors', $crossword).once('crossword-show-errors-change').on('change', function(){
-          $crossword.toggleClass('show-errors');
-        });
-
-        $('#show-references', $crossword).once('crossword-show-references-change').on('change', function(){
-          $crossword.toggleClass('show-references');
-        })
+        Drupal.behaviors.crosswordScreenreader.addCrosswordEventHandlers($crossword);
+        Drupal.behaviors.crosswordScreenreader.connectClues($crossword);
+        Drupal.behaviors.crosswordScreenreader.connectSquares($crossword);
+        Drupal.behaviors.crosswordScreenreader.addInputHandlers($crossword);
+        Drupal.behaviors.crosswordScreenreader.addClickHandlers($crossword);
 
       });
     },
@@ -37,7 +25,7 @@
         return JSON.parse(localStorage.getItem(data.id));
       }
       else {
-        var emptyAnswers = Drupal.behaviors.crossword.emptyAnswers(data);
+        var emptyAnswers = Drupal.behaviors.crosswordScreenreader.emptyAnswers(data);
         localStorage.setItem(data.id, JSON.stringify(emptyAnswers));
         return emptyAnswers;
       }
@@ -80,7 +68,6 @@
         e.preventDefault();
         var $input = $(this).find("input[type='text']");
         Crossword.setClueResponse($input.val());
-        $input.val("");
       });
 
       $('.crossword-clue input[type="text"]', $crossword).on('blur', function(e){
@@ -89,6 +76,7 @@
       })
       .on('focus', function(e){
         e.preventDefault();
+        $(this).val("");
         Crossword.setActiveClue($(this).closest('.crossword-clue').data("Clue"));
       });
     },
@@ -97,16 +85,12 @@
 
       $('.button-solution').once('crossword-solution-click').click(function(e){
         e.preventDefault();
-        if (confirm('Do you really want to give up?')) {
-          Crossword.reveal();
-        }
+        Crossword.reveal();
       });
 
       $('.button-clear').once('crossword-clear-click').click(function(e){
         e.preventDefault();
-        if (confirm('Do you really want to clear? This action cannot be undone.')){
-          Crossword.clear();
-        }
+        Crossword.clear();
       });
 
     },
@@ -118,15 +102,6 @@
         .on('crossword-highlight', function(){
           $(this).addClass('highlight');
         })
-        .on('crossword-reference', function(){
-          $(this).addClass('reference');
-        })
-        .on('crossword-error', function(){
-          $(this).addClass('error');
-        })
-        .on('crossword-ok', function(){
-          $(this).removeClass('error');
-        })
         .on('crossword-off', function(){
           $(this)
             .removeClass('active')
@@ -134,9 +109,6 @@
             .removeClass('reference')
             .removeClass('focus')
             .find('input').blur();
-        })
-        .on('crossword-cheat', function(){
-          $(this).addClass('cheat');
         });
 
       $('.crossword-square', $crossword)
@@ -153,13 +125,9 @@
         })
 
       $('.crossword-clue', $crossword)
-        .on('crossword-focus', function(){
-          $(this).addClass('focus');
-          $(this).find('input[type="text"]').focus();
-        })
         .on('crossword-aria-update', function(e){
           var aria = $(this).find('label').attr("aria-label");
-          aria = aria.substring(0, aria.indexOf("Current response:") + 17);
+          aria = aria.substring(0, aria.lastIndexOf("Answer: ") + 8);
           $(this).find('label').attr("aria-label", aria + $(this).data("Clue").getAriaCurrentString());
         });
 

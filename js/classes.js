@@ -71,6 +71,33 @@
         }
         return true;
       }
+
+      this.getAriaCurrentString = function() {
+        var aria = "";
+        var countString = this.squares.length + " letters.";
+        var blank = true;
+        for (var i = 0; i < this.squares.length; i++) {
+          if (this.squares[i].answer) {
+            aria += this.squares[i].answer;
+            blank = false;
+          }
+          else {
+            aria += "blank";
+          }
+          aria += " ";
+        }
+        if (blank) {
+          return countString;
+        }
+        else {
+          aria = aria.substring(0, aria.length - 1);
+          return countString + " " + aria;
+        }
+      }
+
+      this.getAnswerLength = function() {
+        return this.squares.length;
+      }
     },
 
     Crossword: function(data, answers) {
@@ -303,9 +330,26 @@
         return true;
       }
 
+      this.setClueResponse = function(response) {
+        this.activeClue.squares.forEach(function(square, index){
+          if (index >= response.length) {
+            square.answer = "";
+          }
+          else {
+            square.answer = response[index];
+          }
+        });
+        this.sendClueResponseEvents(this.activeClue);
+      }
+
       /**
        * Functions that trigger events on dom elements.
        */
+      this.sendClueResponseEvents = function(Clue) {
+        Clue.squares.forEach(function(Square, index){
+          Crossword.sendAnswerEvents(Square);
+        });
+      }
 
       this.sendOffEvents = function(){
         if (this.activeClue) {
@@ -365,6 +409,7 @@
 
           // now the clues
           if (Square.down) {
+            Square.down['$clue'].trigger('crossword-aria-update');
             if (Square.down.hasError()) {
               Square.down['$clue'].trigger('crossword-error');
             }
@@ -373,6 +418,7 @@
             }
           }
           if (Square.across) {
+            Square.across['$clue'].trigger('crossword-aria-update');
             if (Square.across.hasError()) {
               Square.across['$clue'].trigger('crossword-error');
             }

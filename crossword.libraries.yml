@@ -27,14 +27,14 @@ crossword.book:
     layout:
       css/book.css: {}
 
-crossword.accessible:
+crossword.screenreader:
   css:
     layout:
       css/crossword-grid.css: {}
-      css/default.css: {}
+      css/screenreader.css: {}
   js:
-    js/accessible/classes.js: {}
-    js/accessible/crossword.js: {}
+    js/classes.js: {}
+    js/crossword-screenreader.js: {}
   dependencies:
     - core/jquery
     - core/jquery.once

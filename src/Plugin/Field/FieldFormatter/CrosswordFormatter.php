@@ -174,6 +174,7 @@ class CrosswordFormatter extends FileFormatterBase {
 
       $elements[$delta] = [
         '#theme' => 'crossword',
+        '#screenreader' => $this->getPluginId() == 'crossword_screenreader',
         '#content' => [
           'title' => $this->getTitle($data),
           'author' => $this->getAuthor($data),
@@ -269,6 +270,7 @@ class CrosswordFormatter extends FileFormatterBase {
   protected function getAcross($data) {
     $render = [
       '#theme' => 'crossword_clues',
+      '#screenreader' => $this->getPluginId() == 'crossword_screenreader',
       '#content' => [],
       '#direction' => 'across',
       '#attributes' => [
@@ -278,6 +280,7 @@ class CrosswordFormatter extends FileFormatterBase {
     foreach ($data['puzzle']['clues']['across'] as $across_index => $across) {
       $render['#content'][] = [
         '#theme' => 'crossword_clue',
+        '#screenreader' => $this->getPluginId() == 'crossword_screenreader',
         '#text' => $across['text'],
         '#numeral' => $across['numeral'],
         '#direction' => 'across',
@@ -296,6 +299,7 @@ class CrosswordFormatter extends FileFormatterBase {
   protected function getDown($data) {
     $render = [
       '#theme' => 'crossword_clues',
+      '#screenreader' => $this->getPluginId() == 'crossword_screenreader',
       '#content' => [],
       '#direction' => 'down',
       '#attributes' => [
@@ -305,6 +309,7 @@ class CrosswordFormatter extends FileFormatterBase {
     foreach ($data['puzzle']['clues']['down'] as $down_index => $down) {
       $render['#content'][] = [
         '#theme' => 'crossword_clue',
+        '#screenreader' => $this->getPluginId() == 'crossword_screenreader',
         '#text' => $down['text'],
         '#numeral' => $down['numeral'],
         '#direction' => 'down',
@@ -323,17 +328,20 @@ class CrosswordFormatter extends FileFormatterBase {
   protected function getGrid($data, $show_fill = FALSE) {
     $render = [
       '#theme' => 'crossword_grid',
+      '#screenreader' => $this->getPluginId() == 'crossword_screenreader',
       '#content' => [],
     ];
     foreach ($data['puzzle']['grid'] as $row_index => $grid_row) {
       $render_row = [
         '#theme' => 'crossword_grid_row',
+        '#screenreader' => $this->getPluginId() == 'crossword_screenreader',
         '#content' => [],
       ];
       foreach ($grid_row as $col_index => $square) {
         if ($square['fill'] === NULL) {
           $render_row['#content'][] = [
             '#theme' => 'crossword_square',
+            '#screenreader' => $this->getPluginId() == 'crossword_screenreader',
             '#attributes' => [
               'data-col' => (string) $col_index,
               'data-row' => (string) $row_index,
@@ -346,6 +354,7 @@ class CrosswordFormatter extends FileFormatterBase {
         else {
           $render_row['#content'][] = [
             '#theme' => 'crossword_square',
+            '#screenreader' => $this->getPluginId() == 'crossword_screenreader',
             '#fill' => $show_fill ? strtoupper($square['fill']) : NULL,
             '#numeral' => isset($square['numeral']) ? $square['numeral'] : NULL,
             '#attributes' => [
@@ -373,6 +382,7 @@ class CrosswordFormatter extends FileFormatterBase {
   protected function getControls() {
     return [
       '#theme' => 'crossword_controls',
+      '#screenreader' => $this->getPluginId() == 'crossword_screenreader',
       '#content' => [
         'errors' => $this->getShowErrorsCheckbox(),
         'references' => $this->getShowReferencesCheckbox(),
@@ -445,7 +455,7 @@ class CrosswordFormatter extends FileFormatterBase {
    * Return render array of various buttons.
    */
   protected function getButton($name) {
-    if ($this->getSetting('buttons')['buttons'][$name]) {
+    if (isset($this->getSetting('buttons')['buttons'][$name]) && $this->getSetting('buttons')['buttons'][$name]) {
       return [
         '#type' => 'html_tag',
         '#tag' => 'button',

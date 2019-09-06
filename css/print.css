@@ -23,13 +23,19 @@
   .crossword-clues.across {
     width: 25%;
     padding: 0;
+    float: left;
   }
 
   .crossword-clues.down {
     width: 75%;
+    float: right;
     -webkit-column-count: 3;
     -moz-column-count: 3;
     column-count: 3;
+  }
+
+  .crossword-clues input {
+    display: none;
   }
 
   .crossword-clue,

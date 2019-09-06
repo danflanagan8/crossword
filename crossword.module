@@ -13,67 +13,76 @@ function crossword_theme($existing, $type, $theme, $path) {
     'crossword' => [
       'variables' => [
         'content' => NULL,
+        'screenreader' => FALSE,
         'attributes' => [],
       ],
     ],
     'crossword_solution' => [
       'variables' => [
         'content' => NULL,
+        'screenreader' => FALSE,
         'attributes' => [],
       ],
     ],
     'crossword_controls' => [
       'variables' => [
         'content' => NULL,
+        'screenreader' => FALSE,
         'attributes' => [],
       ],
     ],
     'crossword_grid' => [
       'variables' => [
         'content' => NULL,
+        'screenreader' => FALSE,
       ],
+    ],
+    'crossword_grid__screenreader' => [
+      'template' => 'crossword-grid--screenreader',
+      'base hook' => 'crossword_grid',
     ],
     'crossword_grid_row' => [
       'variables' => [
         'content' => NULL,
+        'screenreader' => FALSE,
       ],
     ],
     'crossword_square' => [
       'variables' => [
         'fill' => NULL,
         'numeral' => NULL,
+        'screenreader' => FALSE,
         'attributes' => [],
       ],
     ],
-    'crossword_square__accessible' => [
-      'variables' => [
-        'fill' => NULL,
-        'numeral' => NULL,
-        'attributes' => [],
-      ],
+    'crossword_square__screenreader' => [
+      'template' => 'crossword-square--screenreader',
+      'base hook' => 'crossword_square',
     ],
     'crossword_clue' => [
       'variables' => [
         'text' => NULL,
         'numeral' => NULL,
         'direction' => NULL,
+        'screenreader' => FALSE,
         'attributes' => [],
       ],
     ],
-    'crossword_clue__accessible' => [
-      'variables' => [
-        'text' => NULL,
-        'numeral' => NULL,
-        'direction' => NULL,
-        'attributes' => [],
-      ],
+    'crossword_clue__screenreader' => [
+      'template' => 'crossword-clue--screenreader',
+      'base hook' => 'crossword_clue',
     ],
     'crossword_clues' => [
       'variables' => [
         'content' => NULL,
         'direction' => NULL,
+        'screenreader' => FALSE,
         'attributes' => [],
       ],
+    ],
+    'crossword_clues__screenreader' => [
+      'template' => 'crossword-clues--screenreader',
+      'base hook' => 'crossword_clues',
     ],
   ];
 }
@@ -85,4 +94,64 @@ function crossword_theme($existing, $type, $theme, $path) {
  */
 function crossword_theme_suggestions_crossword_clues_alter(array &$suggestions, array $variables) {
   $suggestions[] = 'crossword_clues__' . $variables['direction'];
+  if ($variables['screenreader']) {
+    $suggestions[] = 'crossword_clues__screenreader';
+    $suggestions[] = 'crossword_clues__screenreader__' . $variables['direction'];
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for crossword clue.
+ */
+function crossword_theme_suggestions_crossword_clue_alter(array &$suggestions, array $variables) {
+  $suggestions[] = 'crossword_clue__' . $variables['direction'];
+  if ($variables['screenreader']) {
+    $suggestions[] = 'crossword_clue__screenreader';
+    $suggestions[] = 'crossword_clue__screenreader__' . $variables['direction'];
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for crossword.
+ */
+function crossword_theme_suggestions_crossword_alter(array &$suggestions, array $variables) {
+  if ($variables['screenreader']) {
+    $suggestions[] = 'crossword__screenreader';
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for crossword controls.
+ */
+function crossword_theme_suggestions_crossword_controls_alter(array &$suggestions, array $variables) {
+  if ($variables['screenreader']) {
+    $suggestions[] = 'crossword_controls__screenreader';
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for crossword square.
+ */
+function crossword_theme_suggestions_crossword_square_alter(array &$suggestions, array $variables) {
+  if ($variables['screenreader']) {
+    $suggestions[] = 'crossword_square__screenreader';
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for crossword grid.
+ */
+function crossword_theme_suggestions_crossword_grid_alter(array &$suggestions, array $variables) {
+  if ($variables['screenreader']) {
+    $suggestions[] = 'crossword_grid__screenreader';
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for crossword grid row.
+ */
+function crossword_theme_suggestions_crossword_grid_row_alter(array &$suggestions, array $variables) {
+  if ($variables['screenreader']) {
+    $suggestions[] = 'crossword_grid_row__screenreader';
+  }
 }
