@@ -11,7 +11,7 @@
 #}
 <li>
   <form {{ attributes.addClass('crossword-clue') }}>
-    <label id="for-{{ numeral }}-{{ direction }}" for="{{ numeral }}-{{ direction }}" aria-label="{{ numeral }} {{ direction }}. {{ text }}. Answer: ">
+    <label id="for-{{ numeral }}-{{ direction }}" for="{{ numeral }}-{{ direction }}">
       <span class="numeral">{{ numeral }}</span> {{ text }}
     </label>
     <input type="text" name="{{ numeral }}-{{ direction }}" id="{{ numeral }}-{{ direction }}">
