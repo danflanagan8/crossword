@@ -126,9 +126,8 @@
 
       $('.crossword-clue', $crossword)
         .on('crossword-aria-update', function(e){
-          var aria = $(this).find('label').attr("aria-label");
-          aria = aria.substring(0, aria.lastIndexOf("Answer: ") + 8);
-          $(this).find('label').attr("aria-label", aria + $(this).data("Clue").getAriaCurrentString());
+          var Clue = $(this).data("Clue");
+          $(this).find('label').attr("aria-label", Clue.getAriaClueText() + ". " + Clue.getAriaCurrentString());
         });
 
       $crossword.on('crossword-solved', function() {

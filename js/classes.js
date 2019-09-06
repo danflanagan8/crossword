@@ -91,8 +91,12 @@
         }
         else {
           aria = aria.substring(0, aria.length - 1);
-          return countString + " " + aria;
+          return "Answer: " + countString + " " + aria;
         }
+      }
+
+      this.getAriaClueText = function() {
+        return this.numeral + " " + this.dir + " " + this.text.replace(/_{2,}/, "blank");
       }
 
       this.getAnswerLength = function() {
