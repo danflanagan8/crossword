@@ -337,13 +337,13 @@
       this.setClueResponse = function(response) {
         var responseIndex = 0;
         this.activeClue.squares.forEach(function(square, index){
-          if (index >= response.length) {
+          if (index >= response.length || responseIndex >= response.length) {
             square.answer = "";
           }
           else {
             var answer = "";
             if (response[responseIndex].toLowerCase() != response[responseIndex]) {
-              while (response[responseIndex].toLowerCase() != response[responseIndex]) {
+              while (responseIndex < response.length && response[responseIndex].toLowerCase() != response[responseIndex]) {
                 answer += response[responseIndex];
                 responseIndex++;
               }
