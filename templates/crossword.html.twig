@@ -32,6 +32,10 @@
     <div id="active-clues" class="active-clues">
     {# This gets populated by js #}
     </div>
+  {% else %}
+    <div id="solution-message" aria-hidden="true" hidden tabindex="1">
+      {% trans %}Congratulations! You have solved the crossword puzzle.{% endtrans %}
+    </div>
   {% endif %}
 
   <div class="crossword-puzzle clearfix">

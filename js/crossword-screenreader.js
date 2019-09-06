@@ -133,6 +133,7 @@
 
       $crossword.on('crossword-solved', function() {
         console.log('The crossword puzzle has been solved.');
+        $('#solution-message').attr('aria-hidden', false).attr('hidden', false).focus();
       });
     },
   }
