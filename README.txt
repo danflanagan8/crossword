@@ -34,6 +34,14 @@ If you enter an uppercase letter, the letter will be appended to the text in the
 active square. This allows you to put multiple letters in the same square,
 which is called a "rebus" puzzle. Hit Enter/Return to move to the next square.
 
+=Accessibility: Puzzle For Screenreaders=
+If you select the "Crossword Puzzle (screenreader)" formatter, the puzzle will
+be displayed in a way that is optimized for use with a screenreader. Text is
+input into a text field with each clue. Hitting return submits what the user
+has typed to the grid. Like with the other formatters, uppercase letters are
+grouped into a single (rebus) square. The grid is displayed, but it is not
+interactive. There are no special keyboard controls.
+
 =The Crossword Field Type=
 This module provides a Crossword field type which is an extension of the
 core File field type. The main difference is that files uploaded to a
