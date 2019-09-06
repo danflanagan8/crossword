@@ -91,7 +91,7 @@
         }
         else {
           aria = aria.substring(0, aria.length - 1);
-          return "Answer: " + countString + " " + aria;
+          return "Answer: " + countString + " " + aria.toLowerCase();
         }
       }
 
@@ -335,12 +335,24 @@
       }
 
       this.setClueResponse = function(response) {
+        var responseIndex = 0;
         this.activeClue.squares.forEach(function(square, index){
           if (index >= response.length) {
             square.answer = "";
           }
           else {
-            square.answer = response[index];
+            var answer = "";
+            if (response[responseIndex].toLowerCase() != response[responseIndex]) {
+              while (response[responseIndex].toLowerCase() != response[responseIndex]) {
+                answer += response[responseIndex];
+                responseIndex++;
+              }
+            }
+            else {
+              answer = response[responseIndex];
+              responseIndex++;
+            }
+            square.answer = answer;
           }
         });
         this.sendClueResponseEvents(this.activeClue);
