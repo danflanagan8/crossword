@@ -3,7 +3,6 @@
 namespace Drupal\crossword\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\file\Plugin\Field\FieldFormatter\FileFormatterBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
